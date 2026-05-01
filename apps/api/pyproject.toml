@@ -7,8 +7,6 @@ mypy_path = "."
 [[tool.mypy.overrides]]
 module = [
     "structlog.*",
-    "crewai.*",
-    "crewai_tools.*",
     "uvicorn.*",
     "sentry_sdk.*",
 ]

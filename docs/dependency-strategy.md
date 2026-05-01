@@ -51,7 +51,7 @@ Wynik: `Successfully installed` - zero konfliktow, 4/4 testy PASS.
 
 ## Python version
 
-Python 3.12 (nie 3.14). Wiele deps (crewai, web3, eth-account) wymaga <=3.13.
+Python 3.12 (nie 3.14). Wiele deps (web3, eth-account) wymaga <=3.13.
 Python 3.12 jest LTS i stabilny. Pin w pyproject.toml: `target-version = "py312"`.
 
 ## Dep groups

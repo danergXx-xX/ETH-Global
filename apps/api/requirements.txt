@@ -20,7 +20,7 @@ alembic==1.14.0
 redis==5.2.0
 
 # Web3
-eth-account>=0.13.1
+eth-account==0.13.7
 web3==7.5.0
 
 # Data sources
