@@ -329,10 +329,10 @@ Output ONLY valid JSON matching AgentDecision. No prose outside JSON.
 GOLDEN_QUESTIONS = {
     "bull": [
         {
-            "scenario": "Swap 5 ETH for USDC. ETH up 12% last week, Fed dovish, on-chain volume +30%.",
+            "scenario": "Swap 50k USDC for ETH. ETH up 12% last week, Fed dovish, on-chain volume +30%.",
             "expected_decision": "FOR",
             "expected_confidence_range": (0.7, 0.95),
-            "rationale": "Strong tailwinds, momentum, macro alignment",
+            "rationale": "Strong tailwinds, buying ETH in bull momentum, macro alignment",
         },
         {
             "scenario": "Deposit 10 ETH to Aave. APY 4.2%, TVL flat last 30 days, no announcements.",

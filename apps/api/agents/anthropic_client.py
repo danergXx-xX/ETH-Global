@@ -112,6 +112,7 @@ class AnthropicClient:
                     temperature=temperature,
                     system=system_blocks,
                     messages=messages,
+                    timeout=30.0,
                 )
                 latency = time.perf_counter() - start
 

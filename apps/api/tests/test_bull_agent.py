@@ -178,3 +178,15 @@ async def test_bull_strips_markdown_fences() -> None:
 
     assert result.decision == "AGAINST"
     assert result.confidence == 0.85
+
+
+@pytest.mark.asyncio
+async def test_bull_raises_on_double_invalid_json() -> None:
+    """Bull raises ValueError when both attempts return invalid JSON."""
+    client = AnthropicClient(api_key="test-key")
+
+    with patch.object(client, "call_with_cache", new_callable=AsyncMock) as mock_call:
+        mock_call.return_value = ("this is not json at all {{{", MOCK_USAGE)
+
+        with pytest.raises(ValueError, match="invalid JSON after retry"):
+            await run_bull("Test proposal", client)

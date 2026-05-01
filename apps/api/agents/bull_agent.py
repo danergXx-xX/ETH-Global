@@ -27,33 +27,7 @@ COUNCIL_RULES = (
     "No markdown, no code fences, no explanation outside JSON."
 )
 
-AGENT_DECISION_SCHEMA = json.dumps(
-    {
-        "persona": "bull",
-        "decision": "FOR | AGAINST | ABSTAIN",
-        "confidence": 0.0,
-        "reasoning": "3-5 sentences with specifics",
-        "claims": [
-            {
-                "text": "claim text",
-                "confidence": 0.8,
-                "sources": [
-                    {
-                        "url": "https://example.com",
-                        "title": "Source title",
-                        "snippet": "Relevant excerpt (max 500 chars)",
-                        "weight": 0.9,
-                        "source_type": "coingecko",
-                    }
-                ],
-            }
-        ],
-        "timestamp": "2026-05-01T12:00:00Z",
-        "tokens_used": None,
-        "cost_usd": None,
-    },
-    indent=2,
-)
+AGENT_DECISION_SCHEMA = json.dumps(AgentDecision.model_json_schema(), indent=2)
 
 USER_PROMPT_TEMPLATE = (
     "Proposal: {proposal}\n\n"
