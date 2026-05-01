@@ -82,3 +82,5 @@ agent_outputs/
 tmp/
 temp/
 *.tmp
+apps/api/.venv/
+test-results/
