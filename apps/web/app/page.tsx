@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "@/lib/i18n";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { LanguageToggle } from "@/components/language-toggle";
 import { AGENTS, type AgentDecision, type Consensus } from "@/lib/types";
 
 export default function Home() {
+  const t = useTranslations();
   const [proposal, setProposal] = useState("");
   const [decisions, setDecisions] = useState<AgentDecision[]>([]);
   const [isDebating, setIsDebating] = useState(false);
@@ -29,11 +32,12 @@ export default function Home() {
     const mockDecisions: AgentDecision[] = AGENTS.map((agent) => {
       const options = ["FOR", "AGAINST", "ABSTAIN"] as const;
       const decision = options[Math.floor(Math.random() * 3)];
+      const label = t(`agents.${agent.persona}.label`);
       return {
         persona: agent.persona,
         decision,
         confidence: Math.round((0.5 + Math.random() * 0.5) * 100) / 100,
-        reasoning: `Analiza propozycji z perspektywy ${agent.label.toLowerCase()}. To jest placeholder - w Phase 1 zostanie zastąpiony prawdziwą odpowiedzią agenta AI.`,
+        reasoning: t("agentCard.mockReasoning", { label }),
         timestamp: new Date().toISOString(),
       };
     });
@@ -58,24 +62,29 @@ export default function Home() {
       <header className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
-            AI Treasury Council
+            {t("header.title")}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Wieloagentowa rada zarządzająca skarbcem DAO
+            {t("header.subtitle")}
           </p>
         </div>
-        <Button variant="outline" disabled>
-          Połącz portfel
-        </Button>
+        <div className="flex items-center gap-2">
+          <LanguageToggle />
+          <Button variant="outline" disabled>
+            {t("header.connectWallet")}
+          </Button>
+        </div>
       </header>
 
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="text-base">Nowa propozycja</CardTitle>
+          <CardTitle className="text-base">
+            {t("proposal.cardTitle")}
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <Textarea
-            placeholder="Opisz propozycję treasury..."
+            placeholder={t("proposal.placeholder")}
             value={proposal}
             onChange={(e) => setProposal(e.target.value)}
             rows={4}
@@ -86,7 +95,7 @@ export default function Home() {
             disabled={!proposal.trim() || isDebating}
             className="w-full"
           >
-            {isDebating ? "Debata w toku..." : "Zwołaj Radę"}
+            {isDebating ? t("proposal.debating") : t("proposal.submit")}
           </Button>
         </CardContent>
       </Card>
@@ -94,10 +103,11 @@ export default function Home() {
       <div className="mb-6 space-y-3">
         {AGENTS.map((agent) => {
           const decision = decisions.find((d) => d.persona === agent.persona);
+          const label = t(`agents.${agent.persona}.label`);
           return (
             <AgentCard
               key={agent.persona}
-              label={agent.label}
+              label={label}
               bias={agent.bias}
               color={agent.color}
               decision={decision}
@@ -109,14 +119,18 @@ export default function Home() {
 
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="text-base">Wyniki głosowania</CardTitle>
+          <CardTitle className="text-base">{t("tally.cardTitle")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex gap-6 text-sm">
-            <span className="text-green-400">Za: {tally.for}</span>
-            <span className="text-red-400">Przeciw: {tally.against}</span>
+            <span className="text-green-400">
+              {t("tally.for")}: {tally.for}
+            </span>
+            <span className="text-red-400">
+              {t("tally.against")}: {tally.against}
+            </span>
             <span className="text-muted-foreground">
-              Wstrzymani: {tally.abstain}
+              {t("tally.abstain")}: {tally.abstain}
             </span>
           </div>
         </CardContent>
@@ -144,6 +158,8 @@ function AgentCard({
   decision?: AgentDecision;
   isDebating: boolean;
 }) {
+  const t = useTranslations("agentCard");
+
   return (
     <Card>
       <CardContent className="flex items-center gap-4 py-4">
@@ -156,10 +172,10 @@ function AgentCard({
           </div>
           <p className="mt-1 text-sm text-muted-foreground">
             {isDebating
-              ? "Analizuję propozycję..."
+              ? t("analyzing")
               : decision
                 ? decision.reasoning
-                : "Oczekuje na propozycję"}
+                : t("awaiting")}
           </p>
         </div>
         {decision && <DecisionBadge decision={decision.decision} />}
@@ -169,35 +185,42 @@ function AgentCard({
 }
 
 function DecisionBadge({ decision }: { decision: AgentDecision["decision"] }) {
+  const t = useTranslations("decision");
+
   const config = {
-    FOR: { label: "Za", className: "bg-green-900/50 text-green-400 border-green-800" },
-    AGAINST: { label: "Przeciw", className: "bg-red-900/50 text-red-400 border-red-800" },
-    ABSTAIN: { label: "Wstrzymany", className: "bg-zinc-800 text-zinc-400 border-zinc-700" },
+    FOR: {
+      className: "bg-green-900/50 text-green-400 border-green-800",
+    },
+    AGAINST: {
+      className: "bg-red-900/50 text-red-400 border-red-800",
+    },
+    ABSTAIN: {
+      className: "bg-zinc-800 text-zinc-400 border-zinc-700",
+    },
   };
   const c = config[decision];
-  return <Badge className={c.className}>{c.label}</Badge>;
+  return <Badge className={c.className}>{t(decision)}</Badge>;
 }
 
 function VerdictBanner({ consensus }: { consensus: Consensus | null }) {
+  const t = useTranslations("verdict");
+
   if (!consensus) {
     return (
-      <p className="text-center text-sm text-muted-foreground">
-        Złóż propozycję, aby rozpocząć debatę
-      </p>
+      <p className="text-center text-sm text-muted-foreground">{t("empty")}</p>
     );
   }
 
-  const config = {
-    FOR: { label: "Rada rekomenduje: PRZYJĄĆ", className: "text-green-400" },
-    AGAINST: { label: "Rada rekomenduje: ODRZUCIĆ", className: "text-red-400" },
-    ABSTAIN: { label: "Rada nie osiągnęła konsensusu", className: "text-amber-400" },
-    SPLIT: { label: "Rada podzielona - brak konsensusu", className: "text-amber-400" },
+  const colorMap = {
+    FOR: "text-green-400",
+    AGAINST: "text-red-400",
+    ABSTAIN: "text-amber-400",
+    SPLIT: "text-amber-400",
   };
-  const c = config[consensus];
 
   return (
-    <p className={`text-center text-lg font-semibold ${c.className}`}>
-      {c.label}
+    <p className={`text-center text-lg font-semibold ${colorMap[consensus]}`}>
+      {t(consensus)}
     </p>
   );
 }
