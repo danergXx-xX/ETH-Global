@@ -1,4 +1,6 @@
 # Phase 0 mock. Nova podmieni w feat/agents-bull branch.
+# NOTE: claims=[] nie spelnia AgentClaim.sources min_length=1 z schemas.py.
+# To OK - mock nie przechodzi przez Pydantic validation. Nova wstawi prawdziwe claims.
 from __future__ import annotations
 
 from datetime import datetime, timezone

@@ -42,7 +42,13 @@ app.add_middleware(RequestIDMiddleware)
 
 
 class DebateRequest(BaseModel):
-    text: str = Field(..., min_length=1)
+    text: str = Field(..., min_length=1, max_length=2000)
+
+
+class DebateResponse(BaseModel):
+    decisions: list[dict]
+    consensus: str
+    vote_id: str
 
 
 @app.get("/health")
@@ -55,8 +61,8 @@ async def health() -> HealthResponse:
 
 
 @app.post("/api/debate")
-async def debate(req: DebateRequest) -> dict:
+async def debate(req: DebateRequest) -> DebateResponse:
     log.info("debate_requested", text_length=len(req.text))
     result = await run_debate(req.text)
     log.info("debate_complete", consensus=result["consensus"])
-    return result
+    return DebateResponse(**result)
