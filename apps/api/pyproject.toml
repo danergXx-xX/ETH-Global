@@ -1,0 +1,31 @@
+[tool.mypy]
+warn_return_any = true
+warn_unused_configs = true
+explicit_package_bases = true
+mypy_path = "."
+
+[[tool.mypy.overrides]]
+module = [
+    "structlog.*",
+    "crewai.*",
+    "crewai_tools.*",
+    "uvicorn.*",
+    "sentry_sdk.*",
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "agents.anthropic_client",
+    "agents.orchestrator",
+    "tests.test_bull_agent",
+]
+ignore_errors = true
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+pythonpath = ["."]
