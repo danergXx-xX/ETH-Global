@@ -11,6 +11,7 @@ Kazda persona ma:
 Owner: Nova (Agentic AI Engineer).
 Quality gate: Vera rubric po pierwszej impl.
 """
+
 from __future__ import annotations
 from dataclasses import dataclass
 
@@ -18,6 +19,7 @@ from dataclasses import dataclass
 @dataclass(frozen=True)
 class PersonaSpec:
     """Spec dla jednej persona (Bull/Bear/Risk/Tech/Sentiment)."""
+
     persona_id: str
     role: str
     backstory: str
@@ -301,7 +303,7 @@ What to avoid:
 
 Bias (intentional, do not suppress): {persona.bias}
 
-Source priority (when calling tools): {', '.join(persona.sources_priority)}
+Source priority (when calling tools): {", ".join(persona.sources_priority)}
 
 You provide your analysis as JSON matching the AgentDecision schema:
 - decision: FOR / AGAINST / ABSTAIN
