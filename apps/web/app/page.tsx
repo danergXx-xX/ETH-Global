@@ -70,7 +70,7 @@ export default function Home() {
         </div>
         <div className="flex items-center gap-2">
           <LanguageToggle />
-          <Button variant="outline" disabled>
+          <Button variant="outline" disabled title="Phase 1 - wallet integration">
             {t("header.connectWallet")}
           </Button>
         </div>

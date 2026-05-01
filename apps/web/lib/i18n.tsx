@@ -16,14 +16,14 @@ type Messages = typeof en;
 
 const bundles: Record<Locale, Messages> = { pl, en };
 
-function getNestedValue(obj: Record<string, unknown>, path: string): string {
+function getNestedValue(obj: Record<string, unknown>, path: string): string | null {
   const keys = path.split(".");
   let current: unknown = obj;
   for (const key of keys) {
-    if (current == null || typeof current !== "object") return path;
+    if (current == null || typeof current !== "object") return null;
     current = (current as Record<string, unknown>)[key];
   }
-  return typeof current === "string" ? current : path;
+  return typeof current === "string" ? current : null;
 }
 
 interface I18nContextValue {
@@ -76,10 +76,10 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   const t = useCallback(
     (key: string, params?: Record<string, string>) => {
-      let value = getNestedValue(
-        messages as unknown as Record<string, unknown>,
-        key
-      );
+      let value =
+        getNestedValue(messages as unknown as Record<string, unknown>, key) ??
+        getNestedValue(bundles.en as unknown as Record<string, unknown>, key) ??
+        key;
       if (params) {
         for (const [k, v] of Object.entries(params)) {
           value = value.replace(`{${k}}`, v);
