@@ -1,0 +1,53 @@
+{
+  "header": {
+    "title": "AI Treasury Council",
+    "subtitle": "Multi-agent council managing DAO treasury",
+    "connectWallet": "Connect wallet"
+  },
+  "proposal": {
+    "cardTitle": "New proposal",
+    "placeholder": "Describe treasury proposal...",
+    "submit": "Convene Council",
+    "debating": "Debating..."
+  },
+  "agents": {
+    "bull": {
+      "label": "Bull"
+    },
+    "bear": {
+      "label": "Bear"
+    },
+    "risk": {
+      "label": "Risk"
+    },
+    "tech": {
+      "label": "Tech"
+    },
+    "sentiment": {
+      "label": "Sentiment"
+    }
+  },
+  "agentCard": {
+    "analyzing": "Analyzing proposal...",
+    "awaiting": "Awaiting proposal",
+    "mockReasoning": "Analysis from {label} perspective. This is a placeholder - will be replaced with real AI agent response in Phase 1."
+  },
+  "tally": {
+    "cardTitle": "Vote tally",
+    "for": "For",
+    "against": "Against",
+    "abstain": "Abstain"
+  },
+  "decision": {
+    "FOR": "For",
+    "AGAINST": "Against",
+    "ABSTAIN": "Abstain"
+  },
+  "verdict": {
+    "empty": "Submit a proposal to start debate",
+    "FOR": "Council recommends: APPROVE",
+    "AGAINST": "Council recommends: REJECT",
+    "ABSTAIN": "No consensus reached",
+    "SPLIT": "Council split - no consensus"
+  }
+}
