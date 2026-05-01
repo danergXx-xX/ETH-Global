@@ -78,7 +78,7 @@ class AnthropicClient:
         persona_prompt: str,
         user_message: str,
         max_tokens: int = 1000,
-        temperature: float = 0.3,
+        temperature: float | None = None,
     ) -> tuple[str, UsageStats]:
         """
         Call Anthropic API with prompt caching on system + persona blocks.
@@ -109,7 +109,6 @@ class AnthropicClient:
                 response = await self._client.messages.create(
                     model=MODEL,
                     max_tokens=max_tokens,
-                    temperature=temperature,
                     system=system_blocks,
                     messages=messages,
                     timeout=30.0,

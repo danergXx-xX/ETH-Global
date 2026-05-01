@@ -68,7 +68,6 @@ async def run_bull(
         persona_prompt=persona_prompt,
         user_message=user_message,
         max_tokens=BULL.max_tokens_output,
-        temperature=BULL.temperature,
     )
 
     decision = _parse_response(response_text, usage)
@@ -82,7 +81,6 @@ async def run_bull(
         persona_prompt=persona_prompt,
         user_message=retry_message,
         max_tokens=BULL.max_tokens_output,
-        temperature=0.1,
     )
 
     usage = _merge_usage(usage, usage_retry)
