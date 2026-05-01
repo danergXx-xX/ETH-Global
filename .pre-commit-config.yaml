@@ -1,0 +1,15 @@
+repos:
+  # Secret detection - blokuje commit z hardcoded API keys
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.24.0
+    hooks:
+      - id: gitleaks
+
+  # Anti-AI-zmów dla docs/markdown
+  - repo: local
+    hooks:
+      - id: anti-ai-isms
+        name: Anti-AI-zmy check (em-dashes, typograficzne cudzyslowy)
+        entry: bash -c 'if grep -rE "—|‘|’|“|”" --include="*.md" docs README.md FEEDBACK.md 2>/dev/null; then echo "AI-zmy detected. Replace with ASCII."; exit 1; fi; exit 0'
+        language: system
+        pass_filenames: false

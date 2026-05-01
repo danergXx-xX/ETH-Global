@@ -1,0 +1,46 @@
+# FastAPI core
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+pydantic==2.9.0
+pydantic-settings==2.6.0
+
+# Async
+httpx==0.28.0
+aiofiles==24.1.0
+
+# CrewAI - multi-agent orchestration
+crewai==0.83.0
+crewai-tools==0.17.0
+
+# Anthropic SDK
+anthropic==0.40.0
+
+# Database
+asyncpg==0.30.0
+sqlalchemy[asyncio]==2.0.36
+alembic==1.14.0
+
+# Cache
+redis==5.2.0
+
+# Web3
+eth-account==0.13.0
+web3==7.5.0
+
+# Data sources
+feedparser==6.0.11  # RSS
+beautifulsoup4==4.12.3
+lxml==5.3.0
+
+# Observability
+structlog==24.4.0
+sentry-sdk[fastapi]==2.18.0
+
+# Testing
+pytest==8.3.0
+pytest-asyncio==0.24.0
+httpx-mock==0.0.0  # placeholder, sprawdz aktualny
+
+# Linting
+ruff==0.7.0
+mypy==1.13.0
