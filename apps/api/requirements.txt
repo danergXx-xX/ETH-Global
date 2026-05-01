@@ -8,11 +8,7 @@ pydantic-settings==2.6.0
 httpx==0.28.0
 aiofiles==24.1.0
 
-# CrewAI - multi-agent orchestration
-crewai==0.83.0
-crewai-tools==0.17.0
-
-# Anthropic SDK
+# Anthropic SDK (Nova uses bare SDK + custom orchestration, not CrewAI)
 anthropic==0.40.0
 
 # Database
