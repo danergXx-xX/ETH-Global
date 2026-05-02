@@ -97,6 +97,12 @@ class TestEncodeMockUsdcTransfer:
         result = encode_mock_usdc_transfer(recipient, "1000000")
         assert "0x" in result["description"]
 
+    def test_description_precision_large_amount(self) -> None:
+        """Decimal prevents float precision loss for large uint256 values."""
+        recipient = SAMPLE_RECIPIENTS["aave_vault"]["address"]
+        result = encode_mock_usdc_transfer(recipient, "999999999999999999")
+        assert "999999999999.999999" in result["description"]
+
 
 class TestSampleRecipients:
     """Verify sample recipients structure."""
@@ -237,3 +243,26 @@ class TestEncodeProposalEndpoint:
     def test_missing_action_returns_422(self, client: TestClient) -> None:
         resp = client.post("/api/proposals/encode", json={})
         assert resp.status_code == 422
+
+
+class TestRecipientsEndpoint:
+    """Integration tests for GET /api/proposals/recipients."""
+
+    def test_list_recipients(self, client: TestClient) -> None:
+        resp = client.get("/api/proposals/recipients")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert len(data["recipients"]) == 2
+        assert data["token_symbol"] == "mUSDC"
+        assert data["token_decimals"] == 6
+        assert data["token_address"].startswith("0x")
+
+    def test_recipient_fields_complete(self, client: TestClient) -> None:
+        resp = client.get("/api/proposals/recipients")
+        for r in resp.json()["recipients"]:
+            assert "key" in r
+            assert "address" in r
+            assert "label" in r
+            assert "description" in r
+            assert r["address"].startswith("0x")
+            assert len(r["address"]) == 42

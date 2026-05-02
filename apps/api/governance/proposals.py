@@ -7,6 +7,7 @@ so the frontend can preview and submit on-chain proposals.
 from __future__ import annotations
 
 import re
+from decimal import Decimal
 
 from eth_utils import to_checksum_address
 
@@ -77,7 +78,7 @@ def encode_mock_usdc_transfer(recipient: str, amount_wei: str) -> dict:
     )
     calldata_hex = "0x" + raw_calldata.hex()
 
-    human_amount = amount_int / (10**MOCK_USDC_DECIMALS)
+    human_amount = Decimal(amount_int) / Decimal(10**MOCK_USDC_DECIMALS)
 
     mock_usdc_checksum = to_checksum_address(MOCK_USDC_ADDRESS)
 
@@ -86,6 +87,6 @@ def encode_mock_usdc_transfer(recipient: str, amount_wei: str) -> dict:
         "value": 0,
         "calldata": calldata_hex,
         "signature": TRANSFER_SIGNATURE,
-        "description": f"Transfer {human_amount:,.6g} mUSDC to {recipient_checksum}",
+        "description": f"Transfer {human_amount:f} mUSDC to {recipient_checksum}",
         "basescan_url": f"{BASESCAN_URL}/address/{recipient_checksum}",
     }

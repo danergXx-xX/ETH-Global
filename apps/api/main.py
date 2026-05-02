@@ -10,10 +10,21 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from config import get_settings
-from governance.proposals import encode_mock_usdc_transfer
+from governance import (
+    MOCK_USDC_ADDRESS,
+    MOCK_USDC_DECIMALS,
+    SAMPLE_RECIPIENTS,
+    encode_mock_usdc_transfer,
+)
 from logging_config import RequestIDMiddleware, setup_logging
 from orchestrator import run_debate
-from schemas import HealthResponse, ProposalEncodeRequest, ProposalEncoded
+from schemas import (
+    HealthResponse,
+    ProposalEncodeRequest,
+    ProposalEncoded,
+    RecipientInfo,
+    RecipientsResponse,
+)
 import httpx
 
 from storage.factory import StorageConfigError, StorageFallbackError, upload_with_fallback
@@ -126,3 +137,25 @@ async def encode_proposal(request: ProposalEncodeRequest) -> ProposalEncoded:
         raise HTTPException(status_code=422, detail=f"Invalid input: {exc}") from exc
 
     return ProposalEncoded(**encoded)
+
+
+@app.get("/api/proposals/recipients")
+async def list_recipients() -> RecipientsResponse:
+    """List available demo recipients for proposal UI."""
+    from eth_utils import to_checksum_address
+
+    items = [
+        RecipientInfo(
+            key=key,
+            address=to_checksum_address(info["address"]),
+            label=info["label"],
+            description=info["description"],
+        )
+        for key, info in SAMPLE_RECIPIENTS.items()
+    ]
+    return RecipientsResponse(
+        recipients=items,
+        token_address=to_checksum_address(MOCK_USDC_ADDRESS),
+        token_symbol="mUSDC",
+        token_decimals=MOCK_USDC_DECIMALS,
+    )

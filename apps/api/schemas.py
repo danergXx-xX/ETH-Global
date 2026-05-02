@@ -214,6 +214,22 @@ class ProposalEncoded(BaseModel):
     basescan_url: str | None = None
 
 
+class RecipientInfo(BaseModel):
+    """Sample recipient for demo proposals."""
+    key: str
+    address: str = Field(..., pattern=r"^0x[a-fA-F0-9]{40}$")
+    label: str
+    description: str
+
+
+class RecipientsResponse(BaseModel):
+    """Available demo recipients + treasury token info."""
+    recipients: list[RecipientInfo]
+    token_address: str = Field(..., pattern=r"^0x[a-fA-F0-9]{40}$")
+    token_symbol: str
+    token_decimals: int
+
+
 # ============================================================
 # HEALTH + META
 # ============================================================
