@@ -1,15 +1,16 @@
 """DefiLlama API adapter for protocol TVL data."""
+
 from __future__ import annotations
 
-import logging
 import re
 import time
 
 import httpx
+import structlog
 
 from schemas import Source
 
-logger = logging.getLogger(__name__)
+log = structlog.get_logger()
 
 BASE_URL = "https://api.llama.fi"
 CACHE_TTL_SECONDS = 300
@@ -51,7 +52,7 @@ class DefiLlamaSource:
                     self._cache[slug] = (time.monotonic(), source)
                     results.append(source)
             except (httpx.HTTPStatusError, httpx.RequestError, httpx.TimeoutException):
-                logger.exception("defillama_protocol_error", extra={"slug": slug})
+                log.exception("defillama_protocol_error", slug=slug)
 
         return results[:limit]
 
@@ -102,10 +103,10 @@ class DefiLlamaSource:
             resp.raise_for_status()
             data = resp.json()
             self._protocols_cache = (now, data)
-            logger.info("defillama_protocols_fetched", extra={"count": len(data)})
+            log.info("defillama_protocols_fetched", count=len(data))
             return data
         except (httpx.HTTPStatusError, httpx.RequestError):
-            logger.exception("defillama_protocols_list_error")
+            log.exception("defillama_protocols_list_error")
             if self._protocols_cache:
                 return self._protocols_cache[1]
             return []
@@ -113,11 +114,11 @@ class DefiLlamaSource:
     async def _fetch_protocol(self, client: httpx.AsyncClient, slug: str) -> Source | None:
         """Fetch individual protocol detail. Slug validated before URL insertion."""
         if not _SAFE_SLUG.match(slug.lower()):
-            logger.warning("defillama_invalid_slug", extra={"slug": slug})
+            log.warning("defillama_invalid_slug", slug=slug)
             return None
         resp = await client.get(f"{BASE_URL}/protocol/{slug}")
         if resp.status_code == 404:
-            logger.warning("defillama_protocol_not_found", extra={"slug": slug})
+            log.warning("defillama_protocol_not_found", slug=slug)
             return None
         resp.raise_for_status()
         data = resp.json()
@@ -145,7 +146,7 @@ class DefiLlamaSource:
 
         parts = [f"{name} ({category}):"]
         if total_tvl > 0:
-            parts.append(f"TVL ${total_tvl/1e6:.0f}M")
+            parts.append(f"TVL ${total_tvl / 1e6:.0f}M")
         if chains:
             parts.append(f"Chains: {', '.join(chains[:5])}")
         if audits:

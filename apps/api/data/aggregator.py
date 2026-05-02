@@ -9,11 +9,11 @@ Usage for Nova/Aiko:
 
 Lifecycle: call close() on app shutdown to release HTTP clients.
 """
+
 from __future__ import annotations
 
-import logging
-
 import httpx
+import structlog
 
 from data.coingecko import CoinGeckoSource
 from data.defillama import DefiLlamaSource
@@ -21,7 +21,7 @@ from data.rss import RSSSource
 from data.sources import DataSource
 from schemas import Source
 
-logger = logging.getLogger(__name__)
+log = structlog.get_logger()
 
 
 def create_default_registry() -> dict[str, DataSource]:
@@ -57,17 +57,25 @@ class DataAggregator:
         for src_name in source_priority:
             adapter = self._registry.get(src_name)
             if not adapter:
-                logger.debug("source_not_registered", extra={"source": src_name})
+                log.debug("source_not_registered", source=src_name)
                 continue
             try:
                 sources = await adapter.fetch(query, limit=limit_per_source)
                 all_sources.extend(sources)
-                logger.info(
+                log.info(
                     "source_fetched",
-                    extra={"source": src_name, "results": len(sources), "query": query},
+                    source=src_name,
+                    results=len(sources),
+                    query=query,
                 )
-            except (httpx.HTTPStatusError, httpx.RequestError, httpx.TimeoutException, ValueError, OSError) as exc:
-                logger.warning("source_fetch_failed", extra={"source": src_name, "query": query, "error": str(exc)})
+            except (
+                httpx.HTTPStatusError,
+                httpx.RequestError,
+                httpx.TimeoutException,
+                ValueError,
+                OSError,
+            ) as exc:
+                log.warning("source_fetch_failed", source=src_name, query=query, error=str(exc))
 
         return all_sources
 

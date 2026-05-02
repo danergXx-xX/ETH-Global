@@ -1,15 +1,16 @@
 """CoinGecko free tier API adapter with rate limiting and caching."""
+
 from __future__ import annotations
 
-import logging
 import re
 import time
 
 import httpx
+import structlog
 
 from schemas import Source
 
-logger = logging.getLogger(__name__)
+log = structlog.get_logger()
 
 BASE_URL = "https://api.coingecko.com/api/v3"
 CACHE_TTL_SECONDS = 300
@@ -75,14 +76,14 @@ class CoinGeckoSource:
             return [source]
         except httpx.HTTPStatusError as exc:
             if exc.response.status_code == 429:
-                logger.warning("coingecko_rate_limited", extra={"token": token_id})
+                log.warning("coingecko_rate_limited", token=token_id)
                 cached_stale = self._get_cached(token_id, ignore_ttl=True)
                 if cached_stale:
                     return [cached_stale]
-            logger.error("coingecko_http_error", extra={"status": exc.response.status_code, "token": token_id})
+            log.error("coingecko_http_error", status=exc.response.status_code, token=token_id)
             return []
         except (httpx.RequestError, httpx.TimeoutException):
-            logger.exception("coingecko_request_error", extra={"token": token_id})
+            log.exception("coingecko_request_error", token=token_id)
             return []
 
     def _get_client(self) -> httpx.AsyncClient:
@@ -144,7 +145,11 @@ class CoinGeckoSource:
         change_24h = market.get("price_change_percentage_24h")
         change_7d = market.get("price_change_percentage_7d")
         market_cap = market.get("market_cap", {}).get("usd")
-        tvl = market.get("total_value_locked", {}).get("usd") if market.get("total_value_locked") else None
+        tvl = (
+            market.get("total_value_locked", {}).get("usd")
+            if market.get("total_value_locked")
+            else None
+        )
 
         parts = [f"{name}:"]
         if price_usd is not None:
@@ -154,9 +159,9 @@ class CoinGeckoSource:
         if change_7d is not None:
             parts.append(f"7d {change_7d:+.1f}%")
         if market_cap is not None:
-            parts.append(f"MCap ${market_cap/1e9:.1f}B")
+            parts.append(f"MCap ${market_cap / 1e9:.1f}B")
         if tvl is not None:
-            parts.append(f"TVL ${tvl/1e6:.0f}M")
+            parts.append(f"TVL ${tvl / 1e6:.0f}M")
 
         snippet = " | ".join(parts)[:500]
         cg_url = f"https://www.coingecko.com/en/coins/{token_id}"

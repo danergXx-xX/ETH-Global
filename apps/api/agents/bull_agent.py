@@ -8,16 +8,17 @@ Phase 1: remaining 4 agents go live (same pattern).
 from __future__ import annotations
 
 import json
-import logging
 from datetime import datetime, timezone
 
 from pydantic import ValidationError
+
+import structlog
 
 from agents.anthropic_client import AnthropicClient, UsageStats
 from agents.personas import BULL, build_system_prompt
 from schemas import AgentDecision
 
-logger = logging.getLogger(__name__)
+log = structlog.get_logger()
 
 COUNCIL_RULES = (
     "You are part of the AI Treasury Council. "
@@ -74,7 +75,7 @@ async def run_bull(
     if decision is not None:
         return decision
 
-    logger.warning("bull_json_parse_failed_retrying")
+    log.warning("bull_json_parse_failed_retrying")
     retry_message = f"{RETRY_PROMPT}\n\nOriginal proposal: {proposal_text}"
     response_text, usage_retry = await anthropic_client.call_with_cache(
         system_prompt=system_prompt,
@@ -100,7 +101,7 @@ def _parse_response(raw: str, usage: UsageStats) -> AgentDecision | None:
     try:
         data = json.loads(text)
     except json.JSONDecodeError:
-        logger.debug("json_decode_error", extra={"raw_start": text[:100]})
+        log.debug("json_decode_error", raw_start=text[:100])
         return None
 
     data["persona"] = "bull"
@@ -111,7 +112,7 @@ def _parse_response(raw: str, usage: UsageStats) -> AgentDecision | None:
     try:
         return AgentDecision.model_validate(data)
     except ValidationError as e:
-        logger.debug("pydantic_validation_error", extra={"errors": str(e)})
+        log.debug("pydantic_validation_error", errors=str(e))
         return None
 
 

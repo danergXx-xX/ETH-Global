@@ -13,17 +13,15 @@ Combined system+persona exceeds this threshold.
 from __future__ import annotations
 
 import asyncio
-import logging
 import os
 import time
 from dataclasses import dataclass
 from typing import Any
 
 import anthropic
+import structlog
 
-logger = logging.getLogger(__name__)
-
-MODEL = "claude-opus-4-7"
+log = structlog.get_logger()
 
 # Pricing per million tokens (Claude Opus 4.7, 2026-05)
 PRICE_INPUT_PER_MTOK = 5.00
@@ -67,10 +65,11 @@ def calculate_cost(
 class AnthropicClient:
     """Async Anthropic client with prompt caching and retry logic."""
 
-    def __init__(self, api_key: str | None = None) -> None:
+    def __init__(self, api_key: str | None = None, model_id: str = "claude-opus-4-7") -> None:
         self._client = anthropic.AsyncAnthropic(
             api_key=api_key or os.environ.get("ANTHROPIC_API_KEY"),
         )
+        self._model = model_id
 
     async def call_with_cache(
         self,
@@ -107,7 +106,7 @@ class AnthropicClient:
             try:
                 start = time.perf_counter()
                 response = await self._client.messages.create(
-                    model=MODEL,
+                    model=self._model,
                     max_tokens=max_tokens,
                     system=system_blocks,
                     messages=messages,
@@ -132,17 +131,15 @@ class AnthropicClient:
                     latency_s=round(latency, 2),
                 )
 
-                logger.info(
+                log.info(
                     "anthropic_call",
-                    extra={
-                        "model": MODEL,
-                        "input_tokens": input_tokens,
-                        "output_tokens": output_tokens,
-                        "cache_read": cache_read,
-                        "cache_creation": cache_creation,
-                        "cost_usd": cost,
-                        "latency_s": stats.latency_s,
-                    },
+                    model=self._model,
+                    input_tokens=input_tokens,
+                    output_tokens=output_tokens,
+                    cache_read=cache_read,
+                    cache_creation=cache_creation,
+                    cost_usd=cost,
+                    latency_s=stats.latency_s,
                 )
 
                 text = response.content[0].text if response.content else ""
@@ -151,9 +148,10 @@ class AnthropicClient:
             except anthropic.RateLimitError as e:
                 last_error = e
                 delay = RETRY_BASE_DELAY * (2**attempt)
-                logger.warning(
+                log.warning(
                     "rate_limit_retry",
-                    extra={"attempt": attempt + 1, "delay_s": delay},
+                    attempt=attempt + 1,
+                    delay_s=delay,
                 )
                 await asyncio.sleep(delay)
 
@@ -161,9 +159,10 @@ class AnthropicClient:
                 last_error = e
                 if attempt < MAX_RETRIES - 1 and e.status_code and e.status_code >= 500:
                     delay = RETRY_BASE_DELAY * (2**attempt)
-                    logger.warning(
+                    log.warning(
                         "server_error_retry",
-                        extra={"attempt": attempt + 1, "status": e.status_code},
+                        attempt=attempt + 1,
+                        status=e.status_code,
                     )
                     await asyncio.sleep(delay)
                 else:

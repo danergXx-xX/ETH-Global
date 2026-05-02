@@ -4,10 +4,11 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from typing import AsyncIterator
 
+import httpx
 import structlog
+from eth_utils import to_checksum_address
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
 
 from config import get_settings
 from governance import (
@@ -17,16 +18,16 @@ from governance import (
     encode_mock_usdc_transfer,
 )
 from logging_config import RequestIDMiddleware, setup_logging
-from orchestrator import run_debate
+from agents.orchestrator import run_debate
 from schemas import (
+    DebateRequest,
+    DebateResponse,
     HealthResponse,
     ProposalEncodeRequest,
     ProposalEncoded,
     RecipientInfo,
     RecipientsResponse,
 )
-import httpx
-
 from storage.factory import StorageConfigError, StorageFallbackError, upload_with_fallback
 
 settings = get_settings()
@@ -51,22 +52,9 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
     allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["*"],
+    allow_headers=["Content-Type", "X-Request-ID", "Authorization"],
 )
 app.add_middleware(RequestIDMiddleware)
-
-
-class DebateRequest(BaseModel):
-    text: str = Field(..., min_length=1, max_length=2000)
-
-
-class DebateResponse(BaseModel):
-    decisions: list[dict]
-    consensus: str
-    vote_id: str
-    audit_trail_cid: str | None = None
-    audit_trail_gateway: str | None = None
-    storage_provider: str | None = None
 
 
 @app.get("/health")
@@ -91,7 +79,7 @@ async def debate(req: DebateRequest) -> DebateResponse:
     try:
         transcript = {
             "proposal": req.text,
-            "decisions": result["decisions"],
+            "decisions": [d.model_dump(mode="json") for d in result["decisions"]],
             "consensus": result["consensus"],
             "vote_id": result["vote_id"],
             "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -106,8 +94,16 @@ async def debate(req: DebateRequest) -> DebateResponse:
             provider=provider,
             fallback=storage_result.fallback_used,
         )
-    except (StorageFallbackError, StorageConfigError, httpx.HTTPError, ConnectionError, OSError) as storage_err:
-        log.error("audit_trail_failed", error=str(storage_err), error_type=type(storage_err).__name__)
+    except (
+        StorageFallbackError,
+        StorageConfigError,
+        httpx.HTTPError,
+        ConnectionError,
+        OSError,
+    ) as storage_err:
+        log.error(
+            "audit_trail_failed", error=str(storage_err), error_type=type(storage_err).__name__
+        )
 
     return DebateResponse(
         decisions=result["decisions"],
@@ -134,7 +130,7 @@ async def encode_proposal(request: ProposalEncodeRequest) -> ProposalEncoded:
         )
     except ValueError as exc:
         log.warning("encode_proposal_invalid_input", error=str(exc))
-        raise HTTPException(status_code=422, detail=f"Invalid input: {exc}") from exc
+        raise HTTPException(status_code=422, detail="Invalid proposal parameters") from exc
 
     return ProposalEncoded(**encoded)
 
@@ -142,8 +138,6 @@ async def encode_proposal(request: ProposalEncodeRequest) -> ProposalEncoded:
 @app.get("/api/proposals/recipients")
 async def list_recipients() -> RecipientsResponse:
     """List available demo recipients for proposal UI."""
-    from eth_utils import to_checksum_address
-
     items = [
         RecipientInfo(
             key=key,
