@@ -469,10 +469,28 @@ Live Debate + Treasury Dashboard w 375x812 iPhone viewport. 2 osobne komponenty.
 
 ## Cross-component open questions dla PM-Lead / Dana
 
-### Phase decisions
-- [ ] Phase 1 dem demo: Audit Log z 17 mock events czy live 0G Storage integration?
-- [ ] Phase 2 ENS: Realna NameStone deployment lub mocked viem resolution? Decyzja przed Phase 1B.
-- [ ] Mobile views: shipping w Phase 1B czy Phase 2 (post-submission)?
+### PM-Lead decyzje (RESOLVED - 2026-05-02)
+
+**Q1: NameStone Phase 2 deploy timing → MOCK ENS w Phase 1B + post-Phase 2 swap**
+- Aiko Phase 1B: uzywa **mock ENS labels** jako string literals (np. `'bull.aicouncil.eth'`).
+- **Krytyczna izolacja:** wszystkie ENS lookups w jednym hook'u `useAgentENS(agentId: AgentPersona)` w `apps/web/lib/hooks/useAgentENS.ts`.
+- Phase 2 (Sol+Aiko po NameStone signup Dana): swap implementacji `useAgentENS` na real viem (`getEnsAddress`, `getEnsText`, `getEnsAvatar`). **Zero rework** w komponentach jezeli izolacja zachowana.
+- Implementuje: `variant-ens.jsx` resolution log + agents grid + treasury card uzywaja `useAgentENS(agent.id)` w TSX.
+
+**Q2: Test Arena (Add Custom Agent) → CANNED MOCK 3s dla MVP demo**
+- Aiko Phase 1B: Test Arena pokazuje **canned mock**: `Submit → spinner 3s → mock decision text appears`.
+- NIE real CrewAI run ($0.04/test + WebSocket). Real to **post-hackathon polish**.
+- Sora trust mech #1 (chain-of-thought live) **NIE jest demonstrowany przez Test Arena** - jest demonstrowany przez **glowny Live Debate Viewer** (już wszystko z Cloud).
+- Implementuje: state machine `idle → testing (3s skeleton) → result_canned` w `variant-add-agent.jsx` Phase 1B.
+
+**Q3: Animacje budget + WebSocket vs polling → Framer Motion + WebSocket push**
+- **Framer Motion:** ~50KB gzipped **AKCEPTOWALNE** dla wow factor demo. Sora rubric: Synthesis 7→9 originality + WOW.
+- **WebSocket push:** native `ws://` z **exp backoff** (1s → 2s → 4s → 8s → max 30s). Hugo backend pattern. NIE polling (sedziowie odczuwaja "real-time").
+- Implementuje: `useDebateStream()` hook w `apps/web/lib/hooks/useDebateStream.ts` z `useEffect` + reconnect logic. Zalecane: extract jako `apps/web/lib/ws-client.ts` zeby Notifications inbox tez mogl reuse.
+
+### Pozostale (nieblokujące)
+
+- Mobile views: shipping w Phase 1B (per Dan: max scope) czy Phase 2 (post-submission)? **Vela rekomenduje Phase 2** (Mobile = LOW priority, hackathon target = desktop demo).
 
 ### Branding
 - [ ] CONCLAVE name confirmed (vs Cloud's "AI Treasury Council") - w mockupach uzywamy CONCLAVE.
