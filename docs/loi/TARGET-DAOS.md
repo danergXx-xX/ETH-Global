@@ -2,7 +2,7 @@
 
 **Owner:** Aria-DAO (Sesja 23)
 **Goal:** Capture 1-2 LOI before ETHGlobal submission (Sun 3.05 18:00 PL) for Moat 3 (real-world validation).
-**Bar:** Niski - 1-paragraph "we'd be interested in piloting if mature". Niezobowiazujace.
+**Bar:** Niski - 1-paragraph "we'd be interested in piloting if mature". Niezobowiązujące.
 
 ---
 
@@ -191,13 +191,13 @@
 
 ## Outreach sequencing (per `PLAYBOOK.md`)
 
-**Day 1 (Sob 2.05 wieczor / Niedz 3.05 rano):** 5 DM, jeden per priority DAO, najwyzej-priority contact + channel.
+**Day 1 (Sob 2.05 wieczór / Niedz 3.05 rano):** 5 DM, jeden per priority DAO, najwyzej-priority contact + channel.
 
-**Day 2 (Niedz 3.05 popoludnie):** 2nd contact per DAO (jesli no response), inny channel.
+**Day 2 (Niedz 3.05 popołudnie):** 2nd contact per DAO (jesli no response), inny channel.
 
 **Cap:** 3 touches max per kontakt (Aria-DAO regula).
 
-**Capture LOI** najpozniej Niedz 3.05 16:00 PL (2h przed deadline), zeby zdazyc wpisac w submission form / demo video.
+**Capture LOI** najpóźniej Niedz 3.05 16:00 PL (2h przed deadline), zeby zdazyc wpisac w submission form / demo video.
 
 ---
 

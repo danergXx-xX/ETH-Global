@@ -1,26 +1,26 @@
 # Playbook - How Dan Executes LOI Outreach
 
 **Owner:** Dan (executes), Aria-DAO (supplies templates + tracking)
-**Window:** Sob 2.05 wieczor -> Niedz 3.05 16:00 PL (LOI capture cutoff)
+**Window:** Sob 2.05 wieczór -> Niedz 3.05 16:00 PL (LOI capture cutoff)
 **Goal:** 1-2 LOI signed before submission. Realistic target given window + hackathon mode.
 
 **Filozofia:** Quality > quantity. 5 dobrze targetowanych DM > 50 spam. 3 touches max per kontakt - po tym stop, nie naciskaj.
 
-**Zasada #48 (Dan kontroluje komunikacje):** Aria-DAO przygotowuje templates + tracking. **Dan wysyla osobiscie.** NIE wysylamy automatycznie z Claude.
+**Zasada #48 (Dan kontroluje komunikacje):** Aria-DAO przygotowuje templates + tracking. **Dan wysyla osobiscie.** NIE wysyłamy automatycznie z Claude.
 
 ---
 
-## Day 1: Sob 2.05 wieczor LUB Niedz 3.05 rano (przed standup 9:00)
+## Day 1: Sob 2.05 wieczór LUB Niedz 3.05 rano (przed standup 9:00)
 
 ### Step 1: Pre-flight (5 min)
 
 - [ ] Otwórz `docs/loi/TARGET-DAOS.md` - read top 5 priority sections
 - [ ] Otwórz `docs/loi/DM-TEMPLATES.md` - read 5 wybranych templates (1A, 2A, 3A, 4A, 5A = Twitter DMs)
 - [ ] Otwórz `docs/loi/TRACKING.md` - to live update
-- [ ] **Sprawdz https://aitc.vercel.app czy live** - jesli **NIE** wstaje, zamien `Demo: https://aitc.vercel.app (live Sun 3.05)` we wszystkich templates na `Repo + README: github.com/danergXx-xX/ETH-Global` (martwy demo link = strzal w stope, kontakt traci zaufanie)
+- [ ] **Sprawdź https://aitc.vercel.app czy live** - jesli **NIE** wstaje, zamien `Demo: https://aitc.vercel.app (live Sun 3.05)` we wszystkich templates na `Repo + README: github.com/danergXx-xX/ETH-Global` (martwy demo link = strzal w stope, kontakt traci zaufanie)
 - [ ] **Wypelnij placeholders w `LOI-TEMPLATE.md` linie 22 (Twitter, ENS) + 102 (return email)** - ZANIM ktokolwiek dostanie LOI. Sugerowane: `Twitter: @your_handle`, `ENS: dan.eth lub dotomanski.eth`, return: `dan@yourdomain.com lub Twitter DM @your_handle`. NIE wysylaj LOI z "TBD" - zniszczy credibility.
 
-### Step 2: Wyslij 5 Twitter DM (25 min)
+### Step 2: Wyślij 5 Twitter DM (25 min)
 
 Zalogowany na Twitter / X jako Dan Otomanski (osobiste konto - personal touch dziala lepiej niz brand account).
 
@@ -28,28 +28,28 @@ Zalogowany na Twitter / X jako Dan Otomanski (osobiste konto - personal touch dz
 
 1. **Marc Zeller (@lemiscate)** - skopiuj template 1A z `DM-TEMPLATES.md`
    - Personalizuj hook (1 zdanie): wspomnij konkretny ACI / forum post który ostatnio czytales
-   - Sprawdz czy linki dzialaja (github.com/danergXx-xX/ETH-Global)
-   - Wyslij
-   - **Update TRACKING.md row #1:** Sent = "2026-05-03 09:15" (lub kiedy wyslane)
+   - Sprawdź czy linki dzialaja (github.com/danergXx-xX/ETH-Global)
+   - Wyślij
+   - **Update TRACKING.md row #1:** Sent = "2026-05-03 09:15" (lub kiedy wysłane)
 
 2. **Kevin Owocki (@owocki)** - template 2A
    - Personalizuj: jego ostatni tweet o AI/regen
-   - Wyslij
+   - Wyślij
    - **Update TRACKING.md row #4**
 
 3. **nick.eth (@nicksdjohnson)** - template 3A
    - Personalizuj: konkretny detail ENS subname implementation (NameStone, text records)
-   - Wyslij
+   - Wyślij
    - **Update TRACKING.md row #7**
 
 4. **Lefteris (@LefterisJP)** - template 4A
    - Personalizuj: wspomnij Rotki lub jego ostatni komentarz na OP forum
-   - Wyslij
+   - Wyślij
    - **Update TRACKING.md row #10**
 
 5. **getty.eth (@iamgetty)** - template 5A
    - Personalizuj: COMP buyback context
-   - Wyslij
+   - Wyślij
    - **Update TRACKING.md row #13**
 
 **Time budget:** 25 min total (5 min each). Hook personalization to wartosc - generic "saw your tweets" jest spotted as AI/spam.
@@ -71,8 +71,8 @@ Wybierz 1 forum z najlepszym fitem (rekomendacja: ENS Meta-Gov - kultura tech-de
 
 ## Day 1 evening: Check responses (5 min)
 
-- [ ] Sprawdz Twitter DM inbox - czy ktos odpisal?
-- [ ] Sprawdz forum (jesli postowales) - czy ktos zareagowal?
+- [ ] Sprawdź Twitter DM inbox - czy ktos odpisal?
+- [ ] Sprawdź forum (jesli postowałeś) - czy ktos zareagowal?
 - [ ] **Update TRACKING.md** dla kazdej responsy (nawet "no reply" pomaga w post-mortem)
 
 Jesli **YES response** - skocz do "LOI capture flow" ponizej.
@@ -83,13 +83,13 @@ Jesli **no response** - czekaj 12h, then Day 2 follow-up.
 
 ---
 
-## Day 2: Niedz 3.05 popoludnie (12:00-15:00 PL)
+## Day 2: Niedz 3.05 popołudnie (12:00-15:00 PL)
 
 ### Step 1: Follow-up no-responses (20 min)
 
-Per kontakt z Day 1 z brakiem odpowiedzi po 12h (sprawdz TRACKING.md):
+Per kontakt z Day 1 z brakiem odpowiedzi po 12h (sprawdź TRACKING.md):
 
-- Wyslij 2nd touch via INNY kanal (jesli Twitter -> Discord, lub odwrotnie)
+- Wyślij 2nd touch via INNY kanal (jesli Twitter -> Discord, lub odwrotnie)
 - Templates 1B, 2B, 3B, 4B, 5B (Discord DMs) lub 1C, 2C, 3C, 4C, 5C (forum)
 - **Update TRACKING.md** z 2nd touch
 
@@ -97,18 +97,18 @@ Per kontakt z Day 1 z brakiem odpowiedzi po 12h (sprawdz TRACKING.md):
 
 ### Step 2: 2nd wave forum posts (30 min)
 
-Postuj na pozostalych forach (jesli nie zrobiles wszystkich Day 1):
+Postuj na pozostałych forach (jesli nie zrobiłeś wszystkich Day 1):
 
 - governance.aave.com (template 1C)
 - gov.gitcoin.co (template 2C)
 - gov.optimism.io (template 4C)
 - comp.xyz (template 5C)
 
-Forum posts = publiczne = widoczne dla calej spolecznosci, nie tylko 1 osoby. Wyzsza szansa na "kogos" co odpisze.
+Forum posts = publiczne = widoczne dla calej społeczności, nie tylko 1 osoby. Wyzsza szansa na "kogos" co odpisze.
 
 ### Step 3: Stretch DAOs jesli czas (30 min)
 
-Jesli wszystkie Top 5 wyslane i jest energia:
+Jesli wszystkie Top 5 wysłane i jest energia:
 - Arbitrum (#16) - forum L2BEAT thread
 - Maker / Sky (#17) - forum.sky.money post (forum-first culture)
 - Lido (#18) - Steakhouse Financial Twitter
@@ -119,9 +119,9 @@ Jesli wszystkie Top 5 wyslane i jest energia:
 
 **Trigger:** ktos odpowiada "looks interesting, send LOI" lub "happy to give a paragraph".
 
-### Step 1: Wyslij LOI template (5 min)
+### Step 1: Wyślij LOI template (5 min)
 
-Wyslij link do raw GitHub:
+Wyślij link do raw GitHub:
 ```
 https://github.com/danergXx-xX/ETH-Global/blob/main/docs/loi/LOI-TEMPLATE.md
 ```
@@ -186,24 +186,11 @@ git push origin feat/loi-outreach
 
 ### Scenariusz 1: "Looks interesting, send LOI"
 
-→ Sciezka LOI capture (powyzej). Cel: signed LOI w <2h.
+→ Ścieżka LOI capture (powyzej). Cel: signed LOI w <2h.
 
 ### Scenariusz 2: "Send me more info first"
 
-→ Reply z 1-pager (krotkie, 3 bullety):
-```
-Quick context (5 min read):
-
-- Repo + README: github.com/danergXx-xX/ETH-Global
-- Architecture diagram: github.com/danergXx-xX/ETH-Global/blob/main/docs/architecture.md
-- Live demo (Sun 3.05): https://aitc.vercel.app
-
-Specifically for [DAO]: [1 sentence specific use case from TARGET-DAOS.md]
-
-If after 5 min it does not feel right, totally fine - just text "no" and we will move on. If it does, the 1-paragraph LOI template is in the repo at /docs/loi/LOI-TEMPLATE.md.
-
-Thanks for the time.
-```
+→ Uzyj `docs/loi/ONE-PAGER.md` (3 warianty: A generyczny, B trust-focused, C dev-focused). Wybierz wariant per contributor signal (matrix w ONE-PAGER.md), spersonalizuj `[DAO]` + use case, paste w response.
 
 ### Scenariusz 3: "Maybe post-hackathon"
 
@@ -251,7 +238,7 @@ Update TRACKING.md: LOI status -> "declined". Move to next contact.
 **Never violate:**
 - 3 touches max per kontakt
 - Dan wysyla osobiscie (zasada #48)
-- LOI = niezobowiazujacy (no contracts, no financial promises)
+- LOI = niezobowiązujący (no contracts, no financial promises)
 - Anonymization respected (per signer's choice in LOI-TEMPLATE.md)
 - Maja review for any new template not already in DM-TEMPLATES.md
 

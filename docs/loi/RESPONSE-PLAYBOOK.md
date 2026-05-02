@@ -26,7 +26,7 @@ Czy contributor odpisal pozytywnie?
 |   |
 |   +-- Process pytania -> Scenariusz "What is LOI exactly"
 |
-+-- NEGATIVE -> Czy uprzejmy odmowa lub agresywny?
++-- NEGATIVE -> Czy uprzejma odmowa lub agresywny?
     |
     +-- Uprzejmy -> Scenariusz "Polite decline" (akceptuj, podziekuj)
     |

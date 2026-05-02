@@ -1,7 +1,7 @@
 # LOI Outreach - Live Tracking
 
 **Owner:** Dan (live updates as DM sent / response received)
-**Window:** Sob 2.05 wieczor -> Niedz 3.05 16:00 PL (LOI capture cutoff = 2h przed deadline)
+**Window:** Sob 2.05 wieczór -> Niedz 3.05 16:00 PL (LOI capture cutoff = 2h przed deadline)
 **Cap:** 3 touches max per kontakt (Aria-DAO regula).
 
 **Legend:**
@@ -44,7 +44,7 @@
 
 ---
 
-## Day 1 plan (Sob 2.05 wieczor lub Niedz 3.05 rano przed standup)
+## Day 1 plan (Sob 2.05 wieczór lub Niedz 3.05 rano przed standup)
 
 **Goal:** 5 DM, jeden per priority DAO, najwyzej-priority contact + channel.
 
@@ -59,13 +59,13 @@ Recommended first wave:
 
 ---
 
-## Day 2 plan (Niedz 3.05 popoludnie 12:00-15:00 PL)
+## Day 2 plan (Niedz 3.05 popołudnie 12:00-15:00 PL)
 
 **Goal:** Follow-up no-response + 2nd wave (forum posts).
 
 For each contact w Day 1 with no response after 12h:
-- Wyslij 2nd touch via inny kanal (jesli Twitter -> Discord, lub odwrotnie)
-- LUB wyslij forum post (publiczny, lapie szersza publike)
+- Wyślij 2nd touch via inny kanal (jesli Twitter -> Discord, lub odwrotnie)
+- LUB wyślij forum post (publiczny, lapie szersza publike)
 
 Ostatnie touch: max 16:00 PL (2h przed deadline).
 
@@ -73,7 +73,7 @@ Ostatnie touch: max 16:00 PL (2h przed deadline).
 
 ## LOI capture flow (jesli kos powie "yes")
 
-1. **Wyslij LOI-TEMPLATE.md** (link do raw GitHub pliku albo paste tekstu)
+1. **Wyślij LOI-TEMPLATE.md** (link do raw GitHub pliku albo paste tekstu)
 2. **Daj 3 opcje signature** (text, screenshot, PDF) - whatever lowest friction
 3. **Capture w `/docs/loi/signed/[handle]-[dao].md`** (commit do repo)
 4. **Update tej tracking table:** LOI status -> "signed"
@@ -86,12 +86,12 @@ Ostatnie touch: max 16:00 PL (2h przed deadline).
 
 | Response | Action |
 |---|---|
-| "Looks interesting, send LOI" | Sciezka A: send LOI-TEMPLATE.md, capture <2h |
-| "Send me more info" | Sciezka B: 1-pager z linkami (README + arch diagram + demo URL) |
-| "Maybe after hackathon" | Sciezka C: ask for soft "would consider piloting" line, capture as semi-LOI |
-| "What about [security/cost/etc.]" | Sciezka D: address objection (RESPONSE-PLAYBOOK.md ma 5 typowych) |
-| "Not interested / not for us" | Sciezka E: thank + move on. NIE pushuj. |
-| No response after 12h | Sciezka F: 2nd touch via inny kanal. Brak po 24h = stop. |
+| "Looks interesting, send LOI" | Ścieżka A: send LOI-TEMPLATE.md, capture <2h |
+| "Send me more info" | Ścieżka B: 1-pager z linkami (README + arch diagram + demo URL) |
+| "Maybe after hackathon" | Ścieżka C: ask for soft "would consider piloting" line, capture as semi-LOI |
+| "What about [security/cost/etc.]" | Ścieżka D: address objection (RESPONSE-PLAYBOOK.md ma 5 typowych) |
+| "Not interested / not for us" | Ścieżka E: thank + move on. NIE pushuj. |
+| No response after 12h | Ścieżka F: 2nd touch via inny kanal. Brak po 24h = stop. |
 
 ---
 
