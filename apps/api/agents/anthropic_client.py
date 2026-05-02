@@ -23,7 +23,7 @@ import structlog
 
 log = structlog.get_logger()
 
-MODEL = "claude-opus-4-7"
+DEFAULT_MODEL = "claude-opus-4-7"
 
 # Pricing per million tokens (Claude Opus 4.7, 2026-05)
 PRICE_INPUT_PER_MTOK = 5.00
@@ -67,10 +67,11 @@ def calculate_cost(
 class AnthropicClient:
     """Async Anthropic client with prompt caching and retry logic."""
 
-    def __init__(self, api_key: str | None = None) -> None:
+    def __init__(self, api_key: str | None = None, model_id: str | None = None) -> None:
         self._client = anthropic.AsyncAnthropic(
             api_key=api_key or os.environ.get("ANTHROPIC_API_KEY"),
         )
+        self._model = model_id or DEFAULT_MODEL
 
     async def call_with_cache(
         self,
@@ -107,7 +108,7 @@ class AnthropicClient:
             try:
                 start = time.perf_counter()
                 response = await self._client.messages.create(
-                    model=MODEL,
+                    model=self._model,
                     max_tokens=max_tokens,
                     system=system_blocks,
                     messages=messages,
@@ -134,7 +135,7 @@ class AnthropicClient:
 
                 log.info(
                     "anthropic_call",
-                    model=MODEL,
+                    model=self._model,
                     input_tokens=input_tokens,
                     output_tokens=output_tokens,
                     cache_read=cache_read,

@@ -16,6 +16,7 @@ import structlog
 
 from agents.anthropic_client import AnthropicClient
 from agents.bull_agent import run_bull
+from config import get_settings
 from schemas import AgentDecision
 
 log = structlog.get_logger()
@@ -27,7 +28,11 @@ def get_client() -> AnthropicClient:
     """Lazy singleton for AnthropicClient."""
     global _client
     if _client is None:
-        _client = AnthropicClient()
+        settings = get_settings()
+        _client = AnthropicClient(
+            api_key=settings.anthropic_api_key or None,
+            model_id=settings.model_id,
+        )
     return _client
 
 
