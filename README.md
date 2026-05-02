@@ -6,7 +6,7 @@
 [![ETHGlobal](https://img.shields.io/badge/ETHGlobal-Open_Agents_2026-blue.svg)](https://ethglobal.com/events/agents)
 [![Base Sepolia](https://img.shields.io/badge/Base-Sepolia-0052FF.svg)](https://sepolia.basescan.org)
 
-**[Architecture](#architecture)** | **[Smart Contracts](#smart-contracts)** | **[Sponsor Integrations](#sponsor-integrations)** | **[Setup](#setup)** | **[Testing](#testing)** | **[Glossary](docs/glossary.md)**
+**[For judges - 5 min read](docs/JUDGES-ONBOARDING.md)** | **[Architecture](docs/architecture.md)** | **[Smart Contracts](#smart-contracts)** | **[Sponsor Integrations](#sponsor-integrations)** | **[Setup](#setup)** | **[Glossary](docs/glossary.md)** | **[Changelog](docs/CHANGELOG.md)**
 
 ## The Problem
 
@@ -26,8 +26,10 @@ Submit a treasury proposal (e.g. "Allocate 100k USDC to Aave for yield"). Five A
 
 Each agent cites its sources (RSS feeds, CoinGecko, DefiLlama) with confidence weights. The full debate transcript is stored immutably on **0G Storage**. Token holders then vote on-chain via OpenZeppelin Governor with a 48-hour timelock before execution.
 
-**Try it:** [TBD - deployed Sun 3.05](https://demo.aitc.app) | **Watch demo:** [3-min video](https://youtube.com/TBD)
+**Try the demo:** [demo.aitc.app](https://demo.aitc.app) (live Sun 3.05) | **Watch the 3-min walkthrough:** [youtube.com/TBD](https://youtube.com/TBD)
 
+> Judging this project? Start with [docs/JUDGES-ONBOARDING.md](docs/JUDGES-ONBOARDING.md) for a 5-minute evaluation guide with sponsor track relevance.
+>
 > New to blockchain governance? See the [Glossary](docs/glossary.md) for plain-English definitions.
 
 ## Sponsor Integrations
@@ -116,10 +118,33 @@ All contracts deployed on **Base Sepolia** (2026-05-02). Based on OpenZeppelin C
 | **TimelockController** | [`0x76A6...41B0f`](https://sepolia.basescan.org/address/0x76A69Bb6aeF69A2E76fA6C9632Ff6Ca101441B0f) | 48-hour delay before execution. Admin revoked - fully decentralized. |
 | **AICouncilGovernor** | [`0x1f95...e301F0`](https://sepolia.basescan.org/address/0x1f95C796C5dc47d08B20CF3220a2AFa995e301F0) | Governor with 60% quorum, 1-day voting, 0 proposal threshold. |
 | **MockUSDC** | [`0x606E...Bb59d`](https://sepolia.basescan.org/address/0x606EDE7755131e6206A29B67d88761eEbb3Bb59d) | Testnet stablecoin (mUSDC, 6 decimals). 1M minted to Timelock treasury. |
+| **AgentReputation** | [`0xf3BA...6f44`](https://sepolia.basescan.org/address/0xf3BAb9A2761131f4A9e5BA2d9e6395bea2186f44) | Moat 5 Proof-of-Work for agents. 5 agents registered, initial reputation 100 each. |
 
 **Governance parameters:** voting delay 1 block (~12s) -> 1-day voting period -> 48h timelock -> execution.
 
 Pre-deploy security audit: 0 CRITICAL, 0 HIGH findings. 23/23 Foundry tests PASS.
+
+## Proof-of-Work for Agents (Moat 5)
+
+Most AI agent products are trust-by-marketing: "our agent is reliable, trust us." We made agent quality cryptographically auditable instead.
+
+Each of the 5 agents has a permanent on-chain reputation score in the [`AgentReputation`](https://sepolia.basescan.org/address/0xf3BAb9A2761131f4A9e5BA2d9e6395bea2186f44) contract. After every debate, the orchestrator credits agents whose vote aligned with the final consensus and decrements those who dissented. Reputation is permissioned (only the backend `authorizedUpdater` wallet can write) and fully transparent (every change emits `ReputationUpdated`).
+
+Why it matters:
+- Agents earn trust through verifiable history, not marketing claims
+- DAO contributors evaluating which agents to weight more heavily can read directly from chain
+- Phase 2 surfaces reputation via ENS text records (`bull.aicouncil.eth` -> `text aicouncil.reputation`)
+- Cross-DAO portable: same agent participating in multiple councils accumulates reputation across all of them
+
+See [`docs/architecture.md`](docs/architecture.md) for the reputation update flow diagram and [`contracts/src/AgentReputation.sol`](contracts/src/AgentReputation.sol) for the contract.
+
+## Frontend (Phase 1B in flight)
+
+The [CONCLAVE dashboard](apps/web/MOCKUPS.md) is a wagmi v2 + RainbowKit interface designed for sędziów to evaluate the system in 60 seconds. Eight production components: Live Debate Viewer with typewriter streaming, Proposal Form, Verdict Card, Vote+Execute Flow with TimelockCountdown, Audit Log, ENS Identity Card, Council Rules Editor, and mobile views.
+
+Bilingual UI (Polish + English) via custom i18n provider (next-intl was incompatible with Turbopack + pnpm + Next 16; documented in ADR-002).
+
+See [`apps/web/MOCKUPS.md`](apps/web/MOCKUPS.md) for the 14-component visual canvas and Vela handoff notes.
 
 ## Trust Mechanisms
 
