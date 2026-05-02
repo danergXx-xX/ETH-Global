@@ -6,7 +6,7 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 /// @title AgentReputation
 /// @notice On-chain Proof-of-Work reputation tracker for AI Council agent personas
 /// @dev Moat 5 - tracks per-agent reputation, debate participation, and consensus alignment.
-///      Backend (Hugo) calls updateReputation after each debate via authorizedUpdater wallet.
+///      Backend service calls updateReputation after each debate via authorizedUpdater wallet.
 /// @custom:security-contact security@aicouncil.eth
 contract AgentReputation is Ownable {
     // --- Storage ---
@@ -14,6 +14,7 @@ contract AgentReputation is Ownable {
     mapping(address => uint256) public reputation;
     mapping(address => uint256) public debatesParticipated;
     mapping(address => uint256) public alignedWithConsensus;
+    mapping(address => bool) public isAgent;
 
     /// @notice Backend wallet authorized to update reputation scores
     address public authorizedUpdater;
@@ -51,6 +52,9 @@ contract AgentReputation is Ownable {
     /// @notice New updater address is zero
     error ZeroAddress();
 
+    /// @notice Duplicate agent address in constructor
+    error DuplicateAgent(address agent);
+
     // --- Modifiers ---
 
     modifier onlyAuthorized() {
@@ -74,9 +78,14 @@ contract AgentReputation is Ownable {
         authorizedUpdater = _authorizedUpdater;
 
         for (uint256 i = 0; i < 5; i++) {
+            if (_agents[i] == address(0)) revert ZeroAddress();
+            if (isAgent[_agents[i]]) revert DuplicateAgent(_agents[i]);
             agents.push(_agents[i]);
             reputation[_agents[i]] = 100;
+            isAgent[_agents[i]] = true;
         }
+
+        emit AuthorizationTransferred(address(0), _authorizedUpdater);
     }
 
     // --- External functions ---
@@ -85,7 +94,7 @@ contract AgentReputation is Ownable {
     /// @param agent Address of the agent persona
     /// @param delta Positive (aligned with consensus) or negative (diverged) change
     function updateReputation(address agent, int256 delta) external onlyAuthorized {
-        if (reputation[agent] == 0 && !_isRegistered(agent)) {
+        if (!isAgent[agent]) {
             revert AgentNotRegistered(agent);
         }
 
@@ -141,12 +150,4 @@ contract AgentReputation is Ownable {
         return agents;
     }
 
-    // --- Internal functions ---
-
-    function _isRegistered(address agent) internal view returns (bool) {
-        for (uint256 i = 0; i < agents.length; i++) {
-            if (agents[i] == agent) return true;
-        }
-        return false;
-    }
 }

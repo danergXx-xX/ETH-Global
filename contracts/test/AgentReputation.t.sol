@@ -2,6 +2,7 @@
 pragma solidity ^0.8.24;
 
 import {Test} from "forge-std/Test.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {AgentReputation} from "../src/AgentReputation.sol";
 
 contract AgentReputationTest is Test {
@@ -126,7 +127,9 @@ contract AgentReputationTest is Test {
 
     function test_TransferAuthorization_RevertsWhenNotOwner() public {
         vm.prank(stranger);
-        vm.expectRevert();
+        vm.expectRevert(
+            abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, stranger)
+        );
         rep.transferAuthorization(address(0xCAFE));
     }
 
@@ -203,10 +206,45 @@ contract AgentReputationTest is Test {
         rep.updateReputation(BULL, 5);
     }
 
+    // --- Test 12: Constructor rejects zero address in agents ---
+
+    function test_Constructor_RevertsOnZeroAddressAgent() public {
+        address[5] memory agents = [BULL, BEAR, address(0), TECH, SENTIMENT];
+        vm.expectRevert(AgentReputation.ZeroAddress.selector);
+        new AgentReputation(agents, updater);
+    }
+
+    // --- Test 13: Constructor rejects duplicate agent ---
+
+    function test_Constructor_RevertsOnDuplicateAgent() public {
+        address[5] memory agents = [BULL, BEAR, BULL, TECH, SENTIMENT];
+        vm.expectRevert(
+            abi.encodeWithSelector(AgentReputation.DuplicateAgent.selector, BULL)
+        );
+        new AgentReputation(agents, updater);
+    }
+
+    // --- Test 14: isAgent mapping ---
+
+    function test_IsAgentMapping() public view {
+        assertTrue(rep.isAgent(BULL));
+        assertTrue(rep.isAgent(SENTIMENT));
+        assertFalse(rep.isAgent(stranger));
+    }
+
+    // --- Test 15: Constructor emits AuthorizationTransferred ---
+
+    function test_Constructor_EmitsAuthorizationTransferred() public {
+        address[5] memory agents = [BULL, BEAR, RISK, TECH, SENTIMENT];
+        vm.expectEmit(true, true, false, false);
+        emit AgentReputation.AuthorizationTransferred(address(0), updater);
+        new AgentReputation(agents, updater);
+    }
+
     // --- Fuzz test ---
 
     function testFuzz_ReputationNeverNegative(int256 delta) public {
-        vm.assume(delta > -100 && delta < 1000);
+        delta = bound(delta, -100, 1000);
         vm.prank(updater);
         rep.updateReputation(BULL, delta);
         assertGe(rep.reputation(BULL), 0);
