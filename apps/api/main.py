@@ -17,7 +17,7 @@ from governance import (
     encode_mock_usdc_transfer,
 )
 from logging_config import RequestIDMiddleware, setup_logging
-from orchestrator import run_debate
+from agents.orchestrator import run_debate
 from schemas import (
     HealthResponse,
     ProposalEncodeRequest,
