@@ -68,3 +68,9 @@ class DataAggregator:
                 logger.warning("source_fetch_failed", extra={"source": src_name, "query": query, "error": str(exc)})
 
         return all_sources
+
+    async def close(self) -> None:
+        """Close all adapter HTTP clients. Call on app shutdown."""
+        for adapter in self._registry.values():
+            if hasattr(adapter, "close"):
+                await adapter.close()

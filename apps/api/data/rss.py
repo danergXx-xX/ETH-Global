@@ -32,6 +32,9 @@ class RSSSource:
     def source_type(self) -> str:
         return "rss"
 
+    async def close(self) -> None:
+        """No-op for interface consistency with CoinGecko/DefiLlama."""
+
     async def fetch(self, query: str, limit: int = 5) -> list[Source]:
         """Fetch RSS entries matching query across all configured feeds."""
         results: list[Source] = []

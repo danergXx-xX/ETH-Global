@@ -12,12 +12,12 @@ import respx
 from data.rss import RSSSource
 from data.coingecko import CoinGeckoSource, BASE_URL as CG_BASE
 from data.defillama import DefiLlamaSource, BASE_URL as DL_BASE
-from data.aggregator import DataAggregator
+from data.aggregator import DataAggregator, create_default_registry
 from schemas import Source
 
 
 # ============================================================
-# RSS TESTS
+# RSS TESTS (8 + 2 new)
 # ============================================================
 
 SAMPLE_RSS_XML = """<?xml version="1.0" encoding="UTF-8"?>
@@ -103,9 +103,28 @@ class TestRSSSource:
         r2 = await rss.fetch("aave")
         assert len(r1) == len(r2)
 
+    @pytest.mark.asyncio
+    async def test_feedparser_exception_returns_empty(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """When feedparser throws, gracefully return empty (no crash)."""
+        import feedparser as fp
+
+        def broken_parse(url: str, **kwargs):
+            raise OSError("network unreachable")
+
+        monkeypatch.setattr(fp, "parse", broken_parse)
+        rss = RSSSource()
+        results = await rss.fetch("aave")
+        assert results == []
+
+    @pytest.mark.asyncio
+    async def test_close_is_noop(self) -> None:
+        """RSSSource.close() exists and does not raise."""
+        rss = RSSSource()
+        await rss.close()
+
 
 # ============================================================
-# COINGECKO TESTS
+# COINGECKO TESTS (7 + 4 new)
 # ============================================================
 
 SAMPLE_CG_RESPONSE = {
@@ -117,6 +136,18 @@ SAMPLE_CG_RESPONSE = {
         "price_change_percentage_7d": -1.3,
         "market_cap": {"usd": 420_000_000_000},
         "total_value_locked": None,
+    },
+}
+
+SAMPLE_CG_WITH_TVL = {
+    "id": "aave",
+    "name": "Aave",
+    "market_data": {
+        "current_price": {"usd": 92.50},
+        "price_change_percentage_24h": -1.3,
+        "price_change_percentage_7d": 4.2,
+        "market_cap": {"usd": 1_400_000_000},
+        "total_value_locked": {"usd": 15_000_000_000},
     },
 }
 
@@ -204,9 +235,46 @@ class TestCoinGeckoSource:
         assert results[0].weight == pytest.approx(0.85)
         await cg.close()
 
+    @pytest.mark.asyncio
+    @respx.mock
+    async def test_tvl_in_snippet(self, cg: CoinGeckoSource) -> None:
+        """When total_value_locked is present, snippet includes TVL."""
+        respx.get(f"{CG_BASE}/coins/aave").mock(
+            return_value=httpx.Response(200, json=SAMPLE_CG_WITH_TVL)
+        )
+        results = await cg.fetch("aave")
+        assert len(results) == 1
+        assert "TVL" in results[0].snippet
+        assert "$15000M" in results[0].snippet
+        await cg.close()
+
+    @pytest.mark.asyncio
+    @respx.mock
+    async def test_timeout_returns_empty(self, cg: CoinGeckoSource) -> None:
+        """When API times out, return empty gracefully."""
+        respx.get(f"{CG_BASE}/coins/ethereum").mock(
+            side_effect=httpx.ReadTimeout("connection timed out")
+        )
+        results = await cg.fetch("eth")
+        assert results == []
+        await cg.close()
+
+    @pytest.mark.asyncio
+    async def test_path_traversal_rejected(self, cg: CoinGeckoSource) -> None:
+        """Slug with path traversal characters is rejected by _SAFE_SLUG."""
+        results = await cg.fetch("ethereum/../admin")
+        assert results == []
+
+    @pytest.mark.asyncio
+    async def test_special_chars_rejected(self, cg: CoinGeckoSource) -> None:
+        """Slug with special characters (dots, slashes) is rejected."""
+        for bad_input in ["eth/../../etc", "a]b", "tok.en", "x;y", "a b"]:
+            results = await cg.fetch(bad_input)
+            assert results == [], f"Expected empty for input: {bad_input}"
+
 
 # ============================================================
-# DEFILLAMA TESTS
+# DEFILLAMA TESTS (6 + 3 new)
 # ============================================================
 
 SAMPLE_DL_PROTOCOLS = [
@@ -305,15 +373,58 @@ class TestDefiLlamaSource:
         assert results[0].weight == pytest.approx(0.85)
         await dl.close()
 
+    @pytest.mark.asyncio
+    @respx.mock
+    async def test_protocol_detail_404(self, dl: DefiLlamaSource) -> None:
+        """When individual protocol returns 404, skip it gracefully."""
+        respx.get(f"{DL_BASE}/protocols").mock(
+            return_value=httpx.Response(200, json=SAMPLE_DL_PROTOCOLS)
+        )
+        respx.get(f"{DL_BASE}/protocol/aave").mock(
+            return_value=httpx.Response(404, text="Not Found")
+        )
+        results = await dl.fetch("aave")
+        assert results == []
+        await dl.close()
+
+    @pytest.mark.asyncio
+    @respx.mock
+    async def test_timeout_returns_empty(self, dl: DefiLlamaSource) -> None:
+        """When protocol detail times out, skip gracefully."""
+        respx.get(f"{DL_BASE}/protocols").mock(
+            return_value=httpx.Response(200, json=SAMPLE_DL_PROTOCOLS)
+        )
+        respx.get(f"{DL_BASE}/protocol/aave").mock(
+            side_effect=httpx.ReadTimeout("connection timed out")
+        )
+        results = await dl.fetch("aave")
+        assert results == []
+        await dl.close()
+
+    @pytest.mark.asyncio
+    @respx.mock
+    async def test_tvl_calculation(self, dl: DefiLlamaSource) -> None:
+        """TVL snippet sums all chain TVLs correctly."""
+        respx.get(f"{DL_BASE}/protocols").mock(
+            return_value=httpx.Response(200, json=SAMPLE_DL_PROTOCOLS)
+        )
+        respx.get(f"{DL_BASE}/protocol/aave").mock(
+            return_value=httpx.Response(200, json=SAMPLE_DL_PROTOCOL)
+        )
+        results = await dl.fetch("aave")
+        assert len(results) == 1
+        # 10B + 2B + 1.5B = 13.5B = 13500M
+        assert "TVL $13500M" in results[0].snippet
+        await dl.close()
+
 
 # ============================================================
-# AGGREGATOR TESTS
+# AGGREGATOR TESTS (4 + 3 new)
 # ============================================================
 
 class TestDataAggregator:
     @pytest.mark.asyncio
-    @respx.mock
-    async def test_uses_source_priority_order(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    async def test_uses_source_priority_order(self) -> None:
         """Sources are fetched in priority order and results aggregated."""
         call_order: list[str] = []
 
@@ -375,3 +486,52 @@ class TestDataAggregator:
         agg = DataAggregator(registry={})
         results = await agg.fetch_for_query("test", source_priority=[])
         assert results == []
+
+    @pytest.mark.asyncio
+    async def test_limit_per_source(self) -> None:
+        """Each source respects limit_per_source parameter."""
+        class BigSource:
+            source_type = "big"
+            async def fetch(self, query: str, limit: int = 5) -> list[Source]:
+                return [
+                    Source(url=f"https://src.com/{i}", title=f"Item {i}", snippet=f"item {i}", weight=0.5, source_type="rss")
+                    for i in range(limit)
+                ]
+
+        registry = {"big": BigSource()}
+        agg = DataAggregator(registry=registry)
+
+        results = await agg.fetch_for_query("test", source_priority=["big"], limit_per_source=2)
+        assert len(results) == 2
+
+    @pytest.mark.asyncio
+    async def test_factory_creates_fresh_instances(self) -> None:
+        """create_default_registry() returns new instances each call."""
+        r1 = create_default_registry()
+        r2 = create_default_registry()
+        assert r1["coingecko"] is not r2["coingecko"]
+        assert r1["defillama"] is not r2["defillama"]
+        assert r1["rss"] is not r2["rss"]
+
+    @pytest.mark.asyncio
+    async def test_bear_priority_order(self) -> None:
+        """Bear persona priority: defillama first, then rss, then coingecko."""
+        call_order: list[str] = []
+
+        class TrackingSource:
+            def __init__(self, name: str):
+                self._name = name
+                self.source_type = name
+            async def fetch(self, query: str, limit: int = 5) -> list[Source]:
+                call_order.append(self._name)
+                return []
+
+        registry = {
+            "defillama": TrackingSource("defillama"),
+            "rss": TrackingSource("rss"),
+            "coingecko": TrackingSource("coingecko"),
+        }
+        agg = DataAggregator(registry=registry)
+
+        await agg.fetch_for_query("eth", source_priority=["defillama", "rss", "coingecko"])
+        assert call_order == ["defillama", "rss", "coingecko"]
