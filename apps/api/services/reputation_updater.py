@@ -25,7 +25,12 @@ import structlog
 from eth_account import Account
 from eth_typing import ChecksumAddress
 from web3 import Web3
-from web3.exceptions import ContractLogicError
+from web3.exceptions import (
+    ContractLogicError,
+    TimeExhausted,
+    TransactionNotFound,
+    Web3Exception,
+)
 
 log = structlog.get_logger()
 
@@ -202,7 +207,15 @@ class ReputationUpdater:
                 status="skipped_unauthorized",
                 error=msg,
             )
-        except Exception as exc:  # web3 / RPC / network
+        except (
+            Web3Exception,
+            TimeExhausted,
+            TransactionNotFound,
+            ConnectionError,
+            TimeoutError,
+            ValueError,
+            OSError,
+        ) as exc:
             log.error(
                 "reputation_update_failed",
                 address=addr,
