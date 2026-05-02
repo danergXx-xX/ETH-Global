@@ -77,7 +77,7 @@ export function AgentDebateCard({
         </div>
       </div>
 
-      <CardContent className="px-4 py-3 space-y-2">
+      <CardContent className="px-4 py-3 space-y-2" aria-live="polite">
         {status === "waiting" && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/30" />

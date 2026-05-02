@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useTranslations } from "@/lib/i18n";
 
 type EditorState = "in_sync" | "uncommitted" | "committing";
 
@@ -63,6 +64,7 @@ export function RulesEditor() {
     }
   }, [content]);
 
+  const t = useTranslations("rules");
   const isValid = parsedPreview !== null;
 
   function handleEdit(value: string) {
@@ -101,7 +103,7 @@ export function RulesEditor() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <h2 className="text-lg font-semibold">Council Rules</h2>
+          <h2 className="text-lg font-semibold">{t("title")}</h2>
           <Badge
             variant="outline"
             className={`text-[10px] ${
@@ -112,9 +114,9 @@ export function RulesEditor() {
                   : "text-vote-for border-vote-for/30"
             }`}
           >
-            {state === "in_sync" && "In sync on-chain"}
-            {state === "uncommitted" && "Uncommitted changes"}
-            {state === "committing" && `Committing (${signedCount}/3)`}
+            {state === "in_sync" && t("states.in_sync")}
+            {state === "uncommitted" && t("states.uncommitted")}
+            {state === "committing" && t("states.committing", { signed: String(signedCount), required: "3" })}
           </Badge>
         </div>
       </div>
@@ -125,7 +127,7 @@ export function RulesEditor() {
         <Card>
           <CardContent className="py-3 px-0">
             <div className="px-4 pb-2 text-[10px] font-mono text-muted-foreground">
-              JSON - rules.json
+              {t("panes.json")}
             </div>
             <textarea
               value={content}
@@ -146,7 +148,7 @@ export function RulesEditor() {
         <Card>
           <CardContent className="py-3 px-4 space-y-3">
             <div className="text-[10px] font-mono text-muted-foreground">
-              Compiled preview
+              {t("panes.preview")}
             </div>
             {parsedPreview ? (
               <div className="space-y-3">
@@ -244,13 +246,13 @@ export function RulesEditor() {
         {state === "uncommitted" && (
           <>
             <Button variant="ghost" size="sm" onClick={handleDiscard}>
-              Discard
+              {t("buttons.discard")}
             </Button>
             <Button variant="outline" size="sm" onClick={handleValidate}>
-              Validate
+              {t("buttons.validate")}
             </Button>
             <Button size="sm" onClick={handleCommit} disabled={!isValid}>
-              Commit on-chain
+              {t("buttons.commit")}
             </Button>
           </>
         )}
@@ -264,10 +266,10 @@ export function RulesEditor() {
                 setSigners(signers.map((s) => ({ ...s, signed: false })));
               }}
             >
-              Cancel
+              {t("buttons.cancel")}
             </Button>
             <Button size="sm" onClick={handleSign}>
-              Sign
+              {t("buttons.sign")}
             </Button>
           </>
         )}

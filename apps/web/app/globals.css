@@ -66,6 +66,12 @@ body {
   color: var(--foreground);
 }
 
+*:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
 @keyframes a-pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }

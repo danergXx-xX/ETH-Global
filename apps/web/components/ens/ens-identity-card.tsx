@@ -3,6 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AgentPortrait } from "@/components/shared/agent-portrait";
+import { useTranslations } from "@/lib/i18n";
 import { useAgentENS } from "@/lib/hooks";
 import { AGENTS, type AgentPersona } from "@/lib/types";
 
@@ -61,6 +62,7 @@ function AgentENSCard({ persona }: { persona: AgentPersona }) {
 }
 
 function TreasuryENSCard() {
+  const t = useTranslations("ens.treasury");
   const ens = useAgentENS("treasury");
 
   return (
@@ -85,7 +87,7 @@ function TreasuryENSCard() {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-[10px] text-muted-foreground mb-1">Text records</p>
+            <p className="text-[10px] text-muted-foreground mb-1">{t("records")}</p>
             <div className="text-xs space-y-0.5">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">description</span>
@@ -98,7 +100,7 @@ function TreasuryENSCard() {
             </div>
           </div>
           <div>
-            <p className="text-[10px] text-muted-foreground mb-1">Live balance</p>
+            <p className="text-[10px] text-muted-foreground mb-1">{t("balance")}</p>
             <div className="text-xs space-y-0.5">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">USDC</span>
@@ -117,6 +119,7 @@ function TreasuryENSCard() {
 }
 
 export function ENSIdentityCard() {
+  const tRoot = useTranslations("ens");
   const parentENS = useAgentENS("parent");
   const agents: AgentPersona[] = ["bull", "bear", "risk", "tech", "sentiment"];
 
@@ -153,10 +156,10 @@ export function ENSIdentityCard() {
       {/* Agents grid */}
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium">
-          Council agents - {agents.length} subnames
+          {tRoot("agents.label", { count: String(agents.length) })}
         </span>
         <span className="text-[10px] text-muted-foreground">
-          Avg latency - {avgLatency}ms
+          {tRoot("agents.avgLatency", { ms: String(avgLatency) })}
         </span>
       </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
