@@ -5,3 +5,4 @@
 [2026-05-02T18:39:28Z] Critic auto-pending dla commit f5de50674a11941bd19db27e411c44b049f0a474 (lines: 739, branch: feat/wagmi-ui, msg: feat(web): add shared types, mock data, and custom hooks)
 [2026-05-02T18:41:22Z] Critic auto-pending dla commit 317b915056d4f388121f6c7097ada3d51318c1b4 (lines: 519, branch: feat/wagmi-ui, msg: feat(web): Live Debate Viewer with typewriter effect and source attribution)
 [2026-05-02T18:44:01Z] Critic auto-pending dla commit a281d058b23e867a22d16c81b1fc47080135fcc2 (lines: 659, branch: feat/wagmi-ui, msg: feat(web): Proposal Form, Verdict Card, Vote+Execute Flow with TimelockCountdown)
+[2026-05-02T18:46:30Z] Critic auto-pending dla commit c8cff6cd3b688a3eb17f7e943218a5d57c455dee (lines: 739, branch: feat/wagmi-ui, msg: feat(web): Audit Log, ENS Identity Card, Council Rules Editor (P2 components))

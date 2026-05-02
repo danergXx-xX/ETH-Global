@@ -1,8 +1,15 @@
 {
   "header": {
-    "title": "AI Treasury Council",
-    "subtitle": "Multi-agent council managing DAO treasury",
+    "title": "CONCLAVE",
+    "subtitle": "AI Treasury Council - Live Debate Viewer",
     "connectWallet": "Connect wallet"
+  },
+  "nav": {
+    "debate": "Debate",
+    "vote": "Vote + Execute",
+    "audit": "Audit Trail",
+    "ens": "ENS Identity",
+    "rules": "Council Rules"
   },
   "proposal": {
     "cardTitle": "New proposal",
@@ -11,26 +18,16 @@
     "debating": "Debating..."
   },
   "agents": {
-    "bull": {
-      "label": "Bull"
-    },
-    "bear": {
-      "label": "Bear"
-    },
-    "risk": {
-      "label": "Risk"
-    },
-    "tech": {
-      "label": "Tech"
-    },
-    "sentiment": {
-      "label": "Sentiment"
-    }
+    "bull": { "label": "Bull" },
+    "bear": { "label": "Bear" },
+    "risk": { "label": "Risk" },
+    "tech": { "label": "Tech" },
+    "sentiment": { "label": "Sentiment" }
   },
   "agentCard": {
     "analyzing": "Analyzing proposal...",
     "awaiting": "Awaiting proposal",
-    "mockReasoning": "Analysis from {label} perspective. This is a placeholder - will be replaced with real AI agent response in Phase 1."
+    "mockReasoning": "Analysis from {label} perspective."
   },
   "tally": {
     "cardTitle": "Vote tally",
@@ -45,9 +42,62 @@
   },
   "verdict": {
     "empty": "Submit a proposal to start debate",
+    "label": "Council verdict",
     "FOR": "Council recommends: APPROVE",
     "AGAINST": "Council recommends: REJECT",
     "ABSTAIN": "No consensus reached",
     "SPLIT": "Council split - no consensus"
+  },
+  "audit": {
+    "title": "Audit Trail",
+    "filters": {
+      "all": "All events",
+      "proposals": "Proposals",
+      "votes": "Agent votes",
+      "verdicts": "Verdicts",
+      "executions": "On-chain executions",
+      "rules": "Rules changes",
+      "agents": "Agent lifecycle"
+    },
+    "stats": { "total": "Total events", "last24h": "Last 24h", "archive": "Archive" },
+    "export": { "button": "Export", "format_json": "JSON (full events + signatures)", "format_csv": "CSV", "format_pdf": "PDF receipt (notarized)" },
+    "empty": "No events match filter"
+  },
+  "execute": {
+    "title": "Execute",
+    "stages": {
+      "sigs": { "label": "Multisig sigs", "desc": "5 of 7 required" },
+      "queue": { "label": "Queue Timelock", "desc": "48h delay" },
+      "wait": { "label": "Timelock ETA", "desc": "Wait period" },
+      "execute": { "label": "Execute", "desc": "Single tx on Base" },
+      "archive": { "label": "0G Archive", "desc": "CID registered" }
+    },
+    "timelock": { "remaining": "remaining of 48h delay", "eta": "ETA" },
+    "buttons": { "sign": "Sign multisig", "queue": "Queue in Timelock", "execute_disabled": "Execute (waiting)", "view_basescan": "View on Basescan", "view_archive": "View 0G archive" }
+  },
+  "ens": {
+    "title": "ENS Identity",
+    "parent": "Parent ENS",
+    "treasury": { "label": "Treasury wallet", "balance": "Live balance", "records": "Text records" },
+    "agents": { "label": "Council agents - {count} subnames", "avgLatency": "Avg latency - {ms}ms" },
+    "states": { "resolved": "Resolved", "resolving": "Resolving", "error": "Error", "not_found": "Not found" }
+  },
+  "rules": {
+    "title": "Council Rules",
+    "states": { "in_sync": "In sync on-chain", "uncommitted": "Uncommitted changes", "committing": "Committing ({signed}/{required})" },
+    "panes": { "json": "JSON - rules.json", "preview": "Compiled preview" },
+    "buttons": { "edit": "Edit rules", "discard": "Discard", "validate": "Validate", "commit": "Commit on-chain", "sign": "Sign", "cancel": "Cancel" },
+    "validation": { "title": "Validation", "errors": "{n} errors", "warnings": "{n} warnings", "resolved": "(resolved)" }
+  },
+  "common": {
+    "challenge": "Challenge",
+    "back": "Back",
+    "continue": "Continue",
+    "cancel": "Cancel",
+    "discard": "Discard",
+    "save": "Save",
+    "loading": "Loading",
+    "verify_basescan": "Verify on Basescan",
+    "view_archive": "View 0G archive"
   }
 }

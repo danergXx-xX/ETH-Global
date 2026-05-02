@@ -35,6 +35,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={`dark antialiased ${inter.variable} ${jetbrainsMono.variable} ${sourceSerif.variable}`}
+      suppressHydrationWarning
     >
       <body className="min-h-screen bg-background font-sans text-foreground">
         <Providers>{children}</Providers>
