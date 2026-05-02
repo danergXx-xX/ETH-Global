@@ -19,6 +19,13 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     env: Literal["dev", "prod"] = "dev"
 
+    # Storage (decentralized audit trail)
+    storage_provider: Literal["0g", "ipfs"] = "0g"
+    zerog_indexer_url: str = "https://indexer-storage-testnet-turbo.0g.ai"
+    zerog_evm_rpc_url: str = "https://evmrpc-testnet.0g.ai"
+    zerog_private_key: str = ""
+    web3_storage_token: str = ""
+
 
 @lru_cache
 def get_settings() -> Settings:

@@ -13,6 +13,7 @@ from config import get_settings
 from logging_config import RequestIDMiddleware, setup_logging
 from orchestrator import run_debate
 from schemas import HealthResponse
+from storage.factory import StorageFallbackError, upload_with_fallback
 
 settings = get_settings()
 setup_logging(env=settings.env, log_level=settings.log_level)
@@ -49,6 +50,9 @@ class DebateResponse(BaseModel):
     decisions: list[dict]
     consensus: str
     vote_id: str
+    audit_trail_cid: str | None = None
+    audit_trail_gateway: str | None = None
+    storage_provider: str | None = None
 
 
 @app.get("/health")
@@ -65,4 +69,37 @@ async def debate(req: DebateRequest) -> DebateResponse:
     log.info("debate_requested", text_length=len(req.text))
     result = await run_debate(req.text)
     log.info("debate_complete", consensus=result["consensus"])
-    return DebateResponse(**result)
+
+    audit_cid: str | None = None
+    audit_gateway: str | None = None
+    provider: str | None = None
+
+    try:
+        transcript = {
+            "proposal": req.text,
+            "decisions": result["decisions"],
+            "consensus": result["consensus"],
+            "vote_id": result["vote_id"],
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+        storage_result = await upload_with_fallback(transcript)
+        audit_cid = storage_result.cid
+        audit_gateway = storage_result.gateway_url
+        provider = storage_result.provider
+        log.info(
+            "audit_trail_stored",
+            cid=audit_cid,
+            provider=provider,
+            fallback=storage_result.fallback_used,
+        )
+    except (StorageFallbackError, Exception) as storage_err:
+        log.error("audit_trail_failed", error=str(storage_err))
+
+    return DebateResponse(
+        decisions=result["decisions"],
+        consensus=result["consensus"],
+        vote_id=result["vote_id"],
+        audit_trail_cid=audit_cid,
+        audit_trail_gateway=audit_gateway,
+        storage_provider=provider,
+    )
