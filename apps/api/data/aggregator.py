@@ -50,6 +50,8 @@ class DataAggregator:
 
         Per personas.py: Bull=['coingecko','defillama','rss'],
         Bear=['defillama','rss','coingecko'], etc.
+
+        Sequential (not asyncio.gather) to avoid thundering herd on rate-limited APIs.
         """
         all_sources: list[Source] = []
         for src_name in source_priority:

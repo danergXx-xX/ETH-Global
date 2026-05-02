@@ -94,6 +94,12 @@ class CoinGeckoSource:
         if self._client and not self._client.is_closed:
             await self._client.aclose()
 
+    async def __aenter__(self) -> CoinGeckoSource:
+        return self
+
+    async def __aexit__(self, *exc: object) -> None:
+        await self.close()
+
     def _resolve_token_id(self, query: str) -> str | None:
         """Map ticker/name to CoinGecko slug. Validates against safe pattern to prevent SSRF."""
         q = query.lower().strip()

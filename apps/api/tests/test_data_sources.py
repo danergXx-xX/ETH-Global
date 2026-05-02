@@ -535,3 +535,110 @@ class TestDataAggregator:
 
         await agg.fetch_for_query("eth", source_priority=["defillama", "rss", "coingecko"])
         assert call_order == ["defillama", "rss", "coingecko"]
+
+    @pytest.mark.asyncio
+    async def test_aixbt_in_priority_skipped_gracefully(self) -> None:
+        """Sentiment persona has 'aixbt' in priority - must skip without crash."""
+        class MockRSS:
+            source_type = "rss"
+            async def fetch(self, query: str, limit: int = 5) -> list[Source]:
+                return [Source(url="https://news.com/1", title="News", snippet="article", weight=0.7, source_type="rss")]
+
+        registry = {"rss": MockRSS()}
+        agg = DataAggregator(registry=registry)
+
+        results = await agg.fetch_for_query("eth", source_priority=["aixbt", "rss", "coingecko"])
+        assert len(results) == 1
+        assert results[0].source_type == "rss"
+
+    @pytest.mark.asyncio
+    async def test_aggregator_close_closes_all(self) -> None:
+        """DataAggregator.close() calls close() on all adapters."""
+        closed: list[str] = []
+
+        class TrackingSource:
+            def __init__(self, name: str):
+                self.source_type = name
+            async def fetch(self, query: str, limit: int = 5) -> list[Source]:
+                return []
+            async def close(self) -> None:
+                closed.append(self.source_type)
+
+        registry = {"a": TrackingSource("a"), "b": TrackingSource("b")}
+        agg = DataAggregator(registry=registry)
+        await agg.close()
+        assert sorted(closed) == ["a", "b"]
+
+
+# ============================================================
+# PROTOCOL CONFORMANCE + CONTEXT MANAGER TESTS
+# ============================================================
+
+class TestProtocolConformance:
+    @pytest.mark.asyncio
+    async def test_rss_implements_datasource(self) -> None:
+        from data.sources import DataSource
+        assert isinstance(RSSSource(), DataSource)
+
+    @pytest.mark.asyncio
+    async def test_coingecko_implements_datasource(self) -> None:
+        from data.sources import DataSource
+        assert isinstance(CoinGeckoSource(), DataSource)
+
+    @pytest.mark.asyncio
+    async def test_defillama_implements_datasource(self) -> None:
+        from data.sources import DataSource
+        assert isinstance(DefiLlamaSource(), DataSource)
+
+    @pytest.mark.asyncio
+    async def test_rss_context_manager(self) -> None:
+        async with RSSSource() as rss:
+            assert rss.source_type == "rss"
+
+    @pytest.mark.asyncio
+    @respx.mock
+    async def test_coingecko_context_manager(self) -> None:
+        respx.get(f"{CG_BASE}/coins/ethereum").mock(
+            return_value=httpx.Response(200, json=SAMPLE_CG_RESPONSE)
+        )
+        async with CoinGeckoSource() as cg:
+            results = await cg.fetch("eth")
+            assert len(results) == 1
+
+    @pytest.mark.asyncio
+    async def test_defillama_context_manager(self) -> None:
+        async with DefiLlamaSource() as dl:
+            assert dl.source_type == "defillama"
+
+
+class TestRSSQueryValidation:
+    @pytest.fixture
+    def rss(self, monkeypatch: pytest.MonkeyPatch) -> RSSSource:
+        import feedparser as fp
+        original_parse = fp.parse
+        def mock_parse(url: str, **kwargs):
+            return original_parse(SAMPLE_RSS_XML)
+        monkeypatch.setattr(fp, "parse", mock_parse)
+        return RSSSource()
+
+    @pytest.mark.asyncio
+    async def test_single_char_query_rejected(self, rss: RSSSource) -> None:
+        """Query 'a' is too short (min 2 chars) - returns empty."""
+        results = await rss.fetch("a")
+        assert results == []
+
+    @pytest.mark.asyncio
+    async def test_empty_query_rejected(self, rss: RSSSource) -> None:
+        results = await rss.fetch("")
+        assert results == []
+
+    @pytest.mark.asyncio
+    async def test_whitespace_query_rejected(self, rss: RSSSource) -> None:
+        results = await rss.fetch("   ")
+        assert results == []
+
+    @pytest.mark.asyncio
+    async def test_two_char_query_works(self, rss: RSSSource) -> None:
+        """2-char query passes minimum length."""
+        results = await rss.fetch("bt")
+        assert isinstance(results, list)

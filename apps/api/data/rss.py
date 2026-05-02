@@ -19,6 +19,7 @@ FEEDS: dict[str, str] = {
 CACHE_TTL_SECONDS = 300
 # RSS = secondary source (news articles), lower than on-chain/market API data
 DEFAULT_WEIGHT = 0.7
+MIN_QUERY_LENGTH = 2
 
 
 class RSSSource:
@@ -35,10 +36,19 @@ class RSSSource:
     async def close(self) -> None:
         """No-op for interface consistency with CoinGecko/DefiLlama."""
 
+    async def __aenter__(self) -> RSSSource:
+        return self
+
+    async def __aexit__(self, *exc: object) -> None:
+        await self.close()
+
     async def fetch(self, query: str, limit: int = 5) -> list[Source]:
         """Fetch RSS entries matching query across all configured feeds."""
+        if len(query.strip()) < MIN_QUERY_LENGTH:
+            return []
+
         results: list[Source] = []
-        query_lower = query.lower()
+        query_lower = query.lower().strip()
 
         for feed_name, feed_url in self._feeds.items():
             entries = await self._get_cached_or_parse(feed_name, feed_url)

@@ -64,6 +64,12 @@ class DefiLlamaSource:
         if self._client and not self._client.is_closed:
             await self._client.aclose()
 
+    async def __aenter__(self) -> DefiLlamaSource:
+        return self
+
+    async def __aexit__(self, *exc: object) -> None:
+        await self.close()
+
     async def _find_matching_slugs(
         self, client: httpx.AsyncClient, query: str, limit: int
     ) -> list[str]:
