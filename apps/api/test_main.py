@@ -82,6 +82,37 @@ def test_debate_empty_text(client: TestClient) -> None:
     assert response.status_code == 422
 
 
+def test_debate_text_too_short(client: TestClient) -> None:
+    response = client.post("/api/debate", json={"text": "short"})
+    assert response.status_code == 422
+
+
+def test_debate_text_too_long(client: TestClient) -> None:
+    response = client.post("/api/debate", json={"text": "x" * 2001})
+    assert response.status_code == 422
+
+
+@patch("main.run_debate", new_callable=AsyncMock)
+def test_debate_null_audit_on_storage_error(
+    mock_debate: AsyncMock, client: TestClient
+) -> None:
+    mock_debate.return_value = {
+        "decisions": _mock_decisions(),
+        "consensus": "FOR",
+        "vote_id": "test-id",
+    }
+    with patch("main.upload_with_fallback", side_effect=ConnectionError("storage down")):
+        response = client.post(
+            "/api/debate",
+            json={"text": "Test proposal for storage failure"},
+        )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["audit_trail_cid"] is None
+    assert data["storage_provider"] is None
+    assert data["consensus"] == "FOR"
+
+
 def test_health_returns_request_id(client: TestClient) -> None:
     response = client.get("/health")
     assert "x-request-id" in response.headers

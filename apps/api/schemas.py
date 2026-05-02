@@ -236,7 +236,7 @@ class RecipientsResponse(BaseModel):
 
 class DebateRequest(BaseModel):
     """Input for POST /api/debate."""
-    text: str = Field(..., min_length=1, max_length=2000)
+    text: str = Field(..., min_length=10, max_length=2000)
 
 
 class DebateResponse(BaseModel):

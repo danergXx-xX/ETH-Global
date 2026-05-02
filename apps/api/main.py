@@ -122,7 +122,7 @@ async def encode_proposal(request: ProposalEncodeRequest) -> ProposalEncoded:
         )
     except ValueError as exc:
         log.warning("encode_proposal_invalid_input", error=str(exc))
-        raise HTTPException(status_code=422, detail=f"Invalid input: {exc}") from exc
+        raise HTTPException(status_code=422, detail="Invalid proposal parameters") from exc
 
     return ProposalEncoded(**encoded)
 
