@@ -114,7 +114,8 @@ async def run_bull(
     if decision is not None:
         return decision
 
-    raise ValueError(f"Bull agent returned invalid JSON after retry: {response_text[:200]}")
+    log.error("bull_json_parse_exhausted", raw_start=response_text[:200])
+    raise ValueError("Bull agent failed to produce valid JSON after retry")
 
 
 def _parse_response(raw: str, usage: UsageStats) -> AgentDecision | None:

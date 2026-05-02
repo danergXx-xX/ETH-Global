@@ -118,10 +118,8 @@ async def test_bull_agent_uses_sources() -> None:
         result = await run_bull("Swap 50 ETH for USDC", client, pre_fetched_sources=SAMPLE_SOURCES)
 
         assert mock_call.call_count == 1
-        call_kwargs = mock_call.call_args
-        user_msg = call_kwargs.kwargs.get("user_message") or call_kwargs[1].get(
-            "user_message", call_kwargs[0][2] if len(call_kwargs[0]) > 2 else ""
-        )
+        user_msg = mock_call.call_args.kwargs.get("user_message", "")
+        assert user_msg, "Failed to extract user_message from mock call"
 
         assert "AVAILABLE DATA SOURCES" in user_msg
         assert "Ethereum Market Data" in user_msg
@@ -246,10 +244,8 @@ async def test_data_aggregator_failure_graceful() -> None:
     assert result.persona == "bull"
     assert len(result.claims) >= 1
 
-    call_kwargs = mock_call.call_args
-    user_msg = call_kwargs.kwargs.get("user_message") or call_kwargs[1].get(
-        "user_message", call_kwargs[0][2] if len(call_kwargs[0]) > 2 else ""
-    )
+    user_msg = mock_call.call_args.kwargs.get("user_message", "")
+    assert user_msg, "Failed to extract user_message from mock call"
     assert "No external data sources were available" in user_msg
 
 
@@ -322,8 +318,6 @@ async def test_bull_backward_compatible_no_sources() -> None:
 
     assert isinstance(result, AgentDecision)
 
-    call_kwargs = mock_call.call_args
-    user_msg = call_kwargs.kwargs.get("user_message") or call_kwargs[1].get(
-        "user_message", call_kwargs[0][2] if len(call_kwargs[0]) > 2 else ""
-    )
+    user_msg = mock_call.call_args.kwargs.get("user_message", "")
+    assert user_msg, "Failed to extract user_message from mock call"
     assert "AVAILABLE DATA SOURCES" not in user_msg

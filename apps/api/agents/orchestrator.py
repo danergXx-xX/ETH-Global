@@ -14,6 +14,8 @@ import time
 from datetime import datetime, timezone
 from uuid import uuid4
 
+import asyncio
+
 import structlog
 
 from agents.anthropic_client import AnthropicClient
@@ -26,6 +28,7 @@ from schemas import AgentDecision, Source
 
 log = structlog.get_logger()
 
+# TODO(Phase 1): use asyncio.Lock or FastAPI Depends for thread-safe singleton
 _client: AnthropicClient | None = None
 _aggregator: DataAggregator | None = None
 
@@ -66,14 +69,23 @@ async def _fetch_global_sources(
     for persona in personas:
         all_source_types.update(persona.sources_priority)
 
+    async def _fetch_one(src_type: str) -> tuple[str, list[Source]]:
+        try:
+            result = await aggregator.fetch_for_query(
+                proposal_text,
+                source_priority=[src_type],
+                limit_per_source=3,
+            )
+            return src_type, result
+        except Exception as exc:
+            log.warning("source_fetch_failed", source_type=src_type, error=str(exc))
+            return src_type, []
+
+    fetch_results = await asyncio.gather(*[_fetch_one(st) for st in all_source_types])
+
     global_cache: dict[str, list[Source]] = {}
-    for source_type in all_source_types:
-        sources = await aggregator.fetch_for_query(
-            proposal_text,
-            source_priority=[source_type],
-            limit_per_source=3,
-        )
-        global_cache[source_type] = sources
+    for src_type, sources in fetch_results:
+        global_cache[src_type] = sources
 
     persona_sources: dict[str, list[Source]] = {}
     for persona in personas:
@@ -119,7 +131,7 @@ def _mock_decision(
                 "source_type": s.source_type,
             }
             for s in sources[:2]
-        ] or mock_sources
+        ]
 
     return AgentDecision(
         persona=persona,  # type: ignore[arg-type]

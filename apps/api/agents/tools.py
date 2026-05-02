@@ -24,6 +24,10 @@ from schemas import Source
 log = structlog.get_logger()
 
 
+# Phase 4: per-source fetch functions for Anthropic tool_use integration.
+# Currently unused - orchestrator uses fetch_sources_for_persona directly.
+
+
 async def fetch_news(
     aggregator: DataAggregator,
     query: str,
