@@ -7,8 +7,12 @@ from typing import AsyncIterator
 import httpx
 import structlog
 from eth_utils import to_checksum_address
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from slowapi import Limiter
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 
 from config import get_settings
 from governance import (
@@ -34,6 +38,13 @@ settings = get_settings()
 setup_logging(env=settings.env, log_level=settings.log_level)
 log = structlog.get_logger()
 
+limiter = Limiter(key_func=get_remote_address)
+
+
+def _rate_limit_handler(request: Request, exc: RateLimitExceeded) -> JSONResponse:
+    log.warning("rate_limited", path=request.url.path, client=get_remote_address(request))
+    return JSONResponse(status_code=429, content={"detail": "Too many requests. Try again later."})
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
@@ -47,6 +58,9 @@ app = FastAPI(
     version="0.1.0",
     lifespan=lifespan,
 )
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_handler)
 
 app.add_middleware(
     CORSMiddleware,
@@ -67,7 +81,8 @@ async def health() -> HealthResponse:
 
 
 @app.post("/api/debate")
-async def debate(req: DebateRequest) -> DebateResponse:
+@limiter.limit("10/minute")
+async def debate(request: Request, req: DebateRequest) -> DebateResponse:
     log.info("debate_requested", text_length=len(req.text))
     try:
         result = await run_debate(req.text)
