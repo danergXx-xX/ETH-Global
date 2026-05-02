@@ -4,7 +4,6 @@ ETHGlobal Open Agents 2026 submission by Dan Otomanski.
 
 Honest, specific feedback from building with ENS and 0G Labs technologies over a 3-day hackathon sprint (May 1-3, 2026). Each item includes what we hit, how we worked around it, and a concrete suggestion.
 
-
 ## ENS
 
 ### 1. NameStone signup lead time unknown
@@ -55,7 +54,6 @@ We used `viem` throughout our frontend (RainbowKit + wagmi). The `ensjs` library
 
 **Suggestion:** Document the tested `viem` version range in the `ensjs` README and consider a compatibility matrix, or use `peerDependencies` more strictly in package.json.
 
-
 ## 0G Labs
 
 ### 1. No Python SDK - only TypeScript
@@ -88,7 +86,7 @@ Matthew's original plan referenced `web3.storage` as the IPFS fallback. We disco
 
 **Our workaround:** We switched to Pinata as our IPFS fallback (simpler JWT auth model). See `apps/api/storage/ipfs.py`. Our factory pattern (`storage/factory.py`) handles automatic fallback from 0G to IPFS with a single env var.
 
-**Suggestion:** For hackathon teams building with 0G Storage who need a fallback: the 0G docs could mention that `web3.storage` legacy API is deprecated and suggest Pinata or Filebase as alternatives. Teams will need a fallback during the SDK's early days.
+**Suggestion:** The 0G docs could include a "fallback strategies" section noting that `web3.storage` legacy API is deprecated and suggesting Pinata or Filebase as IPFS alternatives. Teams adopting 0G Storage will want a fallback path during the SDK's early days, and guiding them to a working one reduces frustration.
 
 ### 5. No testnet faucet integration in docs workflow
 
@@ -106,7 +104,6 @@ After uploading data to 0G Storage, we needed a gateway URL to retrieve the cont
 
 **Suggestion:** Document the gateway URL format in the SDK docs and include it in the upload response. Ideally the SDK `upload()` return value should include `gatewayUrl` alongside `rootHash`.
 
-
 ## Cross-cutting observations
 
 ### CrewAI + 0G + web3 dependency conflict
@@ -123,6 +120,6 @@ Both ENS and 0G have functional technology. The primary friction was not bugs bu
 
 ### What worked well
 
-**ENS:** The `ensjs` library is well-designed once you find the right functions. Live ENS resolution via `viem` is smooth and demo-ready - showing `bull.aicouncil.eth` resolving in real-time is a strong visual moment. The subname + text records model is a natural fit for AI agent identity.
+**ENS:** The `ensjs` library is well-designed once you find the right functions. Live ENS resolution via `viem` is smooth and demo-ready - showing `bull.aicouncil.eth` resolving in real-time is a strong visual moment. The subname + text records model is a natural fit for AI agent identity. We would build on ENS again for any project that needs human-readable agent naming.
 
-**0G Labs:** The storage network itself is reliable on testnet. Upload latency was acceptable for our use case (debate transcripts under 50KB). The root hash as content identifier is a clean model. The automatic fallback architecture we built (`0G primary -> IPFS fallback`) was straightforward thanks to the consistent hash-based retrieval pattern.
+**0G Labs:** The storage network itself is reliable on testnet. Upload latency was acceptable for our use case (debate transcripts under 50KB). The root hash as content identifier is a clean model. The automatic fallback architecture we built (`0G primary -> IPFS fallback`) was straightforward thanks to the consistent hash-based retrieval pattern. The core value proposition - verifiable, decentralized storage for AI agent audit trails - is compelling and we see a clear path to production use.
