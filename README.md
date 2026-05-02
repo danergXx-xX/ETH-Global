@@ -1,176 +1,210 @@
 # AI Treasury Council
 
-> **Multi-agent AI Council dla DAO treasuries.** 5 wyspecjalizowanych agentow debatuje kazda decyzje treasury (Bull/Bear/Risk/Tech/Sentiment), z on-chain audit trail (0G Storage), ENS subnames per agent z reputation, i Proof-of-Work for agents (incentive system).
-
-**ETHGlobal Open Agents 2026 Hackathon Project** | Deadline: 2026-05-03 18:00 PL
+> 5 specialized AI agents debate every DAO treasury decision. Source-cited reasoning. Immutable audit trail on 0G Storage. On-chain governance via OpenZeppelin Governor on Base Sepolia.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![ETHGlobal](https://img.shields.io/badge/ETHGlobal-Open_Agents-blue.svg)](https://ethglobal.com/events/agents)
+[![ETHGlobal](https://img.shields.io/badge/ETHGlobal-Open_Agents_2026-blue.svg)](https://ethglobal.com/events/agents)
+[![Base Sepolia](https://img.shields.io/badge/Base-Sepolia-0052FF.svg)](https://sepolia.basescan.org)
 
----
+## The Problem
 
-## Co to jest (30 sec read)
+DAOs hold $26B+ in treasury assets, but governance suffers from voter apathy and decision concentration. A single whale can push through a 100k USDC allocation while 90% of token holders abstain. There is no structured analysis, no devil's advocate, no audit trail of *why* a decision was made.
 
-DAO maja $26B w treasury, ale governance cierpi na voter apathy + decision concentration. **AI Treasury Council** deploys 5 specjalizowanych AI agentow ktorzy debatuja kazde proposed treasury action - z cytowanymi zrodlami, full reasoning na lancuchu, i on-chain reputation per agent.
+## What AI Treasury Council Does
 
-**Try it:** TBD (deployed Niedz 3.05) | **Watch demo:** TBD (3-min video)
+Submit a treasury proposal (e.g. "Allocate 100k USDC to Aave for yield"). Five AI agents analyze it from different angles:
 
----
+| Agent | Role | Bias |
+|-------|------|------|
+| **Bull** | Growth opportunities | Optimistic |
+| **Bear** | Downside risks | Skeptical |
+| **Risk** | Quantitative risk/reward | Neutral |
+| **Tech** | Smart contract safety | Security-first |
+| **Sentiment** | Community + market mood | Data-driven |
 
-## Architektura (high-level)
+Each agent cites its sources (RSS feeds, CoinGecko, DefiLlama) with confidence weights. The full debate transcript is stored immutably on **0G Storage**. Token holders then vote on-chain via OpenZeppelin Governor with a 48-hour timelock before execution.
+
+**Try it:** [TBD - deployed Sun 3.05](https://demo.aitc.app) | **Watch demo:** [3-min video](https://youtube.com/TBD)
+
+## Architecture
 
 ```mermaid
 flowchart TB
-  subgraph Frontend [Frontend - Vercel - Next.js 15]
-    UI[Proposal page + Live debate viewer]
-    Wallet[RainbowKit + wagmi v2]
-    EnsResolver[ENS resolver via viem]
+  User([User with wallet]) --> UI
+
+  subgraph Frontend["Frontend (Next.js 16 + Tailwind v4)"]
+    UI[Proposal Form + Debate Viewer]
+    Vote[Vote UI + Timelock Countdown]
+    ENSDisplay[ENS Agent Badges]
   end
 
-  subgraph Backend [Backend - Railway - FastAPI]
-    Orchestrator[CrewAI orchestrator]
-    Agents[5 agents Bull Bear Risk Tech Sentiment]
-    Tools[RSS CoinGecko DefiLlama]
-    OGStorage[0G Storage upload SDK]
-    IPFSFallback[IPFS web3.storage fallback]
+  subgraph Backend["Backend (FastAPI + Anthropic SDK)"]
+    Orch[Debate Orchestrator]
+    Bull[Bull Agent]
+    Bear[Bear Agent]
+    Risk[Risk Agent]
+    Tech[Tech Agent]
+    Sent[Sentiment Agent]
+    Data[RSS + CoinGecko + DefiLlama]
   end
 
-  subgraph Chain [Base Sepolia testnet]
-    Governor[OpenZeppelin Governor]
-    Token[CouncilToken ERC20Votes]
-    Timelock[TimelockController]
-    MockUSDC[MockUSDC treasury]
-    Reputation[AgentReputation Moat 5]
+  subgraph Storage["Audit Trail"]
+    ZeroG[0G Storage]
+    IPFS[IPFS / Pinata fallback]
   end
 
-  subgraph ENS [Sepolia ENS]
-    Parent[aicouncil.eth via NameStone]
-    Subnames[bull bear risk tech sentiment subnames]
+  subgraph Chain["Base Sepolia"]
+    Gov[AICouncilGovernor]
+    Token[CouncilToken - ERC20Votes]
+    TL[TimelockController - 48h]
+    USDC[MockUSDC Treasury]
   end
 
-  UI --> Orchestrator
-  Orchestrator --> Agents
-  Agents --> Tools
-  Orchestrator --> OGStorage
-  OGStorage -.fallback.-> IPFSFallback
-  OGStorage --> UI
-  UI --> Wallet
-  Wallet --> Governor
-  Governor --> Timelock
-  Timelock --> MockUSDC
-  Timelock --> Reputation
-  EnsResolver --> Subnames
+  subgraph ENS["Sepolia ENS"]
+    Sub[bull.aicouncil.eth ...]
+  end
+
+  UI -->|POST /api/debate| Orch
+  Orch --> Bull & Bear & Risk & Tech & Sent
+  Bull & Bear & Risk & Tech & Sent --> Data
+  Orch -->|store transcript| ZeroG
+  ZeroG -.->|fallback| IPFS
+  Vote -->|propose / castVote / execute| Gov
+  Gov --> Token
+  Gov --> TL
+  TL -->|transfer mUSDC| USDC
+  ENSDisplay -->|resolve| Sub
 ```
 
----
+**Flow:** User submits proposal -> 5 agents debate with cited sources -> transcript stored on 0G -> user votes on-chain -> 48h timelock -> treasury action executes.
 
-## Quick start (developers)
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | Next.js 16, Tailwind CSS v4, shadcn/ui, RainbowKit, wagmi v2, viem, bilingual UI (PL + EN) |
+| **Backend** | Python 3.11+, FastAPI, Pydantic v2, structlog, Anthropic SDK (Claude), httpx |
+| **Smart Contracts** | Solidity 0.8.24, Foundry, OpenZeppelin Contracts v5 (Governor, ERC20Votes, TimelockController) |
+| **Storage** | 0G Storage (primary audit trail), IPFS via Pinata (automatic fallback) |
+| **Data Sources** | RSS news feeds (Reuters, CoinDesk), CoinGecko API, DefiLlama API |
+| **Chain** | Base Sepolia testnet (chainId 84532) |
+| **CI/CD** | GitHub Actions (lint + test + gitleaks), Vercel (frontend), Railway (backend) |
+
+## Smart Contracts
+
+All contracts deployed on **Base Sepolia** (2026-05-02). Based on OpenZeppelin Contracts v5 via Wizard.
+
+| Contract | Address | Role |
+|----------|---------|------|
+| **CouncilToken** | [`0x5fE2...4381`](https://sepolia.basescan.org/address/0x5fe2a5e971d9faaff9cc0b0c9981da44fefc4381) | ERC20Votes governance token (AICT). Timestamp-based clock mode. |
+| **TimelockController** | [`0x76A6...1B0f`](https://sepolia.basescan.org/address/0x76a69bb6aef69a2e76fa6c9632ff6ca101441b0f) | 48-hour delay before execution. Admin revoked - fully decentralized. |
+| **AICouncilGovernor** | [`0x1f95...01F0`](https://sepolia.basescan.org/address/0x1f95c796c5dc47d08b20cf3220a2afa995e301f0) | Governor with 60% quorum, 1-day voting, 0 proposal threshold. |
+| **MockUSDC** | [`0x606E...59d`](https://sepolia.basescan.org/address/0x606ede7755131e6206a29b67d88761eebb3bb59d) | Testnet stablecoin (mUSDC, 6 decimals). 1M minted to Timelock treasury. |
+
+**Governance parameters:** voting delay 1 block (~12s) -> 1-day voting period -> 48h timelock -> execution.
+
+Pre-deploy audit: Mateusz T3 APPROVE (0 CRITICAL, 0 HIGH), Critic 8.5/10, Vera 8.5/10, 23/23 Foundry tests PASS.
+
+## Trust Mechanisms
+
+Five mechanisms ensure AI council decisions are transparent and verifiable:
+
+**1. Source Attribution per Claim**
+Every agent statement includes cited URLs (RSS, CoinGecko, DefiLlama) with confidence weights (0.0 - 1.0). No black-box recommendations - users can verify every claim.
+
+**2. Timelock Countdown UI**
+48-hour delay between vote passing and execution. The frontend displays a live countdown so any token holder can review, challenge, or veto before funds move.
+
+**3. Immutable Audit Trail (0G Storage)**
+The full debate transcript (all 5 agent opinions, sources, confidence scores) is stored on 0G Storage with a content hash recorded on-chain. Past debates are retrievable and tamper-proof.
+
+**4. ENS Reputation Badges**
+Each agent has an ENS subname (e.g. `bull.aicouncil.eth`) with on-chain text records tracking historical accuracy. Agents build reputation over time.
+
+**5. Human-in-the-Loop Council Rules**
+A JSON config defines which proposal types require human override (e.g. transfers above threshold, new protocol integrations). AI advises, humans decide.
+
+## Setup
 
 ### Prerequisites
 
-```bash
-# Node 20+ (mamy 25.8 OK)
-node --version
+- Node.js 20+ and pnpm
+- Python 3.11+
+- Foundry (`curl -L https://foundry.paradigm.xyz | bash && foundryup`)
 
-# Python 3.11+ (mamy 3.14 OK)
-python3 --version
-
-# pnpm
-brew install pnpm
-
-# Foundry
-curl -L https://foundry.paradigm.xyz | bash
-foundryup
-```
-
-### Setup
+### Install and run
 
 ```bash
 git clone https://github.com/danergXx-xX/ETH-Global ai-treasury-council
 cd ai-treasury-council
 
-# Skopiuj env i wypelnij secrets (NIE commit!)
+# Copy env template and fill in your keys
 cp .env.example .env
-# Edytuj .env: ANTHROPIC_API_KEY, BASE_SEPOLIA_RPC_URL, DEPLOYER_PRIVATE_KEY...
+# Required: ANTHROPIC_API_KEY, BASE_SEPOLIA_RPC_URL, DEPLOYER_PRIVATE_KEY
+# Optional: ZERO_G_STORAGE_KEY, NAMESTONE_API_KEY, COINGECKO_API_KEY
 
-# Install deps
+# Install dependencies
 pnpm install
 
-# Run dev (3 procesy)
-pnpm dev          # Frontend on :3000
-# (osobny terminal)
-cd apps/api && uvicorn main:app --reload  # Backend on :8000
-# (osobny terminal)
-cd contracts && anvil  # Local Ethereum on :8545
+# Start frontend (terminal 1)
+pnpm dev  # http://localhost:3000
+
+# Start backend (terminal 2)
+cd apps/api && uvicorn main:app --reload  # http://localhost:8000
+
+# Local chain for testing (terminal 3)
+cd contracts && anvil  # http://localhost:8545
 ```
 
-### Test (Phase 0 smoke)
+### Verify it works
 
 ```bash
-# Backend health
+# Health check
 curl http://localhost:8000/health
 
-# Submit test proposal
+# Submit a test debate
 curl -X POST http://localhost:8000/api/debate \
   -H "Content-Type: application/json" \
-  -d '{"proposal": "Allocate 100k USDC to Aave for yield"}'
+  -d '{"text": "Allocate 50k USDC to Aave V3 for yield optimization"}'
 ```
 
----
+## Testing
 
-## Co nas wyroznia (5 moats)
+120+ tests across three layers:
 
-1. **0G Compute Verifiable AI** (Phase 3 stretch) - wybrany agent inference verifiable on-chain
-2. **Source-attributed decisions** - kazdy claim agenta cytuje URL + confidence score (Perplexity model)
-3. **0G Storage immutable audit trail** - cala debata zapisana decentralized z hash on-chain
-4. **ENS subnames z live reputation** - 5 agentow z .eth nazwami + dynamic text records
-5. **Proof-of-Work for agents** (Matthew unique spin) - on-chain reputation system, incentivizes good behavior, slashes bad actors
+| Layer | Framework | Tests | Command |
+|-------|-----------|-------|---------|
+| **Smart Contracts** | Foundry | 23 | `cd contracts && forge test` |
+| **Backend API** | pytest | 97 | `cd apps/api && python -m pytest` |
+| **E2E + Integration** | Playwright | 3 specs | `npx playwright test` |
 
----
+**Smoke test checklist** (pre-deploy):
+- `curl /health` returns `{"status":"ok"}`
+- `POST /api/debate` returns 5 agent decisions + consensus
+- Frontend loads at `:3000` with wallet connect
+- Contract interactions work on Base Sepolia (propose, vote, queue, execute)
 
-## Sponsor integrations
+## Sponsor Integrations
 
-- **0G Labs** ($15k pool) - Storage (MVP) + Compute (Phase 3 stretch)
-- **ENS** ($5k pool) - 5 agent subnames live-resolved + ERC-8004 profile
-- **ETHGlobal Finalist** ($20k) - automatyczna eligibility
-- **Cuts ze scope:** KeeperHub (docs login), Uniswap v4 (cutting-edge), Aave (scope creep)
+### 0G Labs - Immutable Audit Trail
 
----
+Every debate transcript (agent decisions, sources, confidence scores, consensus) is uploaded to **0G Storage** after each council session. The content-addressed hash is available on-chain for verification. Automatic fallback to IPFS if 0G is unreachable.
 
-## Documentation
+- Storage layer: `apps/api/storage/` (factory pattern with 0G primary + IPFS fallback)
+- See [FEEDBACK.md](FEEDBACK.md) for detailed developer experience feedback
 
-- [Architecture deep-dive](docs/architecture.md) - dla developerow
-- [DAO governance flow](docs/governance.md) - dla DAO contributorow
-- [Glossary](docs/glossary.md) - dla sedziow (terminy non-tech)
-- [API reference](docs/api.md) - OpenAPI / Swagger
-- [Smart contracts](docs/contracts.md) - addresses, ABI, NatSpec
-- [Roadmap](docs/roadmap.md) - post-hackathon plans
+### ENS - Agent Identity via NameStone Subnames
 
----
+Each of the 5 agents gets an ENS subname under `aicouncil.eth` (e.g. `bull.aicouncil.eth`, `bear.aicouncil.eth`). Subnames are minted via NameStone API with text records for agent role and historical accuracy.
 
-## Security
-
-This is a hackathon project deployed on **Base Sepolia testnet only**. **Do not use in production with real funds.**
-
-Found a vulnerability? Email: dan.otomanski@danergy.pl
-
-Smart contracts are based on OpenZeppelin Wizard templates (Governor + ERC20Votes + Timelock).
-No mainnet deployments. Deployer keys are testnet-only and rotated post-hackathon.
-
-### Disclaimers
-- AI agent decisions are advisory only - DAO governance has final say
-- No financial advice
-- Code provided as-is, MIT License
-
----
+- Frontend resolves subnames via viem ENS utilities
+- See [FEEDBACK.md](FEEDBACK.md) for detailed developer experience feedback
 
 ## Team
 
-- **Dan Otomanski** ([danergXx-xX](https://github.com/danergXx-xX)) - Lead, AI orchestration, build
-- **Matthew Foyle** - Plan + advisor, demo voice-over, FEEDBACK.md drafting
-- **15-agent dev-team** - Software house infrastructure (PM, Quality, Engineering, Comms layers)
-
----
+- **Dan Otomanski** ([@danergXx-xX](https://github.com/danergXx-xX)) - Lead, AI orchestration, system design
+- **Matthew Foyle** - Architecture plan, demo voice-over, FEEDBACK.md
+- **15-agent dev-team** - Specialized AI agents for PM, engineering, QA, security, docs, and design ([Charter](docs/charter.md))
 
 ## License
 
