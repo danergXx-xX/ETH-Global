@@ -69,7 +69,14 @@ async def health() -> HealthResponse:
 @app.post("/api/debate")
 async def debate(req: DebateRequest) -> DebateResponse:
     log.info("debate_requested", text_length=len(req.text))
-    result = await run_debate(req.text)
+    try:
+        result = await run_debate(req.text)
+    except Exception as exc:
+        log.error("debate_failed", error_type=type(exc).__name__, error_msg=str(exc))
+        raise HTTPException(
+            status_code=503,
+            detail="Debate orchestration unavailable. Try again or contact support.",
+        ) from exc
     log.info("debate_complete", consensus=result["consensus"])
 
     audit_cid: str | None = None
