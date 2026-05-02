@@ -19,7 +19,7 @@ from __future__ import annotations
 import structlog
 
 from data.aggregator import DataAggregator
-from schemas import Source
+from schemas import AgentDecision, Source
 
 log = structlog.get_logger()
 
@@ -115,3 +115,71 @@ def format_sources_context(sources: list[Source]) -> str:
     )
     lines.append("--- END SOURCES ---")
     return "\n".join(lines)
+
+
+# ============================================================
+# CONSENSUS - confidence-weighted voting across personas
+# ============================================================
+
+
+# Kept in sync with agents.orchestrator.FAILURE_MARKER. Imported lazily where
+# needed to avoid a circular import (orchestrator imports compute_consensus).
+_FAILURE_MARKER = "[orchestrator-failure]"
+
+
+def compute_consensus(decisions: list[AgentDecision]) -> str:
+    """
+    Aggregate persona verdicts into a council consensus.
+
+    Voting rule: confidence-weighted. Each persona contributes its confidence
+    to either the FOR or AGAINST tally. ABSTAIN does not count toward either.
+    Agents that crashed mid-debate (reasoning contains FAILURE_MARKER) are
+    silently ignored here - they are surfaced separately in the orchestrator
+    log. An intentional confidence=0.0 ABSTAIN (e.g. Risk persona explicitly
+    abstaining due to lack of data) is NOT a failure and is counted as a
+    normal abstain vote.
+
+    Outcomes:
+        FOR     - weighted FOR > weighted AGAINST
+        AGAINST - weighted AGAINST > weighted FOR
+        ABSTAIN - all agents abstained or failed
+        SPLIT   - non-zero ties (e.g. 2 vs 2 with same confidence sum).
+                  SPLIT is intentional - downstream UI shows the council is
+                  not aligned, prompting Adversarial Auditor (Phase 4) or
+                  human review per Council Rules.
+
+    Args:
+        decisions: List of AgentDecision from all personas.
+
+    Returns:
+        One of "FOR", "AGAINST", "ABSTAIN", "SPLIT".
+    """
+    weight_for = 0.0
+    weight_against = 0.0
+    abstain_count = 0
+    contributing = 0
+
+    for decision in decisions:
+        if _FAILURE_MARKER in decision.reasoning:
+            continue
+        contributing += 1
+        if decision.decision == "FOR":
+            weight_for += decision.confidence
+        elif decision.decision == "AGAINST":
+            weight_against += decision.confidence
+        else:
+            abstain_count += 1
+
+    if contributing == 0:
+        return "ABSTAIN"
+
+    if weight_for == 0.0 and weight_against == 0.0:
+        return "ABSTAIN"
+
+    # Use a small epsilon to avoid floating-point near-tie surprises.
+    epsilon = 1e-9
+    if weight_for > weight_against + epsilon:
+        return "FOR"
+    if weight_against > weight_for + epsilon:
+        return "AGAINST"
+    return "SPLIT"
