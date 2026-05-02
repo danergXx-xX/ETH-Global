@@ -12,3 +12,4 @@
 [2026-05-02T19:01:37Z] Critic auto-pending dla commit c00c2eccbbecae58e95524ffecfbbf0a1cdb7836 (lines: 164, branch: feat/wagmi-ui, msg: fix(web): address Critic + Vera review findings (CRITICAL + HIGH))
 [2026-05-02T20:44:10Z] Critic auto-pending dla commit be8d5cdf37d843f4196c12220cfb62ec67c13c75 (lines: 13353, branch: feat/phase2-ens, msg: Merge remote-tracking branch 'origin/feat/wagmi-ui' into feat/phase2-ens)
 [2026-05-02T20:50:15Z] Critic auto-pending dla commit 14660da2afca07fb2211cfe655368a0d8b2de1ac (lines: 538, branch: feat/phase2-ens, msg: feat(ens): swap useAgentENS mock to real viem Sepolia resolver)
+[2026-05-02T21:00:57Z] Critic auto-pending dla commit b955fa281322a39c289e088d23202e7d91d83211 (lines: 212, branch: feat/phase2-ens, msg: fix(ens): apply audit findings (Mateusz/Critic/Vera Sesja 25))
