@@ -1,7 +1,7 @@
 """RSS data source adapter (CoinDesk + Reuters crypto feeds)."""
 from __future__ import annotations
 
-import hashlib
+import asyncio
 import logging
 import time
 
@@ -17,6 +17,7 @@ FEEDS: dict[str, str] = {
 }
 
 CACHE_TTL_SECONDS = 300
+# RSS = secondary source (news articles), lower than on-chain/market API data
 DEFAULT_WEIGHT = 0.7
 
 
@@ -25,7 +26,7 @@ class RSSSource:
 
     def __init__(self, feeds: dict[str, str] | None = None) -> None:
         self._feeds = feeds or FEEDS
-        self._cache: dict[str, tuple[float, list[Source]]] = {}
+        self._cache: dict[str, tuple[float, list[dict]]] = {}
 
     @property
     def source_type(self) -> str:
@@ -37,7 +38,7 @@ class RSSSource:
         query_lower = query.lower()
 
         for feed_name, feed_url in self._feeds.items():
-            entries = self._get_cached_or_parse(feed_name, feed_url)
+            entries = await self._get_cached_or_parse(feed_name, feed_url)
             for entry in entries:
                 title = entry.get("title", "")
                 summary = entry.get("summary", "")
@@ -47,24 +48,24 @@ class RSSSource:
         results.sort(key=lambda s: s.weight, reverse=True)
         return results[:limit]
 
-    def _get_cached_or_parse(self, feed_name: str, feed_url: str) -> list[dict]:
-        """Return cached feed entries or parse fresh."""
+    async def _get_cached_or_parse(self, feed_name: str, feed_url: str) -> list[dict]:
+        """Return cached feed entries or parse fresh. Runs feedparser in thread to avoid blocking."""
         now = time.monotonic()
         cached = self._cache.get(feed_name)
         if cached and (now - cached[0]) < CACHE_TTL_SECONDS:
-            return [_source_to_entry(s) for s in cached[1]]
+            return cached[1]
 
         try:
-            parsed = feedparser.parse(feed_url)
-            entries = parsed.get("entries", [])
-            sources = [self._to_source(e, feed_name) for e in entries]
-            self._cache[feed_name] = (now, sources)
+            # feedparser.parse() is synchronous (uses urllib) - run in thread pool
+            parsed = await asyncio.to_thread(feedparser.parse, feed_url)
+            entries: list[dict] = parsed.get("entries", [])
+            self._cache[feed_name] = (now, entries)
             logger.info("rss_feed_parsed", extra={"feed": feed_name, "count": len(entries)})
             return entries
-        except Exception:
+        except Exception:  # feedparser has no specific exception hierarchy
             logger.exception("rss_parse_error", extra={"feed": feed_name})
             if cached:
-                return [_source_to_entry(s) for s in cached[1]]
+                return cached[1]
             return []
 
     @staticmethod
@@ -82,17 +83,3 @@ class RSSSource:
             weight=DEFAULT_WEIGHT,
             source_type="rss",
         )
-
-
-def _source_to_entry(source: Source) -> dict:
-    """Convert Source back to entry dict for cache re-filtering."""
-    return {
-        "link": source.url,
-        "title": source.title,
-        "summary": source.snippet,
-    }
-
-
-def _entry_id(url: str) -> str:
-    """Stable ID from URL hash."""
-    return hashlib.md5(url.encode()).hexdigest()

@@ -1,7 +1,19 @@
-"""DataAggregator - fetches from multiple sources per agent persona priority."""
+"""
+DataAggregator - fetches from multiple sources per agent persona priority.
+
+Usage for Nova/Aiko:
+    from data.aggregator import DataAggregator
+    agg = DataAggregator()
+    sources = await agg.fetch_for_query("aave", source_priority=["coingecko", "defillama", "rss"])
+    # source_priority per persona: see agents/personas.py sources_priority field
+
+Lifecycle: call close() on app shutdown to release HTTP clients.
+"""
 from __future__ import annotations
 
 import logging
+
+import httpx
 
 from data.coingecko import CoinGeckoSource
 from data.defillama import DefiLlamaSource
@@ -11,18 +23,21 @@ from schemas import Source
 
 logger = logging.getLogger(__name__)
 
-SOURCE_REGISTRY: dict[str, DataSource] = {
-    "rss": RSSSource(),
-    "coingecko": CoinGeckoSource(),
-    "defillama": DefiLlamaSource(),
-}
+
+def create_default_registry() -> dict[str, DataSource]:
+    """Factory for default data source registry. Creates fresh instances."""
+    return {
+        "rss": RSSSource(),
+        "coingecko": CoinGeckoSource(),
+        "defillama": DefiLlamaSource(),
+    }
 
 
 class DataAggregator:
     """Aggregates data from multiple sources per persona priority order."""
 
     def __init__(self, registry: dict[str, DataSource] | None = None) -> None:
-        self._registry = registry or SOURCE_REGISTRY
+        self._registry = registry if registry is not None else create_default_registry()
 
     async def fetch_for_query(
         self,
@@ -49,7 +64,7 @@ class DataAggregator:
                     "source_fetched",
                     extra={"source": src_name, "results": len(sources), "query": query},
                 )
-            except Exception:
-                logger.exception("source_fetch_failed", extra={"source": src_name, "query": query})
+            except (httpx.HTTPStatusError, httpx.RequestError, httpx.TimeoutException, ValueError, OSError) as exc:
+                logger.warning("source_fetch_failed", extra={"source": src_name, "query": query, "error": str(exc)})
 
         return all_sources

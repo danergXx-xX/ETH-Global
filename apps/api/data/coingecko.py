@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import re
 import time
 
 import httpx
@@ -12,10 +13,11 @@ logger = logging.getLogger(__name__)
 
 BASE_URL = "https://api.coingecko.com/api/v3"
 CACHE_TTL_SECONDS = 300
+# CoinGecko = primary on-chain/market data source, higher weight than news (RSS 0.7)
 DEFAULT_WEIGHT = 0.85
 REQUEST_TIMEOUT = 15.0
 
-ALLOWED_HOSTS = frozenset({"api.coingecko.com"})
+_SAFE_SLUG = re.compile(r"^[a-z0-9][a-z0-9\-]{0,63}$")
 
 TOKEN_ALIASES: dict[str, str] = {
     "eth": "ethereum",
@@ -33,6 +35,11 @@ TOKEN_ALIASES: dict[str, str] = {
     "snx": "synthetix-network-token",
     "crv": "curve-dao-token",
     "ldo": "lido-dao",
+    "dot": "polkadot",
+    "ada": "cardano",
+    "bnb": "binancecoin",
+    "atom": "cosmos",
+    "near": "near",
 }
 
 
@@ -88,11 +95,11 @@ class CoinGeckoSource:
             await self._client.aclose()
 
     def _resolve_token_id(self, query: str) -> str | None:
-        """Map common ticker/name to CoinGecko ID."""
+        """Map ticker/name to CoinGecko slug. Validates against safe pattern to prevent SSRF."""
         q = query.lower().strip()
         if q in TOKEN_ALIASES:
             return TOKEN_ALIASES[q]
-        if q.isalpha() and len(q) > 2:
+        if _SAFE_SLUG.match(q):
             return q
         return None
 

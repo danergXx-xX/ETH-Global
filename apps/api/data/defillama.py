@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import re
 import time
 
 import httpx
@@ -12,11 +13,12 @@ logger = logging.getLogger(__name__)
 
 BASE_URL = "https://api.llama.fi"
 CACHE_TTL_SECONDS = 300
+# DefiLlama = primary on-chain TVL data, higher weight than news (RSS 0.7)
 DEFAULT_WEIGHT = 0.85
 REQUEST_TIMEOUT = 30.0
 PROTOCOLS_CACHE_TTL = 600
 
-ALLOWED_HOSTS = frozenset({"api.llama.fi"})
+_SAFE_SLUG = re.compile(r"^[a-z0-9][a-z0-9\-]{0,63}$")
 
 
 class DefiLlamaSource:
@@ -103,7 +105,10 @@ class DefiLlamaSource:
             return []
 
     async def _fetch_protocol(self, client: httpx.AsyncClient, slug: str) -> Source | None:
-        """Fetch individual protocol detail."""
+        """Fetch individual protocol detail. Slug validated before URL insertion."""
+        if not _SAFE_SLUG.match(slug.lower()):
+            logger.warning("defillama_invalid_slug", extra={"slug": slug})
+            return None
         resp = await client.get(f"{BASE_URL}/protocol/{slug}")
         if resp.status_code == 404:
             logger.warning("defillama_protocol_not_found", extra={"slug": slug})
