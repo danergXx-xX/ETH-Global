@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Live Debate Viewer — AI Treasury Council</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --font-serif: 'Source Serif 4', 'Charter', Georgia, serif;
+  }
+  html, body { margin: 0; padding: 0; background: oklch(0.16 0.022 255); color: oklch(0.96 0.006 255); font-family: var(--font-sans); }
+  *, *::before, *::after { box-sizing: border-box; }
+  button { font-family: inherit; }
+
+  /* Scrollbars within artboards — keep subtle */
+  .dc-card *::-webkit-scrollbar { width: 6px; height: 6px; }
+  .dc-card *::-webkit-scrollbar-thumb { background: oklch(0.40 0.020 255); border-radius: 3px; }
+  .dc-card *::-webkit-scrollbar-track { background: transparent; }
+
+  @keyframes a-blink { 0%, 49% { opacity: 1 } 50%, 100% { opacity: 0 } }
+  @keyframes a-pulse {
+    0% { transform: scale(1); opacity: .85 }
+    100% { transform: scale(1.55); opacity: 0 }
+  }
+  @keyframes a-scan {
+    0% { transform: translateX(-100%) }
+    100% { transform: translateX(100%) }
+  }
+  @keyframes a-wave {
+    0%, 100% { transform: scaleY(0.4) }
+    50% { transform: scaleY(1) }
+  }
+  @keyframes a-tooltip-in {
+    from { opacity: 0; transform: var(--tt-from-transform, translate(-50%, -2px)); }
+    to { opacity: 1; }
+  }
+  @keyframes a-dot {
+    0% { content: '' }
+    25% { content: '.' }
+    50% { content: '..' }
+    75% { content: '...' }
+    100% { content: '' }
+  }
+  /* AnimatedDots: render via ::after counter */
+  span > span[style*="a-dot"]::after {
+    content: '';
+    animation: a-dot-content 1.4s steps(4) infinite;
+  }
+  @keyframes a-dot-content {
+    0%   { content: '' }
+    25%  { content: '.' }
+    50%  { content: '..' }
+    75%  { content: '...' }
+    100% { content: '' }
+  }
+
+  /* labels in canvas above dark cards: lighten */
+  .design-canvas .dc-labelrow { color: rgba(245, 240, 232, 0.78) !important; }
+  .design-canvas .dc-grip:hover { background: rgba(255,255,255,.08) !important; }
+  .design-canvas .dc-labeltext:hover { background: rgba(255,255,255,.06) !important; }
+  .design-canvas .dc-expand { color: rgba(245, 240, 232, .6); }
+  .design-canvas .dc-expand:hover { background: rgba(255,255,255,.08); color: rgba(255,255,255,.95); }
+  .design-canvas { background: oklch(0.14 0.022 255) !important; }
+
+  /* Reasoning Chat tokens (drawer adopts these) */
+  body {
+    --bg: oklch(0.18 0.025 255);
+    --bg-elev: oklch(0.22 0.028 255);
+    --border: oklch(0.33 0.030 255);
+    --border-strong: oklch(0.40 0.030 255);
+    --text: oklch(0.96 0.006 255);
+    --text-secondary: oklch(0.76 0.012 255);
+    --text-tertiary: oklch(0.56 0.014 255);
+    --accent: oklch(0.78 0.14 75);
+    --accent-subtle: color-mix(in oklch, oklch(0.78 0.14 75) 16%, transparent);
+    --vote-for: oklch(0.74 0.16 152);
+    --vote-against: oklch(0.70 0.18 22);
+    --font-display: 'Source Serif 4', 'Charter', Georgia, serif;
+  }
+</style>
+</head>
+<body data-screen-label="01 Live Debate Viewer">
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="data.jsx"></script>
+<script type="text/babel" src="d-theme.jsx"></script>
+<script type="text/babel" src="brand.jsx"></script>
+<script type="text/babel" src="d-atoms.jsx"></script>
+<script type="text/babel" src="source-popover.jsx"></script>
+<script type="text/babel" src="d-chrome.jsx"></script>
+<script type="text/babel" src="d-card.jsx"></script>
+<script type="text/babel" src="variant-d.jsx"></script>
+
+<!-- Reasoning Chat — global drawer -->
+<script type="text/babel" src="rc-data.jsx"></script>
+<script type="text/babel" src="reasoning-chat.jsx"></script>
+
+<!-- Component 2 — Proposal Submission Form -->
+<script type="text/babel" src="form-data.jsx"></script>
+<script type="text/babel" src="form-atoms.jsx"></script>
+<script type="text/babel" src="form-preview.jsx"></script>
+<script type="text/babel" src="variant-form.jsx"></script>
+
+<!-- Component 4 — Treasury Dashboard -->
+<script type="text/babel" src="dash-data.jsx"></script>
+<script type="text/babel" src="dash-modules.jsx"></script>
+<script type="text/babel" src="dash-modules2.jsx"></script>
+<script type="text/babel" src="variant-dash.jsx"></script>
+
+<!-- Component 5 — Protocol Registry -->
+<script type="text/babel" src="reg-data.jsx"></script>
+<script type="text/babel" src="reg-atoms.jsx"></script>
+<script type="text/babel" src="reg-card.jsx"></script>
+<script type="text/babel" src="reg-detail.jsx"></script>
+<script type="text/babel" src="variant-reg.jsx"></script>
+
+<!-- Component 3 — Verdict Card -->
+<script type="text/babel" src="verdict-data.jsx"></script>
+<script type="text/babel" src="variant-verdict.jsx"></script>
+
+<!-- Component 6 — Settings -->
+<script type="text/babel" src="variant-settings.jsx"></script>
+
+<!-- Component 7 — Audit Log / Activity Trail (Vela Sesja 12) -->
+<script type="text/babel" src="audit-data.jsx"></script>
+<script type="text/babel" src="variant-audit.jsx"></script>
+
+<!-- Component 8 — On-chain Vote+Execute Flow (Vela Sesja 12) -->
+<script type="text/babel" src="execute-data.jsx"></script>
+<script type="text/babel" src="variant-execute.jsx"></script>
+
+<!-- Component 9 — ENS Identity Card (Vela Sesja 12) -->
+<script type="text/babel" src="ens-data.jsx"></script>
+<script type="text/babel" src="variant-ens.jsx"></script>
+
+<!-- Component 10 — Council Rules JSON Editor (Vela Sesja 12) -->
+<script type="text/babel" src="variant-rules-json.jsx"></script>
+
+<!-- Component 11 — Onboarding Flow (Vela Sesja 12) -->
+<script type="text/babel" src="variant-onboarding.jsx"></script>
+
+<!-- Component 12 — Add Custom Agent (Vela Sesja 12) -->
+<script type="text/babel" src="variant-add-agent.jsx"></script>
+
+<!-- Component 13 — Notifications Inbox (Vela Sesja 12) -->
+<script type="text/babel" src="variant-notifications.jsx"></script>
+
+<!-- Component 14 — Mobile views (Vela Sesja 12) -->
+<script type="text/babel" src="variant-mobile.jsx"></script>
+
+<script type="text/babel">
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "locale": "en",
+  "globalState": "debating",
+  "errorAgent": "risk",
+  "themeMode": "dark"
+}/*EDITMODE-END*/;
+
+// Form artboards — locale + themeMode synced with Tweaks. fixedState pins one screen state.
+function FormWrap({ locale, themeMode, fixedState, fixedProposal }) {
+  const theme = themeMode === 'light' ? D_LIGHT : D_DARK;
+  const sharedI = I18N[locale];
+  const fI = FORM_I18N[locale];
+  const t = { ...sharedI, ...fI };
+  return <VariantForm locale={locale} themeMode={themeMode} theme={theme} t={t}
+    fixedState={fixedState} fixedProposal={fixedProposal} />;
+}
+
+// Wrapper that drives elapsed time + per-agent staggered modes
+function VariantWrap({ Comp, locale, globalState, errorAgent }) {
+  const [elapsed, setElapsed] = React.useState(0);
+  const [tickKey, setTickKey] = React.useState(0);
+
+  // Reset agent modes whenever globalState changes — usePerAgentMode reads fresh
+  const agentModes = usePerAgentMode(globalState, AGENTS, errorAgent);
+
+  React.useEffect(() => {
+    if (globalState !== 'debating') { setElapsed(0); return; }
+    setElapsed(0);
+    const start = performance.now();
+    let raf;
+    const loop = () => {
+      setElapsed((performance.now() - start) / 1000);
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, [globalState, tickKey]);
+
+  return <Comp locale={locale} mode={globalState} agentModes={agentModes} elapsed={elapsed}
+    onConvene={() => setTickKey((k) => k + 1)} />;
+}
+
+function App() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const [replayD, setReplayD] = React.useState(0);
+
+  return (
+    <>
+      <DesignCanvas minScale={0.08} maxScale={3}>
+        <DCSection id="variants" title="AI Treasury Council · Live Debate Viewer"
+          subtitle="Hybrid direction (granat / navy). Heavy typewriter behaviour, chain-of-thought live, source attribution per claim, ENS subnames, reputation badges. Toggle PL/EN and state from Tweaks. Click artboard for fullscreen focus.">
+
+          <DCArtboard id="D" label="Live Debate Viewer" width={1280} height={860}>
+            <VariantWrap key={'D' + replayD} Comp={VariantD} locale={t.locale} globalState={t.globalState} errorAgent={t.errorAgent} />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="audit" title="L10n + theme audit"
+          subtitle="Pinned reference artboards. Production app ships with live PL/EN + Light/Dark via Tweaks — these are control copies so reviewers can compare without toggling. Catch overflow on long Polish strings + light-theme contrast issues here.">
+
+          <DCArtboard id="D-pl" label="Live Debate · PL (dark)" width={1280} height={860}>
+            <VariantWrap key={'D-pl' + replayD} Comp={VariantD} locale="pl" globalState={t.globalState} errorAgent={t.errorAgent} />
+          </DCArtboard>
+
+          <DCArtboard id="F-pl-filled" label="Form · PL filled" width={520} height={920}>
+            <FormWrap locale="pl" themeMode={t.themeMode} fixedState="filled"
+              fixedProposal={{ action: 'deposit', asset: 'mUSDC', amount: 50000, protocol: 'aave', term: 30, confidence: 0.84,
+                rationale: 'wploc 50k mUSDC na Aave v3 na 30 dni' }} />
+          </DCArtboard>
+
+          <DCArtboard id="F-light-empty" label="Form · EN empty (light)" width={460} height={620}>
+            <FormWrap locale="en" themeMode="light" fixedState="empty" />
+          </DCArtboard>
+
+          <DCArtboard id="F-light-filled" label="Form · EN filled (light)" width={520} height={920}>
+            <FormWrap locale="en" themeMode="light" fixedState="filled"
+              fixedProposal={{ action: 'deposit', asset: 'mUSDC', amount: 50000, protocol: 'aave', term: 30, confidence: 0.84,
+                rationale: 'allocate 50k mUSDC to Aave v3 for 30 days' }} />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="form" title="Component 2 · Proposal Submission Form"
+          subtitle="Free-text-first: user writes intent in plain language, AI parses to structured fields, council rules validate inline, Safe-style preview shows tx + diff before convening. Eight states laid out side-by-side for review.">
+
+          <DCArtboard id="F-empty" label="01 — Empty / default" width={460} height={620}>
+            <FormWrap locale={t.locale} themeMode={t.themeMode} fixedState="empty" />
+          </DCArtboard>
+
+          <DCArtboard id="F-no-wallet" label="02 — Wallet not connected" width={460} height={620}>
+            <FormWrap locale={t.locale} themeMode={t.themeMode} fixedState="noWallet" />
+          </DCArtboard>
+
+          <DCArtboard id="F-no-perm" label="03 — Not a DAO member" width={460} height={620}>
+            <FormWrap locale={t.locale} themeMode={t.themeMode} fixedState="noPermission" />
+          </DCArtboard>
+
+          <DCArtboard id="F-filled" label="04 — Filled · happy path" width={520} height={920}>
+            <FormWrap locale={t.locale} themeMode={t.themeMode} fixedState="filled"
+              fixedProposal={{ action: 'deposit', asset: 'mUSDC', amount: 50000, protocol: 'aave', term: 30, confidence: 0.84,
+                rationale: 'allocate 50k mUSDC to Aave v3 for 30 days' }} />
+          </DCArtboard>
+
+          <DCArtboard id="F-warning" label="05 — Soft cap warning" width={520} height={920}>
+            <FormWrap locale={t.locale} themeMode={t.themeMode} fixedState="filled"
+              fixedProposal={{ action: 'deposit', asset: 'mUSDC', amount: 100000, protocol: 'aave', term: 30, confidence: 0.84,
+                rationale: 'allocate 100k mUSDC to Aave v3 for 30 days' }} />
+          </DCArtboard>
+
+          <DCArtboard id="F-error" label="06 — Hard block (rules)" width={520} height={920}>
+            <FormWrap locale={t.locale} themeMode={t.themeMode} fixedState="filled"
+              fixedProposal={{ action: 'deposit', asset: 'mUSDC', amount: 400000, protocol: 'aave', term: 30, confidence: 0.84,
+                rationale: 'allocate 400k mUSDC to Aave v3 for 30 days' }} />
+          </DCArtboard>
+
+          <DCArtboard id="F-submitting" label="07 — Submitting" width={460} height={620}>
+            <FormWrap locale={t.locale} themeMode={t.themeMode} fixedState="submitting"
+              fixedProposal={{ action: 'deposit', asset: 'mUSDC', amount: 50000, protocol: 'aave', term: 30, confidence: 0.84 }} />
+          </DCArtboard>
+
+          <DCArtboard id="F-success" label="08 — Council convened" width={460} height={620}>
+            <FormWrap locale={t.locale} themeMode={t.themeMode} fixedState="success"
+              fixedProposal={{ action: 'deposit', asset: 'mUSDC', amount: 50000, protocol: 'aave', term: 30, confidence: 0.84 }} />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="dashboard" title="Component 4 · Treasury Dashboard"
+          subtitle="Bloomberg-density home for the DAO. Top bar (network + wallet + gas), side nav, KPI band, live council strip, allocation, positions, recent verdicts, agents, quick propose, terminal-style activity feed. Three states (Idle / Active / Post-verdict) plus light-theme audit. Click an artboard to focus.">
+
+          <DCArtboard id="DASH-active" label="01 — Active debate · dark · EN" width={1440} height={900}>
+            <VariantDash />
+          </DCArtboard>
+
+          <DCArtboard id="DASH-light" label="02 — Active · light · EN" width={1440} height={900}>
+            <VariantDash overrides={{ themeMode: 'light', locale: 'en', state: 'active' }} />
+          </DCArtboard>
+
+          <DCArtboard id="DASH-pl" label="03 — Active · dark · PL" width={1440} height={900}>
+            <VariantDash overrides={{ themeMode: 'dark', locale: 'pl', state: 'active' }} />
+          </DCArtboard>
+
+          <DCArtboard id="DASH-idle" label="04 — Council idle · dark" width={1440} height={900}>
+            <VariantDash overrides={{ themeMode: 'dark', locale: 'en', state: 'idle' }} />
+          </DCArtboard>
+
+          <DCArtboard id="DASH-post" label="05 — Post-verdict · dark" width={1440} height={900}>
+            <VariantDash overrides={{ themeMode: 'dark', locale: 'en', state: 'post-verdict' }} />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="registry" title="Component 5 · Protocol Registry"
+          subtitle="The whitelist. Defines which protocols, contracts, and venues the council is allowed to allocate to — with audits, oracle providers, allocation caps, and the data sources used to evaluate each. Without this, Rules agent has nothing to check against.">
+
+          <DCArtboard id="REG-overview" label="01 — Overview · all protocols · dark · EN" width={1440} height={920}>
+            <VariantReg overrides={{ themeMode: 'dark', locale: 'en', filter: 'all' }} />
+          </DCArtboard>
+
+          <DCArtboard id="REG-detail" label="02 — Aave detail open · dark · EN" width={1440} height={920}>
+            <VariantReg overrides={{ themeMode: 'dark', locale: 'en', filter: 'all', selectedId: 'aave-v3-base' }} />
+          </DCArtboard>
+
+          <DCArtboard id="REG-banned" label="03 — Banned protocol detail · dark · EN" width={1440} height={920}>
+            <VariantReg overrides={{ themeMode: 'dark', locale: 'en', filter: 'all', selectedId: 'gmx-arbitrum' }} />
+          </DCArtboard>
+
+          <DCArtboard id="REG-review" label="04 — Under-review (Morpho) · dark · PL" width={1440} height={920}>
+            <VariantReg overrides={{ themeMode: 'dark', locale: 'pl', filter: 'lending', selectedId: 'morpho-blue' }} />
+          </DCArtboard>
+
+          <DCArtboard id="REG-light" label="05 — Lending only · light · EN" width={1440} height={920}>
+            <VariantReg overrides={{ themeMode: 'light', locale: 'en', filter: 'lending' }} />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="verdict" title="Component 3 · Verdict Card"
+          subtitle="Closing flow after debate concludes. Share-able receipt. Tally hero, per-agent votes (each challengeable → opens Reasoning Chat), counter-arguments raised + their resolutions, multisig sig collection panel with tx preview + expected yield, archive + share + trust-the-verdict footer, follow-up question reconvenes the council with full context.">
+
+          <DCArtboard id="V-pending" label="01 — Multisig pending · 2/3 signed" width={1280} height={1280}>
+            <VariantVerdict overrides={{ state: 'pending' }} />
+          </DCArtboard>
+
+          <DCArtboard id="V-reveal" label="02 — Just landed · queue execution" width={1280} height={1280}>
+            <VariantVerdict overrides={{ state: 'reveal' }} />
+          </DCArtboard>
+
+          <DCArtboard id="V-executed" label="03 — Executed on-chain" width={1280} height={1280}>
+            <VariantVerdict overrides={{ state: 'executed' }} />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="settings" title="Component 6 · Settings"
+          subtitle="The control surface. Rules engine (caps, quorum, thresholds), execution tiers (auto < $10k → DAO vote > $1M), agent roster (LLM model, vote weight, trust gate), treasury & multisig, notifications, danger zone. Sidebar nav, per-section save.">
+
+          <DCArtboard id="S-rules" label="01 — Rules engine" width={1440} height={1100}>
+            <VariantSettings overrides={{ tab: 'rules' }} />
+          </DCArtboard>
+
+          <DCArtboard id="S-execution" label="02 — Execution tiers" width={1440} height={820}>
+            <VariantSettings overrides={{ tab: 'execution' }} />
+          </DCArtboard>
+
+          <DCArtboard id="S-agents" label="03 — Agent roster" width={1440} height={780}>
+            <VariantSettings overrides={{ tab: 'agents' }} />
+          </DCArtboard>
+
+          <DCArtboard id="S-wallet" label="04 — Treasury & multisig" width={1440} height={720}>
+            <VariantSettings overrides={{ tab: 'wallet' }} />
+          </DCArtboard>
+
+          <DCArtboard id="S-notifications" label="05 — Notifications" width={1440} height={680}>
+            <VariantSettings overrides={{ tab: 'notifications' }} />
+          </DCArtboard>
+
+          <DCArtboard id="S-danger" label="06 — Danger zone" width={1440} height={620}>
+            <VariantSettings overrides={{ tab: 'danger' }} />
+          </DCArtboard>
+
+          <DCArtboard id="S-all" label="07 — All sections (snapshot)" width={1440} height={3600}>
+            <VariantSettings overrides={{ tab: 'all' }} />
+          </DCArtboard>
+        </DCSection>
+
+        {/* ──────────── VELA SESJA 12 — 8 NOWYCH KOMPONENTOW ──────────── */}
+
+        <DCSection id="audit-trail" title="Component 7 · Audit Log / Activity Trail"
+          subtitle="Sora trust mech #3 — każdą decyzja Council weryfikowalna na zewnatrz. 0G Storage CIDs + tx hashes per event. Filterable feed (proposals/votes/executions/rules/agents). Export JSON/CSV/PDF receipt z embedded 0G CID + on-chain replay.">
+          <DCArtboard id="A-idle" label="01 — Idle (full feed)" width={1440} height={900}>
+            <VariantAudit overrides={{ state: 'idle' }} />
+          </DCArtboard>
+          <DCArtboard id="A-filtered" label="02 — Filtered (executions)" width={1440} height={900}>
+            <VariantAudit overrides={{ state: 'filtered', filter: 'executions' }} />
+          </DCArtboard>
+          <DCArtboard id="A-loading" label="03 — Loading skeleton" width={1440} height={900}>
+            <VariantAudit overrides={{ state: 'loading' }} />
+          </DCArtboard>
+          <DCArtboard id="A-exporting" label="04 — Export panel open" width={1440} height={900}>
+            <VariantAudit overrides={{ state: 'exporting' }} />
+          </DCArtboard>
+          <DCArtboard id="A-empty" label="05 — Empty (no match)" width={1440} height={900}>
+            <VariantAudit overrides={{ state: 'empty' }} />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="execute-flow" title="Component 8 · On-chain Vote+Execute Flow"
+          subtitle="Phase 1 wagmi v2 UX wzorzec. 5 sub-states od signature collection → queue → timelock countdown → execute → archive. Stage strip pokazuje progress, timelock circular timer odlicza 48h, tx preview decoduje calldata, balance diff pokazuje pre/post.">
+          <DCArtboard id="X-sigs" label="01 — Collecting sigs (3/5)" width={1280} height={1120}>
+            <VariantExecute overrides={{ state: 'collecting_sigs' }} />
+          </DCArtboard>
+          <DCArtboard id="X-threshold" label="02 — Threshold reached (5/5)" width={1280} height={1120}>
+            <VariantExecute overrides={{ state: 'threshold_reached' }} />
+          </DCArtboard>
+          <DCArtboard id="X-timelock" label="03 — Queued in Timelock (48h countdown)" width={1280} height={1240}>
+            <VariantExecute overrides={{ state: 'queued_timelock' }} />
+          </DCArtboard>
+          <DCArtboard id="X-executing" label="04 — Executing on-chain" width={1280} height={1120}>
+            <VariantExecute overrides={{ state: 'executing' }} />
+          </DCArtboard>
+          <DCArtboard id="X-executed" label="05 — Executed + 0G archived" width={1280} height={1240}>
+            <VariantExecute overrides={{ state: 'executed' }} />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="ens" title="Component 9 · ENS Identity Card"
+          subtitle="Phase 2 partner prize ENSGlobal. 7 ENS subnames pod aicouncil.eth: 1 treasury wallet + 5 agentow + parent. Live resolution (mocked) z latency per name. Treasury card pokazuje USDC/ETH balance. Agent cards z portretem + reputation + LLM model.">
+          <DCArtboard id="E-resolved" label="01 — All resolved (default)" width={1280} height={1100}>
+            <VariantEns overrides={{ state: 'resolved' }} />
+          </DCArtboard>
+          <DCArtboard id="E-resolving" label="02 — Resolving (loading)" width={1280} height={1100}>
+            <VariantEns overrides={{ state: 'resolving' }} />
+          </DCArtboard>
+          <DCArtboard id="E-error" label="03 — Resolver error" width={1280} height={1100}>
+            <VariantEns overrides={{ state: 'error' }} />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="rules-json" title="Component 10 · Council Rules JSON Editor"
+          subtitle="Sora trust mech #5 — HITL editor dla on-chain rules. 2-pane: lewa = JSON editor z line numbers + diff highlight + syntax highlight, prawa = compiled preview (caps/governance/protocols cards). Validation panel inline. Multisig sigs przy commit on-chain.">
+          <DCArtboard id="J-viewing" label="01 — Viewing (in sync)" width={1440} height={920}>
+            <VariantRulesJson overrides={{ state: 'viewing' }} />
+          </DCArtboard>
+          <DCArtboard id="J-editing" label="02 — Editing (dirty)" width={1440} height={920}>
+            <VariantRulesJson overrides={{ state: 'editing' }} />
+          </DCArtboard>
+          <DCArtboard id="J-validating" label="03 — Validating (findings)" width={1440} height={920}>
+            <VariantRulesJson overrides={{ state: 'validating' }} />
+          </DCArtboard>
+          <DCArtboard id="J-committing" label="04 — Committing (sigs)" width={1440} height={920}>
+            <VariantRulesJson overrides={{ state: 'committing' }} />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="onboarding" title="Component 11 · Onboarding Flow"
+          subtitle="Pierwszy raz user — 4-step wizard. Connect wallet (4 opcje: Coinbase/Rainbow/MetaMask/WalletConnect), verify DAO membership (token balance), read rules (TLDR), submit first proposal. Completed state z confetti.">
+          <DCArtboard id="O-step1" label="01 — Connect wallet" width={520} height={780}>
+            <VariantOnboarding overrides={{ step: 1 }} />
+          </DCArtboard>
+          <DCArtboard id="O-step2" label="02 — Verify DAO" width={520} height={780}>
+            <VariantOnboarding overrides={{ step: 2 }} />
+          </DCArtboard>
+          <DCArtboard id="O-step3" label="03 — Read rules" width={520} height={780}>
+            <VariantOnboarding overrides={{ step: 3 }} />
+          </DCArtboard>
+          <DCArtboard id="O-step4" label="04 — First proposal" width={520} height={780}>
+            <VariantOnboarding overrides={{ step: 4 }} />
+          </DCArtboard>
+          <DCArtboard id="O-completed" label="05 — Completed" width={520} height={780}>
+            <VariantOnboarding overrides={{ step: 'completed' }} />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="add-agent" title="Component 12 · Add Custom Agent"
+          subtitle="Dla DAO contributors. Form modal: persona type (5 builtin + Custom) + LLM picker (Opus/Sonnet/GPT-4/Gemini z cenami) + ENS subname + vote weight slider + trust gate + system prompt + Test Arena (live test debate przed deploy). Wymaga 5-of-7 multisig.">
+          <DCArtboard id="AG-empty" label="01 — Empty form" width={780} height={1100}>
+            <VariantAddAgent overrides={{ state: 'empty' }} />
+          </DCArtboard>
+          <DCArtboard id="AG-filled" label="02 — Filled (Macro example)" width={780} height={1100}>
+            <VariantAddAgent overrides={{ state: 'filled' }} />
+          </DCArtboard>
+          <DCArtboard id="AG-testing" label="03 — Test arena running" width={780} height={1100}>
+            <VariantAddAgent overrides={{ state: 'testing' }} />
+          </DCArtboard>
+          <DCArtboard id="AG-submitting" label="04 — Submitting for multisig" width={780} height={1100}>
+            <VariantAddAgent overrides={{ state: 'submitting' }} />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="notifications" title="Component 13 · Notifications Inbox"
+          subtitle="Inbox z wszystkimi eventami które user obserwuje. Filtry: all/unread/important/verdicts/sigs/rules. Per-event: icon + title + summary + time + actions (open/dismiss). Mark all read + Settings link.">
+          <DCArtboard id="N-unread" label="01 — With unread (3)" width={780} height={780}>
+            <VariantNotifications overrides={{ state: 'with_unread' }} />
+          </DCArtboard>
+          <DCArtboard id="N-allread" label="02 — All read (caught up)" width={780} height={780}>
+            <VariantNotifications overrides={{ state: 'all_read' }} />
+          </DCArtboard>
+          <DCArtboard id="N-loading" label="03 — Loading" width={780} height={780}>
+            <VariantNotifications overrides={{ state: 'loading' }} />
+          </DCArtboard>
+          <DCArtboard id="N-empty" label="04 — Empty" width={780} height={780}>
+            <VariantNotifications overrides={{ state: 'empty' }} />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="mobile" title="Component 14 · Mobile views (375x812 iPhone)"
+          subtitle="Live Debate w mobile (vertical agent stack zamiast horizontal, bottom sheet z tally, swipe to challenge) + Treasury Dashboard mobile (portfolio hero, swipeable cards, bottom tab bar).">
+          <DCArtboard id="M-debate" label="01 — Live Debate · mobile" width={420} height={870}>
+            <VariantMobileDebate />
+          </DCArtboard>
+          <DCArtboard id="M-dash" label="02 — Treasury Dashboard · mobile" width={420} height={870}>
+            <VariantMobileDash />
+          </DCArtboard>
+        </DCSection>
+      </DesignCanvas>
+
+      <ReasoningChat />
+
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Content" />
+        <TweakRadio label="Language" value={t.locale}
+          options={[{ value: 'en', label: 'EN' }, { value: 'pl', label: 'PL' }]}
+          onChange={(v) => setTweak('locale', v)} />
+        <TweakRadio label="State" value={t.globalState}
+          options={[
+            { value: 'waiting', label: 'Wait' },
+            { value: 'debating', label: 'Debate' },
+            { value: 'done', label: 'Done' },
+            { value: 'error', label: 'Error' },
+          ]}
+          onChange={(v) => setTweak('globalState', v)} />
+          {t.globalState === 'error' && (
+            <TweakSelect label="Failed agent" value={t.errorAgent}
+              options={AGENTS.map(a => ({ value: a.id, label: a.label.en }))}
+              onChange={(v) => setTweak('errorAgent', v)} />
+          )}
+        <TweakSection label="Replay" />
+        <TweakButton label="Replay debate" onClick={() => setReplayD(k => k + 1)} />
+        <TweakSection label="Component 2 · Form" />
+        <TweakRadio label="Theme" value={t.themeMode}
+          options={[{ value: 'dark', label: 'Dark' }, { value: 'light', label: 'Light' }]}
+          onChange={(v) => setTweak('themeMode', v)} />
+      </TweaksPanel>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
