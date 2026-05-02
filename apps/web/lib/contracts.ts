@@ -11,6 +11,7 @@ import {
   AICouncilGovernorAbi,
   TimelockControllerAbi,
   MockUSDCAbi,
+  AgentReputationAbi,
 } from "./abi";
 
 export const CHAIN_ID = 84532; // Base Sepolia
@@ -44,6 +45,18 @@ export const CONTRACTS = {
     symbol: "mUSDC",
     decimals: 6,
     initialTreasuryMUSDC: "1000000", // 1M w timelock
+  },
+  AgentReputation: {
+    address: "0xf3BAb9A2761131f4A9e5BA2d9e6395bea2186f44" as const,
+    abi: AgentReputationAbi,
+    agentAddresses: {
+      bull: "0x0000000000000000000000000000000000000001",
+      bear: "0x0000000000000000000000000000000000000002",
+      risk: "0x0000000000000000000000000000000000000003",
+      tech: "0x0000000000000000000000000000000000000004",
+      sentiment: "0x0000000000000000000000000000000000000005",
+    },
+    initialReputation: 100,
   },
 } as const;
 
