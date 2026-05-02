@@ -22,10 +22,11 @@ from uuid import uuid4
 
 import structlog
 
+from agents.adversarial_agent import run_adversarial
 from agents.anthropic_client import AnthropicClient
 from agents.bear_agent import run_bear
 from agents.bull_agent import run_bull
-from agents.personas import ALL_PERSONAS, PersonaSpec
+from agents.personas import ADVERSARIAL, ALL_PERSONAS, PersonaSpec
 from agents.risk_agent import run_risk
 from agents.sentiment_agent import run_sentiment
 from agents.tech_agent import run_tech
@@ -49,12 +50,16 @@ _aggregator: DataAggregator | None = None
 
 
 # persona_id -> async runner. Keep in sync with ALL_PERSONAS in personas.py.
+# Adversarial is intentionally registered here so the runner is callable when
+# include_adversarial=True is passed to run_debate, but ADVERSARIAL is not
+# part of ALL_PERSONAS (Phase 3 STRETCH, opt-in only).
 PERSONA_RUNNERS = {
     "bull": run_bull,
     "bear": run_bear,
     "risk": run_risk,
     "tech": run_tech,
     "sentiment": run_sentiment,
+    "adversarial": run_adversarial,
 }
 
 
@@ -180,22 +185,37 @@ async def _run_persona_safe(
         return _failure_decision(persona.persona_id, str(exc))
 
 
-async def run_debate(proposal_text: str) -> dict:
+async def run_debate(
+    proposal_text: str,
+    include_adversarial: bool = False,
+) -> dict:
     """
     Run full council debate on a proposal.
 
-    Sesja 21: all 5 personas execute in parallel via asyncio.gather. A failure
-    in one persona does not abort the others - it produces a failure decision
-    that is excluded from consensus weighting.
+    Sesja 21: all 5 personas (Bull/Bear/Risk/Tech/Sentiment) execute in
+    parallel via asyncio.gather. A failure in one persona does not abort the
+    others - it produces a failure decision excluded from consensus weighting.
 
-    Returns dict with decisions (5), consensus, vote_id.
+    Args:
+        proposal_text: The DAO treasury proposal under debate.
+        include_adversarial: When True, also runs the Adversarial Auditor
+            (6th agent, Phase 3 STRETCH) in parallel. Default False to keep
+            the 5-agent contract stable for the MVP and bound token cost.
+
+    Returns:
+        dict with decisions (5 or 6), consensus, vote_id, plus structured
+        cost_per_persona breakdown for audit trail.
     """
     start = time.perf_counter()
     client = get_client()
     aggregator = get_aggregator()
 
+    personas = list(ALL_PERSONAS)
+    if include_adversarial:
+        personas.append(ADVERSARIAL)
+
     persona_sources = await _fetch_global_sources(
-        aggregator, proposal_text, ALL_PERSONAS
+        aggregator, proposal_text, personas
     )
 
     persona_tasks = [
@@ -205,27 +225,36 @@ async def run_debate(proposal_text: str) -> dict:
             client=client,
             sources=persona_sources.get(p.persona_id, []),
         )
-        for p in ALL_PERSONAS
+        for p in personas
     ]
     decisions: list[AgentDecision] = await asyncio.gather(*persona_tasks)
 
     consensus = compute_consensus(decisions)
     total_latency = round(time.perf_counter() - start, 2)
-    total_cost = sum(d.cost_usd or 0.0 for d in decisions)
+    cost_per_persona = {
+        d.persona: round(d.cost_usd or 0.0, 6) for d in decisions
+    }
+    tokens_per_persona = {d.persona: d.tokens_used or 0 for d in decisions}
+    total_cost = round(sum(cost_per_persona.values()), 6)
     failures = [d.persona for d in decisions if FAILURE_MARKER in d.reasoning]
 
     log.info(
         "debate_complete",
         agents_count=len(decisions),
         consensus=consensus,
-        total_cost_usd=round(total_cost, 6),
+        total_cost_usd=total_cost,
+        cost_per_persona=cost_per_persona,
+        tokens_per_persona=tokens_per_persona,
         total_latency_s=total_latency,
         sources_fetched=sum(len(v) for v in persona_sources.values()),
         failures=failures,
+        adversarial_enabled=include_adversarial,
     )
 
     return {
         "decisions": decisions,
         "consensus": consensus,
         "vote_id": str(uuid4()),
+        "cost_per_persona": cost_per_persona,
+        "total_cost_usd": total_cost,
     }

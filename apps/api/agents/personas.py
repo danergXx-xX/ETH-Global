@@ -221,7 +221,11 @@ SENTIMENT = PersonaSpec(
         "Capitulation trades during panic",
         "Ignoring fundamentals because of vibes",
     ],
-    sources_priority=["aixbt", "rss", "coingecko"],
+    # MVP: aixbt adapter not yet registered in data.aggregator (Phase 4 work).
+    # Listing it would silently produce empty fetches; we keep RSS + CoinGecko
+    # which the Sentiment persona can use to triangulate news cycle tone and
+    # volume divergence against price. Re-add "aixbt" once the adapter ships.
+    sources_priority=["rss", "coingecko"],
 )
 
 # ============================================================

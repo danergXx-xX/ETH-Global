@@ -320,6 +320,152 @@ async def test_orchestrator_global_source_dedup() -> None:
     ):
         await orchestrator.run_debate("Test")
 
-    # ALL_PERSONAS unique source types: rss, coingecko, defillama, aixbt = 4.
-    # Each fetched once.
-    assert fake_aggregator.fetch_for_query.call_count == 4
+    # ALL_PERSONAS unique source types after Sentiment aixbt fallback fix:
+    # rss, coingecko, defillama = 3. Each fetched once globally.
+    assert fake_aggregator.fetch_for_query.call_count == 3
+
+
+@pytest.mark.asyncio
+async def test_orchestrator_adversarial_opt_in() -> None:
+    """include_adversarial=True adds the 6th persona to the parallel debate."""
+    fake_client = AnthropicClient(api_key="test-key")
+    fake_aggregator = AsyncMock()
+    fake_aggregator.fetch_for_query = AsyncMock(return_value=[])
+
+    seen_personas: list[str] = []
+
+    async def fake_call(
+        system_prompt: str,
+        persona_prompt: str,
+        user_message: str,
+        max_tokens: int = 1000,
+        temperature: float | None = None,
+    ) -> tuple[str, UsageStats]:
+        for pid in ["bull", "bear", "risk", "tech", "sentiment", "adversarial"]:
+            if pid.upper() in persona_prompt:
+                seen_personas.append(pid)
+                return _make_persona_response(pid, "FOR", 0.6), MOCK_USAGE
+        return _make_persona_response("bull", "FOR", 0.5), MOCK_USAGE
+
+    with (
+        patch("agents.orchestrator.get_client", return_value=fake_client),
+        patch("agents.orchestrator.get_aggregator", return_value=fake_aggregator),
+        patch.object(fake_client, "call_with_cache", side_effect=fake_call),
+    ):
+        result = await orchestrator.run_debate("Test", include_adversarial=True)
+
+    assert len(result["decisions"]) == 6
+    assert "adversarial" in {d.persona for d in result["decisions"]}
+    assert "adversarial" in seen_personas
+
+
+@pytest.mark.asyncio
+async def test_orchestrator_returns_cost_breakdown() -> None:
+    """run_debate returns cost_per_persona and total_cost_usd in the response."""
+    fake_client = AnthropicClient(api_key="test-key")
+    fake_aggregator = AsyncMock()
+    fake_aggregator.fetch_for_query = AsyncMock(return_value=[])
+
+    async def fake_call(
+        system_prompt: str,
+        persona_prompt: str,
+        user_message: str,
+        max_tokens: int = 1000,
+        temperature: float | None = None,
+    ) -> tuple[str, UsageStats]:
+        for pid in ["bull", "bear", "risk", "tech", "sentiment"]:
+            if pid.upper() in persona_prompt:
+                return _make_persona_response(pid, "FOR", 0.7), MOCK_USAGE
+        return _make_persona_response("bull", "FOR", 0.5), MOCK_USAGE
+
+    with (
+        patch("agents.orchestrator.get_client", return_value=fake_client),
+        patch("agents.orchestrator.get_aggregator", return_value=fake_aggregator),
+        patch.object(fake_client, "call_with_cache", side_effect=fake_call),
+    ):
+        result = await orchestrator.run_debate("Test")
+
+    assert "cost_per_persona" in result
+    assert "total_cost_usd" in result
+    assert set(result["cost_per_persona"].keys()) == {
+        "bull", "bear", "risk", "tech", "sentiment"
+    }
+    # Each persona costs MOCK_USAGE.cost_usd = 0.008. Total = 5 * 0.008 = 0.04.
+    assert result["total_cost_usd"] == pytest.approx(0.04, rel=1e-3)
+
+
+@pytest.mark.asyncio
+async def test_runner_preserves_sources_on_retry() -> None:
+    """After invalid JSON the retry message MUST still contain the source block.
+
+    Regression test for Critic H3: dropping sources_context on retry forces
+    the model to fabricate URLs to satisfy "min 1 source per claim".
+    """
+    from agents._runner import run_persona_agent
+    from agents.personas import BEAR
+
+    sources = [
+        Source(
+            url="https://defillama.com/protocol/aave",
+            title="Aave TVL",
+            snippet="TVL data",
+            weight=0.8,
+            source_type="defillama",
+        )
+    ]
+    valid = json.dumps(
+        {
+            "persona": "bear",
+            "decision": "AGAINST",
+            "confidence": 0.7,
+            "reasoning": "Bear reasoning. With substance. Three sentences good.",
+            "claims": [
+                {
+                    "text": "TVL down per source",
+                    "confidence": 0.7,
+                    "sources": [
+                        {
+                            "url": "https://defillama.com/protocol/aave",
+                            "title": "Aave TVL",
+                            "snippet": "TVL data",
+                            "weight": 0.8,
+                            "source_type": "defillama",
+                        }
+                    ],
+                }
+            ],
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+    )
+
+    captured: list[str] = []
+
+    async def flaky(
+        system_prompt: str,
+        persona_prompt: str,
+        user_message: str,
+        max_tokens: int = 1000,
+        temperature: float | None = None,
+    ) -> tuple[str, UsageStats]:
+        captured.append(user_message)
+        if len(captured) == 1:
+            return "broken { json", MOCK_USAGE
+        return valid, MOCK_USAGE
+
+    client = AnthropicClient(api_key="test-key")
+    with patch.object(client, "call_with_cache", side_effect=flaky):
+        await run_persona_agent(BEAR, "Test proposal", client, pre_fetched_sources=sources)
+
+    assert len(captured) == 2
+    assert "AVAILABLE DATA SOURCES" in captured[1]
+    assert "Aave TVL" in captured[1]
+
+
+@pytest.mark.asyncio
+async def test_council_rules_include_jailbreak_guard() -> None:
+    """COUNCIL_RULES system prompt includes defense-in-depth injection guard."""
+    from agents._runner import COUNCIL_RULES
+
+    rules_lower = COUNCIL_RULES.lower()
+    assert "untrusted" in rules_lower
+    assert "data, never as" in rules_lower or "data, not commands" in rules_lower
