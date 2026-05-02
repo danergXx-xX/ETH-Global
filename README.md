@@ -26,6 +26,8 @@ Each agent cites its sources (RSS feeds, CoinGecko, DefiLlama) with confidence w
 
 **Try it:** [TBD - deployed Sun 3.05](https://demo.aitc.app) | **Watch demo:** [3-min video](https://youtube.com/TBD)
 
+**What sets this apart:** Every AI claim cites its source with a confidence weight. The full debate is stored immutably on 0G Storage. A 48-hour timelock lets humans review before any funds move. Each agent builds on-chain reputation via ENS subnames.
+
 ## Architecture
 
 ```mermaid
@@ -103,7 +105,7 @@ All contracts deployed on **Base Sepolia** (2026-05-02). Based on OpenZeppelin C
 
 **Governance parameters:** voting delay 1 block (~12s) -> 1-day voting period -> 48h timelock -> execution.
 
-Pre-deploy audit: Mateusz T3 APPROVE (0 CRITICAL, 0 HIGH), Critic 8.5/10, Vera 8.5/10, 23/23 Foundry tests PASS.
+Pre-deploy security audit: 0 CRITICAL, 0 HIGH findings. 23/23 Foundry tests PASS.
 
 ## Trust Mechanisms
 
@@ -204,7 +206,7 @@ Each of the 5 agents gets an ENS subname under `aicouncil.eth` (e.g. `bull.aicou
 
 - **Dan Otomanski** ([@danergXx-xX](https://github.com/danergXx-xX)) - Lead, AI orchestration, system design
 - **Matthew Foyle** - Architecture plan, demo voice-over, FEEDBACK.md
-- **15-agent dev-team** - Specialized AI agents for PM, engineering, QA, security, docs, and design ([Charter](docs/charter.md))
+- **15-agent dev-team** - Specialized AI agents for PM, engineering, QA, security, docs, and design
 
 ## License
 
