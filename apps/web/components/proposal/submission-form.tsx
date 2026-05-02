@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useTranslations } from "@/lib/i18n";
 import { useTokenBalance } from "@/lib/hooks";
+import { SUGGESTED_PROPOSALS } from "@/lib/mocks/suggested_proposals";
 
 type FormState =
   | "empty"
@@ -79,6 +80,41 @@ export function SubmissionForm({ onSubmit }: SubmissionFormProps) {
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
+        <div className="space-y-1.5">
+          <label
+            htmlFor="suggested-proposal"
+            className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground"
+          >
+            Suggested proposals (demo)
+          </label>
+          <select
+            id="suggested-proposal"
+            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            value=""
+            disabled={
+              currentState === "no_wallet" ||
+              currentState === "no_permission" ||
+              currentState === "submitting"
+            }
+            onChange={(e) => {
+              const picked = SUGGESTED_PROPOSALS.find(
+                (p) => p.id === e.target.value,
+              );
+              if (!picked) return;
+              const text = `${picked.title.en}\n\n${picked.description.en}\n\n${picked.full_context.en}`;
+              setDescription(text);
+              if (state === "success") setState("empty");
+            }}
+          >
+            <option value="">Pick a demo scenario...</option>
+            {SUGGESTED_PROPOSALS.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.title.en}
+              </option>
+            ))}
+          </select>
+        </div>
+
         {currentState === "no_wallet" && (
           <div className="rounded-md border border-amber/20 bg-amber/5 p-3 text-sm text-amber">
             Connect your wallet to submit proposals.

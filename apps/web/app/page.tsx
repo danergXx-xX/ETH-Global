@@ -7,7 +7,7 @@ import { WalletButton } from "@/components/shared/wallet-button";
 import { useTranslations } from "@/lib/i18n";
 import { LiveDebateViewer } from "@/components/debate";
 import { ExecuteFlow } from "@/components/vote";
-import { AuditLog } from "@/components/audit";
+import { AuditLog, HistoricalDebatesPanel } from "@/components/audit";
 import { ENSIdentityCard } from "@/components/ens";
 import { RulesEditor } from "@/components/rules";
 
@@ -80,6 +80,7 @@ export default function Home() {
           </TabsContent>
 
           <TabsContent value="audit">
+            <HistoricalDebatesPanel />
             <AuditLog />
           </TabsContent>
 
