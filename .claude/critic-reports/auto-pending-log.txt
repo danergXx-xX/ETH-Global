@@ -1,6 +1,0 @@
-[2026-05-02T12:11:16Z] Critic auto-pending dla commit a9e0f98c9ea74ed7c65da1b5af7e243f85965959 (lines: 322, branch: feat/storage-0g, msg: feat(storage): abstract interface + 0G adapter + IPFS fallback)
-[2026-05-02T12:11:36Z] Critic auto-pending dla commit c212d9b865933637a4b4487af2ac50eb1c02d3f7 (lines: 166, branch: feat/storage-0g, msg: test(storage): 5 tests - 0G/IPFS happy path, fallback, error handling)
-[2026-05-02T15:50:30Z] Critic auto-pending dla commit 74fdacd507be10682be0b5368c52ab11fde93b15 (lines: 131, branch: feat/feedback-md, msg: docs(feedback): add FEEDBACK.md for ENS + 0G Labs sponsors)
-[2026-05-02T18:08:27Z] Critic auto-pending dla commit bcea915b4bfcb9c522b85438a6ea95fc3432e59b (lines: 604, branch: feat/phase3-source-attribution, msg: feat(agents): Phase 3 source attribution - pre-fetch strategy)
-[2026-05-02T18:12:32Z] Critic auto-pending dla commit 045369dd46e2a6887a7339d71bcceb61dca452ba (lines: 56, branch: feat/phase3-source-attribution, msg: fix(agents): address Critic + Vera review findings)
-[2026-05-02T20:03:00Z] Critic auto-pending dla commit db787f2c421028e1ad29af646475ddfb33afec5f (lines: 1607, branch: feat/agents-full-roster, msg: feat(agents): full 5-persona roster - Bear/Risk/Tech/Sentiment live)

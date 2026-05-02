@@ -1,226 +1,105 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "@/lib/i18n";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LanguageToggle } from "@/components/language-toggle";
-import { AGENTS, type AgentDecision, type Consensus } from "@/lib/types";
+import { WalletButton } from "@/components/shared/wallet-button";
+import { useTranslations } from "@/lib/i18n";
+import { LiveDebateViewer } from "@/components/debate";
+import { ExecuteFlow } from "@/components/vote";
+import { AuditLog } from "@/components/audit";
+import { ENSIdentityCard } from "@/components/ens";
+import { RulesEditor } from "@/components/rules";
+
+function ConclaveLogo() {
+  return (
+    <svg width={28} height={28} viewBox="0 0 28 28" aria-label="Conclave">
+      <circle cx={14} cy={6} r={3} fill="oklch(0.82 0.14 75)" />
+      <circle cx={21.5} cy={11} r={3} fill="oklch(0.74 0.16 152)" />
+      <circle cx={19} cy={20} r={3} fill="oklch(0.70 0.18 22)" />
+      <circle cx={9} cy={20} r={3} fill="oklch(0.74 0.15 245)" />
+      <circle cx={6.5} cy={11} r={3} fill="oklch(0.74 0.16 305)" />
+    </svg>
+  );
+}
 
 export default function Home() {
   const t = useTranslations();
-  const [proposal, setProposal] = useState("");
-  const [decisions, setDecisions] = useState<AgentDecision[]>([]);
-  const [isDebating, setIsDebating] = useState(false);
-  const [consensus, setConsensus] = useState<Consensus | null>(null);
-
-  const tally = {
-    for: decisions.filter((d) => d.decision === "FOR").length,
-    against: decisions.filter((d) => d.decision === "AGAINST").length,
-    abstain: decisions.filter((d) => d.decision === "ABSTAIN").length,
-  };
-
-  function handleConvene() {
-    if (!proposal.trim() || isDebating) return;
-
-    setIsDebating(true);
-    setDecisions([]);
-    setConsensus(null);
-
-    const mockDecisions: AgentDecision[] = AGENTS.map((agent) => {
-      const options = ["FOR", "AGAINST", "ABSTAIN"] as const;
-      const decision = options[Math.floor(Math.random() * 3)];
-      const label = t(`agents.${agent.persona}.label`);
-      return {
-        persona: agent.persona,
-        decision,
-        confidence: Math.round((0.5 + Math.random() * 0.5) * 100) / 100,
-        reasoning: t("agentCard.mockReasoning", { label }),
-        timestamp: new Date().toISOString(),
-      };
-    });
-
-    setTimeout(() => {
-      setDecisions(mockDecisions);
-      const forCount = mockDecisions.filter((d) => d.decision === "FOR").length;
-      const againstCount = mockDecisions.filter(
-        (d) => d.decision === "AGAINST"
-      ).length;
-
-      if (forCount > againstCount) setConsensus("FOR");
-      else if (againstCount > forCount) setConsensus("AGAINST");
-      else setConsensus("SPLIT");
-
-      setIsDebating(false);
-    }, 1500);
-  }
+  const [activeTab, setActiveTab] = useState("debate");
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-8">
-      <header className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">
-            {t("header.title")}
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {t("header.subtitle")}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <LanguageToggle />
-          <Button variant="outline" disabled title="Phase 1 - wallet integration">
-            {t("header.connectWallet")}
-          </Button>
+    <div className="min-h-screen">
+      {/* Top bar */}
+      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+        <div className="mx-auto max-w-6xl flex items-center justify-between px-4 py-3">
+          <div className="flex items-center gap-3">
+            <ConclaveLogo />
+            <div>
+              <h1 className="text-sm font-bold tracking-wider">
+                {t("header.title")}
+              </h1>
+              <p className="text-[10px] text-muted-foreground">
+                {t("header.subtitle")}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <LanguageToggle />
+            <WalletButton />
+          </div>
         </div>
       </header>
 
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="text-base">
-            {t("proposal.cardTitle")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <Textarea
-            placeholder={t("proposal.placeholder")}
-            value={proposal}
-            onChange={(e) => setProposal(e.target.value)}
-            rows={4}
-            disabled={isDebating}
-          />
-          <Button
-            onClick={handleConvene}
-            disabled={!proposal.trim() || isDebating}
-            className="w-full"
-          >
-            {isDebating ? t("proposal.debating") : t("proposal.submit")}
-          </Button>
-        </CardContent>
-      </Card>
+      {/* Main content */}
+      <main className="mx-auto max-w-6xl px-4 py-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="mb-6 bg-secondary/50">
+            <TabsTrigger value="debate" className="text-xs">
+              {t("nav.debate")}
+            </TabsTrigger>
+            <TabsTrigger value="vote" className="text-xs">
+              {t("nav.vote")}
+            </TabsTrigger>
+            <TabsTrigger value="audit" className="text-xs">
+              {t("nav.audit")}
+            </TabsTrigger>
+            <TabsTrigger value="ens" className="text-xs">
+              {t("nav.ens")}
+            </TabsTrigger>
+            <TabsTrigger value="rules" className="text-xs">
+              {t("nav.rules")}
+            </TabsTrigger>
+          </TabsList>
 
-      <div className="mb-6 space-y-3">
-        {AGENTS.map((agent) => {
-          const decision = decisions.find((d) => d.persona === agent.persona);
-          const label = t(`agents.${agent.persona}.label`);
-          return (
-            <AgentCard
-              key={agent.persona}
-              label={label}
-              bias={agent.bias}
-              color={agent.color}
-              decision={decision}
-              isDebating={isDebating}
-            />
-          );
-        })}
-      </div>
+          <TabsContent value="debate">
+            <LiveDebateViewer />
+          </TabsContent>
 
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="text-base">{t("tally.cardTitle")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-6 text-sm">
-            <span className="text-green-400">
-              {t("tally.for")}: {tally.for}
-            </span>
-            <span className="text-red-400">
-              {t("tally.against")}: {tally.against}
-            </span>
-            <span className="text-muted-foreground">
-              {t("tally.abstain")}: {tally.abstain}
-            </span>
-          </div>
-        </CardContent>
-      </Card>
+          <TabsContent value="vote">
+            <ExecuteFlow />
+          </TabsContent>
 
-      <Card>
-        <CardContent className="py-6">
-          <VerdictBanner consensus={consensus} />
-        </CardContent>
-      </Card>
-    </main>
-  );
-}
+          <TabsContent value="audit">
+            <AuditLog />
+          </TabsContent>
 
-function AgentCard({
-  label,
-  bias,
-  color,
-  decision,
-  isDebating,
-}: {
-  label: string;
-  bias: string;
-  color: string;
-  decision?: AgentDecision;
-  isDebating: boolean;
-}) {
-  const t = useTranslations("agentCard");
+          <TabsContent value="ens">
+            <ENSIdentityCard />
+          </TabsContent>
 
-  return (
-    <Card>
-      <CardContent className="flex items-center gap-4 py-4">
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <span className={`font-medium ${color}`}>{label}</span>
-            <Badge variant="outline" className="text-xs">
-              {bias}
-            </Badge>
-          </div>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {isDebating
-              ? t("analyzing")
-              : decision
-                ? decision.reasoning
-                : t("awaiting")}
-          </p>
+          <TabsContent value="rules">
+            <RulesEditor />
+          </TabsContent>
+        </Tabs>
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t border-border py-4 mt-8">
+        <div className="mx-auto max-w-6xl px-4 flex items-center justify-between text-[10px] text-muted-foreground font-mono">
+          <span>CONCLAVE v0.1 - Base Sepolia - ETHGlobal Open Agents 2026</span>
+          <span>0G Storage - Audit Trail Archived</span>
         </div>
-        {decision && <DecisionBadge decision={decision.decision} />}
-      </CardContent>
-    </Card>
-  );
-}
-
-function DecisionBadge({ decision }: { decision: AgentDecision["decision"] }) {
-  const t = useTranslations("decision");
-
-  const config = {
-    FOR: {
-      className: "bg-green-900/50 text-green-400 border-green-800",
-    },
-    AGAINST: {
-      className: "bg-red-900/50 text-red-400 border-red-800",
-    },
-    ABSTAIN: {
-      className: "bg-zinc-800 text-zinc-400 border-zinc-700",
-    },
-  };
-  const c = config[decision];
-  return <Badge className={c.className}>{t(decision)}</Badge>;
-}
-
-function VerdictBanner({ consensus }: { consensus: Consensus | null }) {
-  const t = useTranslations("verdict");
-
-  if (!consensus) {
-    return (
-      <p className="text-center text-sm text-muted-foreground">{t("empty")}</p>
-    );
-  }
-
-  const colorMap = {
-    FOR: "text-green-400",
-    AGAINST: "text-red-400",
-    ABSTAIN: "text-amber-400",
-    SPLIT: "text-amber-400",
-  };
-
-  return (
-    <p className={`text-center text-lg font-semibold ${colorMap[consensus]}`}>
-      {t(consensus)}
-    </p>
+      </footer>
+    </div>
   );
 }
