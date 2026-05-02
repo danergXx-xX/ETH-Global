@@ -28,6 +28,9 @@ feedparser==6.0.11  # RSS
 beautifulsoup4==4.12.3
 lxml==6.1.0
 
+# Rate limiting
+slowapi==0.1.9
+
 # Observability
 structlog==24.4.0
 sentry-sdk[fastapi]==2.18.0

@@ -14,7 +14,7 @@
 |----------|-------|--------|
 | CRITICAL | 0 | - |
 | HIGH | 2 | 1 naprawione (H-01), 1 wymaga Dana (H-02) |
-| MEDIUM | 4 | 2 naprawione (M-01, M-02), 2 rekomendacje (M-03, M-04) |
+| MEDIUM | 4 | 3 naprawione (M-02, M-04 + M-01 defer bo nie exploitable), 1 defer (M-03 postcss) |
 | LOW | 3 | post-hackathon |
 
 **GO/NO-GO: CONDITIONAL GO** - zero CRITICAL, 1 HIGH wymaga 2-minutowej akcji Dana (branch protection). Repo jest gotowe do submission pod warunkiem wlaczenia branch protection na main.
@@ -231,18 +231,14 @@ Weryfikacja 14 zmiennych srodowiskowych. Podsumowanie: **10 OK, 3 brakuje w .env
 
 ### 5.2 Rate Limiting
 
-**BRAK** rate limitingu na zadnym endpoincie. To jest MEDIUM finding (M-04):
+**WDROŻONE** w ramach tego audytu. slowapi.Limiter na `/api/debate`:
 
 - `/api/debate` triggeruje Anthropic API call (kosztowny, ~$0.05-0.15 per call)
-- Bez auth i bez rate limit = kazdy moze spamowac debaty
-- **Rekomendacja:** slowapi.Limiter, np. 10 req/min na /api/debate
-
-```python
-# Przyklad implementacji (3 linie):
-from slowapi import Limiter
-limiter = Limiter(key_func=lambda r: r.client.host)
-app.state.limiter = limiter
-```
+- Bez rate limit = kazdy moze spamowac debaty i generowac koszty
+- **Fix:** slowapi 0.1.9 dodane do requirements.txt, Limiter w main.py
+- **Konfiguracja:** 10 req/min per IP na `/api/debate`, custom 429 JSON response z logowaniem
+- **Pliki:** `apps/api/main.py` (import + limiter init + dekorator + exception handler), `apps/api/requirements.txt` (slowapi==0.1.9)
+- **Nie blokuje:** /health, /api/proposals/encode, /api/proposals/recipients - bez limitu (tanie operacje)
 
 ### 5.3 Hardcoded Values
 
@@ -319,7 +315,7 @@ security:
 | M-01 | MEDIUM | web3 SSRF (CCIP Read) | DEFER | Nie exploitable - web3 nie importowane. Usunac z deps post-hackathon |
 | M-02 | MEDIUM | pytest tmpdir | **NAPRAWIONE** | Upgrade do 9.0.3 w requirements.txt |
 | M-03 | MEDIUM | postcss XSS | DEFER | Build-time only. pnpm update post-hackathon |
-| M-04 | MEDIUM | Brak rate limiting | REKOMENDACJA | slowapi.Limiter na /api/debate (3 linie kodu) |
+| M-04 | MEDIUM | Brak rate limiting | **NAPRAWIONE** | slowapi 0.1.9, 10 req/min per IP na /api/debate |
 | L-01 | LOW | MockUSDC public mint | ACCEPTABLE | Testnet only. Restrict to owner pre-mainnet |
 | L-02 | LOW | /api/debate bez auth | ACCEPTABLE | MVP design. Wallet signature auth post-hackathon |
 | L-03 | LOW | .env.example niekompletny | INFORMACYJNE | Brakuje CORS_ORIGINS, LOG_LEVEL, MODEL_ID |
@@ -338,6 +334,7 @@ security:
 **Co naprawione w tym audycie:**
 - lxml upgrade 5.3.0 -> 6.1.0 (CVE XXE fix)
 - pytest upgrade 8.3.0 -> 9.0.3 (tmpdir fix)
+- Rate limiting: slowapi 0.1.9 na /api/debate (10 req/min per IP) - chroni przed spamowaniem kosztownych wywolan Anthropic API
 
 **Co jest dobrze zrobione:**
 - Zero hardcoded secrets (gitleaks clean, grep clean, git history clean)
@@ -350,12 +347,11 @@ security:
 - CI: gitleaks job w workflow
 
 **Rekomendacje post-hackathon (priorytet):**
-1. Rate limiting (slowapi) na /api/debate
-2. Wallet signature auth na /api/debate
-3. Usunac web3 z dependencies (nie uzywane)
-4. Slither w CI
-5. Wlaczyc Dependabot security updates
-6. MockUSDC: restrict mint to owner/deployer
+1. Wallet signature auth na /api/debate
+2. Usunac web3 z dependencies (nie uzywane)
+3. Slither w CI
+4. Wlaczyc Dependabot security updates
+5. MockUSDC: restrict mint to owner/deployer
 
 ---
 
