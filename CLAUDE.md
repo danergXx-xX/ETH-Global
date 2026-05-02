@@ -224,16 +224,63 @@ Dla zlozonych UX (Phase 1+ debate viewer typewriter, vote/execute UI, source att
 
 ---
 
-## REGULA #59g - AGENT REVIEW PO IMPLEMENTACJI
+## QUALITY GATE WORKFLOW (enforced przez sesje + git hooks, nie autonomous)
 
-Po kazdym commicie znaczacej zmiany:
-1. **Critic T3** - code review (auto-invoke po >50 linii lub nowy plik)
-2. **Vera T3** - rubric scoring (na koniec stage)
-3. **Mateusz T3** - security audit (smart contracts, secrets)
-4. **Quill** - integration/e2e tests (po nowym feature, Sesja 4)
-5. Dopiero PASS -> merge do main (atomic per Phase)
+System NIE jest fully autonomous w quality steps. Quality gates wymagaja **active enforcement** przez kazda sesje + Pattern E git hook + PM-Lead audit.
 
-Sesje NIE merguja same do main. Oddaja na branchu, **PM-Lead audyt + atomic merge**.
+### Co sesja MUSI zrobic PRZED zwroceniem do PM-Lead
+
+Patrz `dev-team/wrap-workflow-mandatory.md` dla pelnego template. Skrocona checklist:
+
+1. **Implementacja** - kod + verification commands run
+2. **Spawn Critic T3** (Agent tool, subagent_type="agent-critic-reviewer") z prompt: "Audit [pliki] za [security, patterns, tests, anti-AI-zmy]"
+3. **Spawn Vera T3** (Agent tool, subagent_type="agent-vera-mentorka-jakosci") z prompt: "Score rubric: faithfulness, completeness, anti-AI-zmy, test coverage"
+4. **Jesli security-relevant** (smart contracts, secrets, auth, input handling): spawn Mateusz T3 (subagent_type="agent-mateusz-bezpiecznik")
+5. **Naprawic findings** - fix commits, NIE zostawiac dla PM-Lead
+6. **Zwrocic raport z verbatim outputs** wszystkich spawnowanych agentow (NIE summary)
+7. **JESLI nie zrobiles wszystkich powyzszych - NIE pisz "done"**, tylko "blocked on quality gate"
+
+### Pattern E git hook (auto-Critic)
+
+Po kazdym commit >50 linii diff w worktree, git post-commit hook auto-spawnuje Critic Agent. Output trafia do `.claude/critic-reports/[commit-hash].md` widoczny dla sesji w nastepnym prompcie. To DODATKOWA warstwa - NIE zastepuje obowiazku sesji z punktu powyzej.
+
+### PM-Lead audit + atomic merge
+
+Sesje NIE merguja same do main. Oddaja na branchu, **PM-Lead audyt + atomic merge per Phase** (patrz `dev-team/decisions/ADR-003-worktree-per-agent.md`).
+
+---
+
+## COMMON ERRORS CATALOG (znane bugi narzedzi + workaround)
+
+| Error | Trigger | Fix |
+|---|---|---|
+| AppleScript "Oczekiwano: ' Znaleziono: nieznany token" | Apostrofy lub cudzyslowy w prompcie iterm-launch.sh | Usun apostrofy/cudzyslowy z prompta. Uzyj backticks lub opisuj bez quotes |
+| `mkstemp failed: File exists` | Stale /tmp/claude-tab-*.scpt po failed iterm-launch | `rm -f /tmp/claude-tab-*.scpt` przed retry |
+| Hook security_reminder_hook.py blokuje unsafe serialization keyword | Mention unsafe Python serialization w handoffie/skripcie (RCE risk) | Uzyj JSON IPC. Zamien unsafe keyword na "JSON serialization" lub "msgpack" |
+| Hook claude-md-growth-guard exit 2 | CLAUDE.md > 300 linii lub rules > 1000 lacznie | Skompresuj sekcje, przenies do skill, lub zostaw flag dla post-sprint cleanup |
+| Pre-commit hook auto-stash zostawia na innym branchu | git commit z pre-commit (gitleaks/anti-AI-zmy) podczas branch switch | Po `git commit` sprawdz `git branch --show-current` przed kolejnymi operacjami |
+| Auto-mode classifier "temporarily unavailable" | Anthropic infrastructure (poza nasza kontrola) | Wait + retry. NIE jest naszym bugiem |
+| Skill 6-verify spawn 80k+ tokenow | Vera T3 + Ada T3 razem | Akceptowalne dla meta-jakosci, NIE dla per-commit. Per commit uzywaj Critic T3 alone (~30-40k) |
+
+---
+
+## AGENT CONSULTATION MATRIX (per typ pracy - obowiazkowa konsultacja)
+
+Konsultacja per typ commit. Dodaje do **wrap workflow** (patrz wyzej) jako baseline + per-domain specifics.
+
+| Typ pracy | Obowiazkowa konsultacja | Tier | Dlaczego |
+|---|---|---|---|
+| **Frontend** (apps/web/, React, shadcn) | **Critic T3** + **Vera T3** + **Mateusz T1** (XSS check, localStorage safety) | T3+T3+T1 | XSS w i18n bundles, localStorage bezpieczna persistencja |
+| **Backend** (apps/api/, FastAPI, endpoints) | **Critic T3** + **Vera T3** + **Mateusz T1** (CORS, input validation, secrets) | T3+T3+T1 | OWASP Top 10 |
+| **Smart contracts** (contracts/) | **Mateusz T3** (PRE-DEPLOY veto power) + **Critic T3** + **Vera T3** | T3 all | Reentrancy, access control, deployer wallet, role decentralization |
+| **Agents** (apps/api/agents/, CrewAI, prompts) | **Critic T3** + **Vera T3** + **Ada T1** (architecture sanity) | T3+T3+T1 | Persona prompt quality, prompt caching correctness |
+| **UX/Mockups** (Cloud Design output) | **Vela T1** (UX best practices) + **Maja T1** (copy PL+EN) | T1+T1 | Accessibility AA, Sora trust mech alignment, copywriting ton crypto-native |
+| **Docs** (README, FEEDBACK.md, ADR) | **Maja T1** (copy review) + **Nina T1** (technical accuracy) | T1+T1 | Sedziowie ETHGlobal czytaja docs |
+| **Deploy/CI** (.github/workflows, infra) | **Mateusz T3** (secrets w CI) + **Rio T1** (DevOps best practices) | T3+T1 | Secrets exposure, deploy safety |
+| **Tests** (tests/, e2e, integration) | **Critic T3** (test logic) + **Quill T1** (coverage strategy) | T3+T1 | Test deterministic, mock external |
+| **Demo video** (Eva Phase 4) | **Maja T1** (script) + **Szymon T1** (sales lens, juror perspective) | T1+T1 | Sedziowie zobacza ten 3-min video |
+
+**Reguła:** jesli typ pracy NIE jest na liscie, defaultuj do Critic T3 + Vera T3.
 
 ---
 
