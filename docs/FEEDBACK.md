@@ -4,7 +4,6 @@ ETHGlobal Open Agents 2026 submission by Dan Otomanski.
 
 Honest, specific feedback from building with ENS and 0G Labs technologies over a 3-day hackathon sprint (May 1-3, 2026). Each item includes what we hit, how we worked around it, and a concrete suggestion.
 
----
 
 ## ENS
 
@@ -56,7 +55,6 @@ We used `viem` throughout our frontend (RainbowKit + wagmi). The `ensjs` library
 
 **Suggestion:** Document the tested `viem` version range in the `ensjs` README and consider a compatibility matrix, or use `peerDependencies` more strictly in package.json.
 
----
 
 ## 0G Labs
 
@@ -64,7 +62,7 @@ We used `viem` throughout our frontend (RainbowKit + wagmi). The `ensjs` library
 
 Our backend is Python (FastAPI + Anthropic SDK + web3.py). The 0G Storage SDK (`@0gfoundation/0g-ts-sdk`) is TypeScript-only. There is no Python package on PyPI and no Python examples in the docs. For a Python backend, this means either wrapping a Node subprocess or reimplementing the protocol from scratch.
 
-**Our workaround:** We implemented direct JSON-RPC calls to the 0G indexer in Python using `httpx` (see `apps/api/storage/zerog.py`). We reverse-engineered the `zgs_uploadSegment` and `zgs_getStatus` RPC methods from the TypeScript SDK source code.
+**Our workaround:** We implemented direct JSON-RPC calls to the 0G indexer in Python using `httpx` (see `storage/zerog.py`). We chose direct JSON-RPC over wrapping a Node subprocess to avoid cross-process communication overhead and keep deployment to a single Python container. We reverse-engineered the `zgs_uploadSegment` and `zgs_getStatus` RPC methods from the TypeScript SDK source code.
 
 **Suggestion:** Ship an official `0g-storage-sdk` package on PyPI with async support (`asyncio` + `httpx`/`aiohttp`). Python is the dominant language for AI/ML backends - for a hackathon focused on AI agents, this is a significant gap. Even a thin wrapper around the JSON-RPC methods would save teams hours.
 
@@ -90,13 +88,13 @@ Matthew's original plan referenced `web3.storage` as the IPFS fallback. We disco
 
 **Our workaround:** We switched to Pinata as our IPFS fallback (simpler JWT auth model). See `apps/api/storage/ipfs.py`. Our factory pattern (`storage/factory.py`) handles automatic fallback from 0G to IPFS with a single env var.
 
-**Suggestion:** This is not strictly 0G feedback, but for hackathon teams building with 0G Storage who need a fallback: the 0G docs could mention that `web3.storage` legacy API is deprecated and suggest Pinata or Filebase as alternatives. Teams will need a fallback during the SDK's early days.
+**Suggestion:** For hackathon teams building with 0G Storage who need a fallback: the 0G docs could mention that `web3.storage` legacy API is deprecated and suggest Pinata or Filebase as alternatives. Teams will need a fallback during the SDK's early days.
 
 ### 5. No testnet faucet integration in docs workflow
 
 The 0G Storage testnet requires a funded wallet for on-chain flow contract interactions. The faucet (faucet.0g.ai) is mentioned but the docs workflow does not include "Step 0: fund your wallet" in the quick start. We spent time debugging upload failures before realizing our testnet wallet had zero balance for the storage contract call.
 
-**Our workaround:** We pre-funded the wallet via the faucet and added balance checks to our upload flow (check balance before attempting upload, surface a clear error).
+**Our workaround:** We pre-funded the wallet via the faucet before attempting uploads.
 
 **Suggestion:** Add wallet funding as Step 1 in the quick start guide, with a direct faucet link and minimum balance requirement. Even better: include a `checkBalance()` helper in the SDK that throws a descriptive error ("Insufficient balance for storage contract - visit faucet.0g.ai") instead of a raw RPC error.
 
@@ -108,13 +106,12 @@ After uploading data to 0G Storage, we needed a gateway URL to retrieve the cont
 
 **Suggestion:** Document the gateway URL format in the SDK docs and include it in the upload response. Ideally the SDK `upload()` return value should include `gatewayUrl` alongside `rootHash`.
 
----
 
 ## Cross-cutting observations
 
 ### CrewAI + 0G + web3 dependency conflict
 
-We originally planned to use CrewAI for agent orchestration (per ETHGlobal brief). However, `crewai==0.83.0` requires `pydantic<2.8` while `web3==7.5.0` requires `pydantic>=2.10`. This made it impossible to run a single Python environment with both CrewAI (agents) and web3.py (0G Storage + Governor contract reads).
+We originally planned to use CrewAI for agent orchestration (per ETHGlobal brief). However, `crewai==0.83.0` (via `langchain-core`) requires `pydantic>=2.10` while `fastapi==0.115.0` requires `pydantic<2.10`. This made it impossible to run a single Python environment with both CrewAI (agents) and FastAPI (API layer for 0G Storage + Governor contract reads).
 
 **Resolution:** We cut CrewAI entirely and built orchestration with bare Anthropic SDK + `asyncio.gather()`. This actually reduced our attack surface and simplified deployment (see `dev-team/decisions/ADR-002`). The 0G integration worked cleanly once CrewAI was removed.
 
