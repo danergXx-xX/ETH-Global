@@ -195,6 +195,29 @@ class AgentReputation(BaseModel):
 # HEALTH + META
 # ============================================================
 
+# ============================================================
+# PROPOSAL ENCODING (Phase 1D - execution payload)
+# ============================================================
+
+class ProposalEncodeRequest(BaseModel):
+    """Request to encode treasury action into Governor-compatible calldata."""
+    action: TransferAction
+
+
+class ProposalEncoded(BaseModel):
+    """Encoded calldata ready for Governor.propose()."""
+    target: str = Field(..., pattern=r"^0x[a-fA-F0-9]{40}$")
+    value: int = Field(default=0, ge=0)
+    calldata: str = Field(..., pattern=r"^0x[a-fA-F0-9]+$")
+    signature: str
+    description: str
+    basescan_url: str | None = None
+
+
+# ============================================================
+# HEALTH + META
+# ============================================================
+
 class HealthResponse(BaseModel):
     status: Literal["ok", "degraded", "down"] = "ok"
     version: str = "0.1.0"

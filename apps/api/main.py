@@ -5,14 +5,15 @@ from datetime import datetime, timezone
 from typing import AsyncIterator
 
 import structlog
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from config import get_settings
+from governance.proposals import encode_mock_usdc_transfer
 from logging_config import RequestIDMiddleware, setup_logging
 from orchestrator import run_debate
-from schemas import HealthResponse
+from schemas import HealthResponse, ProposalEncodeRequest, ProposalEncoded
 import httpx
 
 from storage.factory import StorageConfigError, StorageFallbackError, upload_with_fallback
@@ -105,3 +106,22 @@ async def debate(req: DebateRequest) -> DebateResponse:
         audit_trail_gateway=audit_gateway,
         storage_provider=provider,
     )
+
+
+@app.post("/api/proposals/encode")
+async def encode_proposal(request: ProposalEncodeRequest) -> ProposalEncoded:
+    """Encode treasury action into Governor-compatible calldata."""
+    log.info(
+        "encode_proposal_requested",
+        action_type=request.action.type,
+        recipient=request.action.recipient,
+    )
+    try:
+        encoded = encode_mock_usdc_transfer(
+            request.action.recipient,
+            request.action.amount_wei,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+    return ProposalEncoded(**encoded)
