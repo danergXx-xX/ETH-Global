@@ -186,13 +186,13 @@ curl -X POST http://localhost:8000/api/debate \
 
 ## Testing
 
-120+ tests across three layers:
+140+ tests across three layers:
 
 | Layer | Framework | Tests | Command |
 |-------|-----------|-------|---------|
 | **Smart Contracts** | Foundry | 23 | `cd contracts && forge test` |
 | **Backend API** | pytest | 97 | `cd apps/api && python -m pytest` |
-| **E2E + Integration** | Playwright | 3 specs | `npx playwright test` |
+| **E2E + Integration** | Playwright | 21 (3 specs) | `npx playwright test` |
 
 **Smoke test checklist** (pre-deploy):
 - `curl /health` returns `{"status":"ok"}`

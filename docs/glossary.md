@@ -62,7 +62,7 @@ The AI model behind each agent. AI Treasury Council uses Anthropic's Claude API.
 Every claim an agent makes includes a citation: the URL where the data came from, a relevance snippet, and a confidence weight (0.0 to 1.0). Users can click through to verify any statement.
 
 **Prompt Caching (Anthropic SDK)**
-A technique that reuses parts of previous AI conversations to reduce cost and latency. When 5 agents analyze the same proposal, shared context is cached so each agent does not re-process it from scratch.
+A technique that reuses repeated prompt prefixes within API calls to reduce cost and latency. When 5 agents analyze the same proposal, the shared system prompt and proposal text are cached so each agent call does not re-process the identical prefix.
 
 **Consensus**
 The combined outcome after all 5 agents vote. Simple majority: if more agents vote FOR than AGAINST, the consensus is FOR. If votes are tied, the result is SPLIT. ABSTAIN votes do not count toward either side.
