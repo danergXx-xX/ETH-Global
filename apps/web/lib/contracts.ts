@@ -19,26 +19,26 @@ export const BASESCAN_URL = "https://sepolia.basescan.org";
 
 export const CONTRACTS = {
   CouncilToken: {
-    address: "0x5fe2a5e971d9faaff9cc0b0c9981da44fefc4381" as const,
+    address: "0x5fE2a5E971d9FAafF9cC0b0C9981da44fefC4381" as const,
     abi: CouncilTokenAbi,
     name: "AI Council Token",
     symbol: "AICT",
     type: "ERC20Votes",
   },
   TimelockController: {
-    address: "0x76a69bb6aef69a2e76fa6c9632ff6ca101441b0f" as const,
+    address: "0x76A69Bb6aeF69A2E76fA6C9632Ff6Ca101441B0f" as const,
     abi: TimelockControllerAbi,
     minDelaySeconds: 172800, // 48h - Sora trust mech #2
   },
   AICouncilGovernor: {
-    address: "0x1f95c796c5dc47d08b20cf3220a2afa995e301f0" as const,
+    address: "0x1f95C796C5dc47d08B20CF3220a2AFa995e301F0" as const,
     abi: AICouncilGovernorAbi,
     votingDelaySeconds: 12,
     votingPeriodDays: 1,
     quorumPercentage: 60,
   },
   MockUSDC: {
-    address: "0x606ede7755131e6206a29b67d88761eebb3bb59d" as const,
+    address: "0x606EDE7755131e6206A29B67d88761eEbb3Bb59d" as const,
     abi: MockUSDCAbi,
     name: "Mock USDC",
     symbol: "mUSDC",
