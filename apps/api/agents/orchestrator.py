@@ -21,7 +21,7 @@ import structlog
 from agents.anthropic_client import AnthropicClient
 from agents.bull_agent import run_bull
 from agents.personas import ALL_PERSONAS, PersonaSpec
-from agents.tools import fetch_sources_for_persona
+
 from config import get_settings
 from data.aggregator import DataAggregator
 from schemas import AgentDecision, Source

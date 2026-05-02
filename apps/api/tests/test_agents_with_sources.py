@@ -15,9 +15,9 @@ import pytest
 
 from agents.anthropic_client import AnthropicClient, UsageStats
 from agents.bull_agent import run_bull
-from agents.orchestrator import _fetch_global_sources, run_debate
-from agents.personas import ALL_PERSONAS, BULL
-from agents.tools import fetch_sources_for_persona, format_sources_context
+from agents.orchestrator import _fetch_global_sources
+from agents.personas import ALL_PERSONAS
+from agents.tools import format_sources_context
 from data.aggregator import DataAggregator
 from schemas import AgentDecision, Source
 
