@@ -160,7 +160,21 @@ cd tests && npx playwright test
 
 ---
 
-## 6. Bug severity
+## 6. Rekomendacje dla engineerow (Critic review)
+
+**Aiko (Phase 1):** Dodaj `data-testid` atrybuty do kluczowych komponentow UI:
+- `data-testid="decision-badge"` na Badge w DecisionBadge
+- `data-testid="verdict-banner"` na VerdictBanner p element
+- `data-testid="agent-card"` na kazdej AgentCard
+- `data-testid="proposal-form"` na Card z textarea
+
+Bez data-testid testy e2e opieraja sie na selektorach CSS (np. `[class*="bg-green-900"]`) ktore sa kruche przy zmianach Tailwind.
+
+**Hugo (Phase 1):** Backend nie jest auto-startowany przez Playwright webServer (wymaga Python venv). Integration testy wymagaja recznego `uvicorn main:app --port 8000`. Rozwazyc dockeryzacje backendu lub skrypt `scripts/start-api.sh` dla CI.
+
+---
+
+## 7. Bug severity
 
 | Severity | Definicja | Przyklad |
 |----------|-----------|---------|

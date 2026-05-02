@@ -65,12 +65,10 @@ test.describe("Proposal flow - happy path", () => {
     await page.locator("textarea").fill(PROPOSAL_TEXT);
     await page.locator("button", { hasText: /Convene Council|Zwołaj Radę/ }).click();
 
-    const verdictCard = page.locator('[class*="card"]').last();
-    await expect(
-      verdictCard.locator("p.font-semibold"),
-    ).toBeVisible({ timeout: DEBATE_TIMEOUT });
+    const verdictText = page.locator("p.font-semibold");
+    await expect(verdictText).toBeVisible({ timeout: DEBATE_TIMEOUT });
 
-    const verdictText = await verdictCard.locator("p.font-semibold").textContent();
+    const text = await verdictText.textContent();
     const validVerdicts = [
       "Council recommends: APPROVE",
       "Council recommends: REJECT",
@@ -79,7 +77,7 @@ test.describe("Proposal flow - happy path", () => {
       "Rada rekomenduje: ODRZUCIĆ",
       "Rada podzielona - brak konsensusu",
     ];
-    expect(validVerdicts.some((v) => verdictText?.includes(v))).toBe(true);
+    expect(validVerdicts.some((v) => text?.includes(v))).toBe(true);
   });
 
   test("submit button disabled when textarea empty", async ({ page }) => {
