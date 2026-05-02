@@ -8,16 +8,17 @@ Phase 0: Only Bull calls real Anthropic API. Bear/Risk/Tech/Sentiment return moc
 
 from __future__ import annotations
 
-import logging
 import time
 from datetime import datetime, timezone
 from uuid import uuid4
+
+import structlog
 
 from agents.anthropic_client import AnthropicClient
 from agents.bull_agent import run_bull
 from schemas import AgentDecision
 
-logger = logging.getLogger(__name__)
+log = structlog.get_logger()
 
 _client: AnthropicClient | None = None
 
@@ -142,15 +143,13 @@ async def run_debate(proposal_text: str) -> dict:
 
     total_cost = sum(d.cost_usd or 0.0 for d in all_decisions)
 
-    logger.info(
+    log.info(
         "debate_complete",
-        extra={
-            "agents_count": len(all_decisions),
-            "consensus": consensus,
-            "total_cost_usd": total_cost,
-            "total_latency_s": total_latency,
-            "bull_live": True,
-        },
+        agents_count=len(all_decisions),
+        consensus=consensus,
+        total_cost_usd=total_cost,
+        total_latency_s=total_latency,
+        bull_live=True,
     )
 
     return {

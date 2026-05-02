@@ -1,15 +1,15 @@
 """CoinGecko free tier API adapter with rate limiting and caching."""
 from __future__ import annotations
 
-import logging
 import re
 import time
 
 import httpx
+import structlog
 
 from schemas import Source
 
-logger = logging.getLogger(__name__)
+log = structlog.get_logger()
 
 BASE_URL = "https://api.coingecko.com/api/v3"
 CACHE_TTL_SECONDS = 300
@@ -75,14 +75,14 @@ class CoinGeckoSource:
             return [source]
         except httpx.HTTPStatusError as exc:
             if exc.response.status_code == 429:
-                logger.warning("coingecko_rate_limited", extra={"token": token_id})
+                log.warning("coingecko_rate_limited", token=token_id)
                 cached_stale = self._get_cached(token_id, ignore_ttl=True)
                 if cached_stale:
                     return [cached_stale]
-            logger.error("coingecko_http_error", extra={"status": exc.response.status_code, "token": token_id})
+            log.error("coingecko_http_error", status=exc.response.status_code, token=token_id)
             return []
         except (httpx.RequestError, httpx.TimeoutException):
-            logger.exception("coingecko_request_error", extra={"token": token_id})
+            log.exception("coingecko_request_error", token=token_id)
             return []
 
     def _get_client(self) -> httpx.AsyncClient:

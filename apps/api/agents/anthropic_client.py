@@ -13,15 +13,15 @@ Combined system+persona exceeds this threshold.
 from __future__ import annotations
 
 import asyncio
-import logging
 import os
 import time
 from dataclasses import dataclass
 from typing import Any
 
 import anthropic
+import structlog
 
-logger = logging.getLogger(__name__)
+log = structlog.get_logger()
 
 MODEL = "claude-opus-4-7"
 
@@ -132,17 +132,15 @@ class AnthropicClient:
                     latency_s=round(latency, 2),
                 )
 
-                logger.info(
+                log.info(
                     "anthropic_call",
-                    extra={
-                        "model": MODEL,
-                        "input_tokens": input_tokens,
-                        "output_tokens": output_tokens,
-                        "cache_read": cache_read,
-                        "cache_creation": cache_creation,
-                        "cost_usd": cost,
-                        "latency_s": stats.latency_s,
-                    },
+                    model=MODEL,
+                    input_tokens=input_tokens,
+                    output_tokens=output_tokens,
+                    cache_read=cache_read,
+                    cache_creation=cache_creation,
+                    cost_usd=cost,
+                    latency_s=stats.latency_s,
                 )
 
                 text = response.content[0].text if response.content else ""
@@ -151,9 +149,10 @@ class AnthropicClient:
             except anthropic.RateLimitError as e:
                 last_error = e
                 delay = RETRY_BASE_DELAY * (2**attempt)
-                logger.warning(
+                log.warning(
                     "rate_limit_retry",
-                    extra={"attempt": attempt + 1, "delay_s": delay},
+                    attempt=attempt + 1,
+                    delay_s=delay,
                 )
                 await asyncio.sleep(delay)
 
@@ -161,9 +160,10 @@ class AnthropicClient:
                 last_error = e
                 if attempt < MAX_RETRIES - 1 and e.status_code and e.status_code >= 500:
                     delay = RETRY_BASE_DELAY * (2**attempt)
-                    logger.warning(
+                    log.warning(
                         "server_error_retry",
-                        extra={"attempt": attempt + 1, "status": e.status_code},
+                        attempt=attempt + 1,
+                        status=e.status_code,
                     )
                     await asyncio.sleep(delay)
                 else:

@@ -2,14 +2,14 @@
 from __future__ import annotations
 
 import asyncio
-import logging
 import time
 
 import feedparser
+import structlog
 
 from schemas import Source
 
-logger = logging.getLogger(__name__)
+log = structlog.get_logger()
 
 FEEDS: dict[str, str] = {
     "coindesk": "https://www.coindesk.com/arc/outboundfeeds/rss/",
@@ -73,10 +73,10 @@ class RSSSource:
             parsed = await asyncio.to_thread(feedparser.parse, feed_url)
             entries: list[dict] = parsed.get("entries", [])
             self._cache[feed_name] = (now, entries)
-            logger.info("rss_feed_parsed", extra={"feed": feed_name, "count": len(entries)})
+            log.info("rss_feed_parsed", feed=feed_name, count=len(entries))
             return entries
         except Exception:  # feedparser has no specific exception hierarchy
-            logger.exception("rss_parse_error", extra={"feed": feed_name})
+            log.exception("rss_parse_error", feed=feed_name)
             if cached:
                 return cached[1]
             return []
