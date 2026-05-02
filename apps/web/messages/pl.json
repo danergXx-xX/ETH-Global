@@ -1,36 +1,36 @@
 {
   "header": {
-    "title": "AI Treasury Council",
-    "subtitle": "Wieloagentowa rada zarządzająca skarbcem DAO",
+    "title": "CONCLAVE",
+    "subtitle": "AI Treasury Council - Podgląd debaty na żywo",
     "connectWallet": "Połącz portfel"
+  },
+  "nav": {
+    "debate": "Debata",
+    "vote": "Głosowanie + Egzekucja",
+    "audit": "Ścieżka audytu",
+    "ens": "Tożsamość ENS",
+    "rules": "Zasady Rady"
   },
   "proposal": {
     "cardTitle": "Nowa propozycja",
-    "placeholder": "Opisz propozycję treasury...",
+    "placeholder": "Opisz propozycję alokacji skarbca...",
     "submit": "Zwołaj Radę",
     "debating": "Debata w toku..."
   },
   "agents": {
-    "bull": {
-      "label": "Optymista"
-    },
-    "bear": {
-      "label": "Sceptyk"
-    },
-    "risk": {
-      "label": "Ryzyko"
-    },
-    "tech": {
-      "label": "Technologia"
-    },
-    "sentiment": {
-      "label": "Sentyment"
-    }
+    "bull": { "label": "Optymista" },
+    "bear": { "label": "Sceptyk" },
+    "risk": { "label": "Ryzyko" },
+    "tech": { "label": "Technologia" },
+    "sentiment": { "label": "Sentyment" }
   },
   "agentCard": {
     "analyzing": "Analizuję propozycję...",
-    "awaiting": "Oczekuje na propozycję",
-    "mockReasoning": "Analiza propozycji z perspektywy {label}. To jest placeholder - w Phase 1 zostanie zastąpiony prawdziwą odpowiedzią agenta AI."
+    "awaiting": "Oczekuję na propozycję",
+    "error": "Błąd agenta - ponów próbę",
+    "mockReasoning": "Analiza z perspektywy {label}.",
+    "rep": "Rep",
+    "statements": "wypowiedzi"
   },
   "tally": {
     "cardTitle": "Wyniki głosowania",
@@ -45,9 +45,72 @@
   },
   "verdict": {
     "empty": "Złóż propozycję, aby rozpocząć debatę",
+    "label": "Werdykt Rady",
     "FOR": "Rada rekomenduje: PRZYJĄĆ",
     "AGAINST": "Rada rekomenduje: ODRZUCIĆ",
     "ABSTAIN": "Rada nie osiągnęła konsensusu",
     "SPLIT": "Rada podzielona - brak konsensusu"
+  },
+  "audit": {
+    "title": "Ścieżka audytu",
+    "filters": {
+      "all": "Wszystkie",
+      "proposals": "Wnioski",
+      "votes": "Głosy agentów",
+      "verdicts": "Werdykty",
+      "executions": "Egzekucje on-chain",
+      "rules": "Zmiany zasad",
+      "agents": "Cykl życia agentów"
+    },
+    "stats": { "total": "Łącznie wydarzeń", "last24h": "Ostatnie 24h", "proposals": "Wnioski", "executions": "Egzekucje", "archive": "Archiwum" },
+    "live_badge": "0G STORAGE - AKTYWNE",
+    "footer": "ZARCHIWIZOWANE - 0G STORAGE - 4.2 MB",
+    "refresh": "Odśwież",
+    "export_btn": "Eksport",
+    "verify": "Weryfikuj",
+    "empty": "Brak wydarzeń pasujących do filtra"
+  },
+  "execute": {
+    "title": "Egzekucja",
+    "stages": {
+      "sigs": { "label": "Podpisy multisig", "desc": "Wymagane 5 z 7" },
+      "queue": { "label": "Kolejka Timelock", "desc": "Opóźnienie 48h" },
+      "wait": { "label": "ETA Timelock", "desc": "Okres oczekiwania" },
+      "execute": { "label": "Egzekucja", "desc": "Pojedyncza tx na Base" },
+      "archive": { "label": "Archiwum 0G", "desc": "CID zarejestrowany" }
+    },
+    "timelock": { "remaining": "pozostało z opóźnienia 48h", "eta": "ETA" },
+    "buttons": { "sign": "Podpisz multisig", "queue": "Kolejkuj w Timelock", "execute_disabled": "Egzekucja (oczekiwanie)", "view_basescan": "Zobacz na Basescan", "view_archive": "Zobacz archiwum 0G", "demo_next": "Demo: następny etap", "pending": "W toku..." },
+    "signers": "Podpisy multisig",
+    "tx_preview": "Podgląd transakcji",
+    "target": "Cel",
+    "function": "Funkcja",
+    "gas_estimate": "Szacowany gas",
+    "executed_label": "WYKONANE"
+  },
+  "ens": {
+    "title": "Tożsamość ENS",
+    "parent": "Nadrzędny ENS",
+    "treasury": { "label": "Portfel skarbca", "balance": "Saldo na żywo", "records": "Rekordy tekstowe" },
+    "agents": { "label": "Agenci Rady - {count} subdomen", "avgLatency": "Średnie opóźnienie - {ms}ms" },
+    "states": { "resolved": "Rozwiązany", "resolving": "Rozwiązywanie", "error": "Błąd", "not_found": "Nie znaleziono" }
+  },
+  "rules": {
+    "title": "Zasady Rady",
+    "states": { "in_sync": "Zsynchronizowane on-chain", "uncommitted": "Niezatwierdzone zmiany", "committing": "Zatwierdzanie ({signed}/{required})" },
+    "panes": { "json": "JSON - rules.json", "preview": "Podgląd kompilacji" },
+    "buttons": { "edit": "Edytuj zasady", "discard": "Odrzuć", "validate": "Waliduj", "commit": "Zatwierdź on-chain", "sign": "Podpisz", "cancel": "Anuluj" },
+    "validation": { "title": "Walidacja", "errors": "{n} błędów", "warnings": "{n} ostrzeżeń", "resolved": "(rozwiązane)" }
+  },
+  "common": {
+    "challenge": "Wykaz",
+    "back": "Wstecz",
+    "continue": "Dalej",
+    "cancel": "Anuluj",
+    "discard": "Odrzuć",
+    "save": "Zapisz",
+    "loading": "Ładowanie",
+    "verify_basescan": "Zweryfikuj na Basescan",
+    "view_archive": "Zobacz archiwum 0G"
   }
 }
