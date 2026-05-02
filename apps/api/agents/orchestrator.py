@@ -1,9 +1,11 @@
-# Phase 0: Bull live, pozostali mock. Phase 1 = wszyscy live.
+# Phase 0: Bull live, remaining mock. Phase 1 = all live.
+# Phase 3: source attribution wired - pre-fetch sources, inject into agents.
 """
 Debate orchestrator for AI Treasury Council.
 
 Runs all 5 agents on a proposal and returns consensus.
 Phase 0: Only Bull calls real Anthropic API. Bear/Risk/Tech/Sentiment return mocks.
+Phase 3: Pre-fetches sources via DataAggregator, passes to agents.
 """
 
 from __future__ import annotations
@@ -16,12 +18,16 @@ import structlog
 
 from agents.anthropic_client import AnthropicClient
 from agents.bull_agent import run_bull
+from agents.personas import ALL_PERSONAS, PersonaSpec
+from agents.tools import fetch_sources_for_persona
 from config import get_settings
-from schemas import AgentDecision
+from data.aggregator import DataAggregator
+from schemas import AgentDecision, Source
 
 log = structlog.get_logger()
 
 _client: AnthropicClient | None = None
+_aggregator: DataAggregator | None = None
 
 
 def get_client() -> AnthropicClient:
@@ -36,13 +42,85 @@ def get_client() -> AnthropicClient:
     return _client
 
 
+def get_aggregator() -> DataAggregator:
+    """Lazy singleton for DataAggregator. Shared across agents to reuse caches."""
+    global _aggregator
+    if _aggregator is None:
+        _aggregator = DataAggregator()
+    return _aggregator
+
+
+async def _fetch_global_sources(
+    aggregator: DataAggregator,
+    proposal_text: str,
+    personas: list[PersonaSpec],
+) -> dict[str, list[Source]]:
+    """
+    Pre-fetch sources for all personas, deduplicating API calls.
+
+    Strategy: collect unique source types across all personas,
+    fetch each once, then distribute to personas by their priority.
+    This avoids hitting CoinGecko/DefiLlama rate limits with duplicate calls.
+    """
+    all_source_types: set[str] = set()
+    for persona in personas:
+        all_source_types.update(persona.sources_priority)
+
+    global_cache: dict[str, list[Source]] = {}
+    for source_type in all_source_types:
+        sources = await aggregator.fetch_for_query(
+            proposal_text,
+            source_priority=[source_type],
+            limit_per_source=3,
+        )
+        global_cache[source_type] = sources
+
+    persona_sources: dict[str, list[Source]] = {}
+    for persona in personas:
+        combined: list[Source] = []
+        for src_type in persona.sources_priority:
+            combined.extend(global_cache.get(src_type, []))
+        persona_sources[persona.persona_id] = combined
+
+    log.info(
+        "global_sources_fetched",
+        source_types=list(all_source_types),
+        total_unique_sources=sum(len(v) for v in global_cache.values()),
+        personas_served=len(persona_sources),
+    )
+    return persona_sources
+
+
 def _mock_decision(
     persona: str,
     decision: str,
     confidence: float,
     reasoning: str,
+    sources: list[Source] | None = None,
 ) -> AgentDecision:
     """Generate a mock AgentDecision for Phase 0 non-Bull agents."""
+    mock_sources = [
+        {
+            "url": "https://defillama.com",
+            "title": f"Mock source for {persona}",
+            "snippet": "This is a placeholder source. Real data in Phase 1.",
+            "weight": 0.5,
+            "source_type": "defillama",
+        }
+    ]
+
+    if sources:
+        mock_sources = [
+            {
+                "url": s.url,
+                "title": s.title,
+                "snippet": s.snippet,
+                "weight": s.weight,
+                "source_type": s.source_type,
+            }
+            for s in sources[:2]
+        ] or mock_sources
+
     return AgentDecision(
         persona=persona,  # type: ignore[arg-type]
         decision=decision,  # type: ignore[arg-type]
@@ -52,15 +130,7 @@ def _mock_decision(
             {
                 "text": f"Mock claim from {persona} agent (Phase 0 placeholder)",
                 "confidence": confidence,
-                "sources": [
-                    {
-                        "url": "https://defillama.com",
-                        "title": f"Mock source for {persona}",
-                        "snippet": "This is a placeholder source. Real data in Phase 1.",
-                        "weight": 0.5,
-                        "source_type": "defillama",
-                    }
-                ],
+                "sources": mock_sources,
             }
         ],
         timestamp=datetime.now(timezone.utc),
@@ -69,8 +139,8 @@ def _mock_decision(
     )
 
 
-def _generate_mocks() -> list[AgentDecision]:
-    """Generate mock decisions for Bear, Risk, Tech, Sentiment."""
+def _generate_mocks(persona_sources: dict[str, list[Source]]) -> list[AgentDecision]:
+    """Generate mock decisions for Bear, Risk, Tech, Sentiment with real sources."""
     return [
         _mock_decision(
             persona="bear",
@@ -81,6 +151,7 @@ def _generate_mocks() -> list[AgentDecision]:
                 "Smart contract risk and market volatility require caution. "
                 "Waiting for Phase 1 live analysis with real data sources."
             ),
+            sources=persona_sources.get("bear"),
         ),
         _mock_decision(
             persona="risk",
@@ -91,6 +162,7 @@ def _generate_mocks() -> list[AgentDecision]:
                 "Expected value calculation requires live market feeds. "
                 "Abstaining until Phase 1 data integration is complete."
             ),
+            sources=persona_sources.get("risk"),
         ),
         _mock_decision(
             persona="tech",
@@ -101,6 +173,7 @@ def _generate_mocks() -> list[AgentDecision]:
                 "No critical vulnerabilities in public audit reports. "
                 "Technical risk appears manageable based on available data."
             ),
+            sources=persona_sources.get("tech"),
         ),
         _mock_decision(
             persona="sentiment",
@@ -111,6 +184,7 @@ def _generate_mocks() -> list[AgentDecision]:
                 "No extreme fear or greed signals detected. "
                 "Social media volume within normal range."
             ),
+            sources=persona_sources.get("sentiment"),
         ),
     ]
 
@@ -133,14 +207,23 @@ async def run_debate(proposal_text: str) -> dict:
     """
     Run full council debate on a proposal.
 
+    Phase 3: Pre-fetches sources globally (shared cache) then passes
+    persona-specific sources to each agent. Avoids duplicate API calls
+    for same data across multiple agents.
+
     Contract: Hugo calls this from /api/debate endpoint.
     Returns dict with decisions, consensus, vote_id.
     """
     start = time.perf_counter()
     client = get_client()
+    aggregator = get_aggregator()
 
-    bull_decision = await run_bull(proposal_text, client)
-    mock_decisions = _generate_mocks()
+    persona_sources = await _fetch_global_sources(aggregator, proposal_text, ALL_PERSONAS)
+
+    bull_sources = persona_sources.get("bull", [])
+    bull_decision = await run_bull(proposal_text, client, pre_fetched_sources=bull_sources)
+
+    mock_decisions = _generate_mocks(persona_sources)
 
     all_decisions = [bull_decision] + mock_decisions
     consensus = _calculate_consensus(all_decisions)
@@ -155,6 +238,7 @@ async def run_debate(proposal_text: str) -> dict:
         total_cost_usd=total_cost,
         total_latency_s=total_latency,
         bull_live=True,
+        sources_fetched=sum(len(v) for v in persona_sources.values()),
     )
 
     return {
