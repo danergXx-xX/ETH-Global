@@ -8,11 +8,7 @@ pydantic-settings==2.6.0
 httpx==0.28.0
 aiofiles==24.1.0
 
-# CrewAI - multi-agent orchestration
-crewai==0.83.0
-crewai-tools==0.17.0
-
-# Anthropic SDK
+# Anthropic SDK (Nova uses bare SDK + custom orchestration, not CrewAI)
 anthropic==0.40.0
 
 # Database
@@ -24,7 +20,7 @@ alembic==1.14.0
 redis==5.2.0
 
 # Web3
-eth-account==0.13.0
+eth-account==0.13.7
 web3==7.5.0
 
 # Data sources
@@ -39,7 +35,7 @@ sentry-sdk[fastapi]==2.18.0
 # Testing
 pytest==8.3.0
 pytest-asyncio==0.24.0
-httpx-mock==0.0.0  # placeholder, sprawdz aktualny
+respx==0.22.0
 
 # Linting
 ruff==0.7.0

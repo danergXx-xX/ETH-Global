@@ -82,3 +82,6 @@ agent_outputs/
 tmp/
 temp/
 *.tmp
+
+# Claude Code per-repo dir (Critic reports, pending alerts)
+.claude/
