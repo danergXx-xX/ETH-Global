@@ -174,8 +174,8 @@ Resolution path: Frontend `ENSCard` -> `viem.getEnsText({ name, key })` -> displ
 
 ## On-chain components
 
-| Contract | Address | Role | Sora trust mech |
-|----------|---------|------|-----------------|
+| Contract | Address | Role | Trust mech |
+|----------|---------|------|------------|
 | CouncilToken | [`0x5fE2...4381`](https://sepolia.basescan.org/address/0x5fE2a5E971d9FAafF9cC0b0C9981da44fefC4381) | ERC20Votes governance token, 5 minted, timestamp clock | n/a |
 | TimelockController | [`0x76A6...1B0f`](https://sepolia.basescan.org/address/0x76A69Bb6aeF69A2E76fA6C9632Ff6Ca101441B0f) | 48h delay, admin revoked | #2 Timelock countdown |
 | AICouncilGovernor | [`0x1f95...01F0`](https://sepolia.basescan.org/address/0x1f95C796C5dc47d08B20CF3220a2AFa995e301F0) | 60% quorum, 1d voting, 0 threshold | n/a |

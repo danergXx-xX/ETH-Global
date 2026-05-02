@@ -146,7 +146,7 @@ The [CONCLAVE dashboard](apps/web/MOCKUPS.md) is a wagmi v2 + RainbowKit interfa
 
 Bilingual UI (Polish + English) via custom i18n provider (next-intl was incompatible with Turbopack + pnpm + Next 16; documented in ADR-002).
 
-See [`apps/web/MOCKUPS.md`](apps/web/MOCKUPS.md) for the 14-component visual canvas and Vela handoff notes.
+See [`apps/web/MOCKUPS.md`](apps/web/MOCKUPS.md) for the 14-component visual canvas and Vela handoff notes. Some component paths reference the `feat/wagmi-ui` branch; see [JUDGES-ONBOARDING honest scope](docs/JUDGES-ONBOARDING.md#what-is-not-in-the-demo-honest-scope) for the full list.
 
 ## Trust Mechanisms
 
