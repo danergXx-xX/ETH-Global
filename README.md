@@ -6,9 +6,11 @@
 [![ETHGlobal](https://img.shields.io/badge/ETHGlobal-Open_Agents_2026-blue.svg)](https://ethglobal.com/events/agents)
 [![Base Sepolia](https://img.shields.io/badge/Base-Sepolia-0052FF.svg)](https://sepolia.basescan.org)
 
+**[Architecture](#architecture)** | **[Smart Contracts](#smart-contracts)** | **[Sponsor Integrations](#sponsor-integrations)** | **[Setup](#setup)** | **[Testing](#testing)** | **[Glossary](docs/glossary.md)**
+
 ## The Problem
 
-DAOs hold $26B+ in treasury assets, but governance suffers from voter apathy and decision concentration. A single whale can push through a 100k USDC allocation while 90% of token holders abstain. There is no structured analysis, no devil's advocate, no audit trail of *why* a decision was made.
+DAOs hold $26B+ in treasury assets, but governance suffers from voter apathy and decision concentration. A single whale can push through a 100k USDC allocation while 90% of token holders abstain. No structured analysis. No one plays devil's advocate, and the reasoning behind decisions disappears.
 
 ## What AI Treasury Council Does
 
@@ -26,9 +28,27 @@ Each agent cites its sources (RSS feeds, CoinGecko, DefiLlama) with confidence w
 
 **Try it:** [TBD - deployed Sun 3.05](https://demo.aitc.app) | **Watch demo:** [3-min video](https://youtube.com/TBD)
 
-**What sets this apart:** Every AI claim cites its source with a confidence weight. The full debate is stored immutably on 0G Storage. A 48-hour timelock lets humans review before any funds move. Each agent builds on-chain reputation via ENS subnames.
+> New to blockchain governance? See the [Glossary](docs/glossary.md) for plain-English definitions.
+
+## Sponsor Integrations
+
+### 0G Labs - Immutable Audit Trail
+
+Every debate transcript (agent decisions, sources, confidence scores, consensus) is uploaded to **0G Storage** after each council session. The content-addressed hash is available on-chain for verification. Automatic fallback to IPFS if 0G is unreachable.
+
+- Storage layer: `apps/api/storage/` (factory pattern with 0G primary + IPFS fallback)
+- See [FEEDBACK.md](FEEDBACK.md) for detailed developer experience feedback
+
+### ENS - Agent Identity via NameStone Subnames
+
+Each of the 5 agents gets an ENS subname under `aicouncil.eth` (e.g. `bull.aicouncil.eth`, `bear.aicouncil.eth`). Subnames are minted via NameStone API with text records for agent role and historical accuracy.
+
+- Frontend resolves subnames via viem ENS utilities
+- See [FEEDBACK.md](FEEDBACK.md) for detailed developer experience feedback
 
 ## Architecture
+
+User submits proposal -> 5 agents debate with cited sources -> transcript stored on 0G -> user votes on-chain -> 48h timelock -> treasury action executes.
 
 ```mermaid
 flowchart TB
@@ -42,11 +62,7 @@ flowchart TB
 
   subgraph Backend["Backend (FastAPI + Anthropic SDK)"]
     Orch[Debate Orchestrator]
-    Bull[Bull Agent]
-    Bear[Bear Agent]
-    Risk[Risk Agent]
-    Tech[Tech Agent]
-    Sent[Sentiment Agent]
+    Agents["5 AI Agents (Bull / Bear / Risk / Tech / Sentiment)"]
     Data[RSS + CoinGecko + DefiLlama]
   end
 
@@ -67,8 +83,8 @@ flowchart TB
   end
 
   UI -->|POST /api/debate| Orch
-  Orch --> Bull & Bear & Risk & Tech & Sent
-  Bull & Bear & Risk & Tech & Sent --> Data
+  Orch --> Agents
+  Agents --> Data
   Orch -->|store transcript| ZeroG
   ZeroG -.->|fallback| IPFS
   Vote -->|propose / castVote / execute| Gov
@@ -78,18 +94,16 @@ flowchart TB
   ENSDisplay -->|resolve| Sub
 ```
 
-**Flow:** User submits proposal -> 5 agents debate with cited sources -> transcript stored on 0G -> user votes on-chain -> 48h timelock -> treasury action executes.
-
 ## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| **Frontend** | Next.js 16, Tailwind CSS v4, shadcn/ui, RainbowKit, wagmi v2, viem, bilingual UI (PL + EN) |
-| **Backend** | Python 3.11+, FastAPI, Pydantic v2, structlog, Anthropic SDK (Claude), httpx |
+| **Frontend** | Next.js 16, Tailwind CSS v4, shadcn/ui, RainbowKit, wagmi v2, viem |
+| **Backend** | Python 3.11+, FastAPI, Anthropic SDK (Claude) |
 | **Smart Contracts** | Solidity 0.8.24, Foundry, OpenZeppelin Contracts v5 (Governor, ERC20Votes, TimelockController) |
 | **Storage** | 0G Storage (primary audit trail), IPFS via Pinata (automatic fallback) |
 | **Data Sources** | RSS news feeds (Reuters, CoinDesk), CoinGecko API, DefiLlama API |
-| **Chain** | Base Sepolia testnet (chainId 84532) |
+| **Chain** | Base Sepolia testnet |
 | **CI/CD** | GitHub Actions (lint + test + gitleaks), Vercel (frontend), Railway (backend) |
 
 ## Smart Contracts
@@ -186,27 +200,19 @@ curl -X POST http://localhost:8000/api/debate \
 - Frontend loads at `:3000` with wallet connect
 - Contract interactions work on Base Sepolia (propose, vote, queue, execute)
 
-## Sponsor Integrations
+## How We Built It
 
-### 0G Labs - Immutable Audit Trail
+Two-person team (Dan + Matthew) with a 15-agent AI dev-team orchestrated through Claude Code over a 3-day sprint. Dan directed architecture decisions and managed agent coordination. Matthew provided the phased MVP plan, demo voice-over, and sponsor feedback.
 
-Every debate transcript (agent decisions, sources, confidence scores, consensus) is uploaded to **0G Storage** after each council session. The content-addressed hash is available on-chain for verification. Automatic fallback to IPFS if 0G is unreachable.
+The AI agents handled specialized work: Sol for Solidity contracts, Hugo for FastAPI backend, Aiko for Next.js frontend, Nova for debate orchestration, Quill for testing. Every commit went through automated code review (Critic agent) and security audit (Mateusz agent) before merge.
 
-- Storage layer: `apps/api/storage/` (factory pattern with 0G primary + IPFS fallback)
-- See [FEEDBACK.md](FEEDBACK.md) for detailed developer experience feedback
-
-### ENS - Agent Identity via NameStone Subnames
-
-Each of the 5 agents gets an ENS subname under `aicouncil.eth` (e.g. `bull.aicouncil.eth`, `bear.aicouncil.eth`). Subnames are minted via NameStone API with text records for agent role and historical accuracy.
-
-- Frontend resolves subnames via viem ENS utilities
-- See [FEEDBACK.md](FEEDBACK.md) for detailed developer experience feedback
+Key architectural decisions: OpenZeppelin Wizard for contracts (battle-tested, no custom Solidity), 0G Storage as primary with IPFS fallback (resilience), and source attribution baked into the agent schema from day one (not bolted on).
 
 ## Team
 
 - **Dan Otomanski** ([@danergXx-xX](https://github.com/danergXx-xX)) - Lead, AI orchestration, system design
 - **Matthew Foyle** - Architecture plan, demo voice-over, FEEDBACK.md
-- **15-agent dev-team** - Specialized AI agents for PM, engineering, QA, security, docs, and design
+- **15-agent dev-team** - AI agents for PM, engineering, QA, security, and docs
 
 ## License
 
