@@ -17,6 +17,8 @@
 - [ ] Otwórz `docs/loi/TARGET-DAOS.md` - read top 5 priority sections
 - [ ] Otwórz `docs/loi/DM-TEMPLATES.md` - read 5 wybranych templates (1A, 2A, 3A, 4A, 5A = Twitter DMs)
 - [ ] Otwórz `docs/loi/TRACKING.md` - to live update
+- [ ] **Sprawdz https://aitc.vercel.app czy live** - jesli **NIE** wstaje, zamien `Demo: https://aitc.vercel.app (live Sun 3.05)` we wszystkich templates na `Repo + README: github.com/danergXx-xX/ETH-Global` (martwy demo link = strzal w stope, kontakt traci zaufanie)
+- [ ] **Wypelnij placeholders w `LOI-TEMPLATE.md` linie 22 (Twitter, ENS) + 102 (return email)** - ZANIM ktokolwiek dostanie LOI. Sugerowane: `Twitter: @your_handle`, `ENS: dan.eth lub dotomanski.eth`, return: `dan@yourdomain.com lub Twitter DM @your_handle`. NIE wysylaj LOI z "TBD" - zniszczy credibility.
 
 ### Step 2: Wyslij 5 Twitter DM (25 min)
 
