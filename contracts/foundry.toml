@@ -14,7 +14,7 @@ fuzz = { runs = 256 }
 invariant = { runs = 256, depth = 32 }
 
 # Deny warnings = error
-deny_warnings = false  # zmien na true gdy clean
+deny = "never"
 
 [rpc_endpoints]
 base_sepolia = "${BASE_SEPOLIA_RPC_URL}"
