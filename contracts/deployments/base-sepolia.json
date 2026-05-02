@@ -64,8 +64,8 @@
     "deployerBalanceBeforeETH": "0.014",
     "remainingDeployerBalanceETH": "~0.0139"
   },
-  "verifiedOnBasescan": false,
-  "verifyTodo": "ETHERSCAN_API_KEY format issue w .env (0 chars po source). Verify osobno przez forge verify-contract gdy klucz naprawiony.",
+  "verifiedOnBasescan": true,
+  "verifiedAt": "2026-05-02",
   "auditPreDeploy": {
     "Mateusz_T3": "APPROVE - 0 CRITICAL, 0 HIGH",
     "Critic": "8.5/10 APPROVE",
