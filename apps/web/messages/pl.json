@@ -27,7 +27,10 @@
   "agentCard": {
     "analyzing": "Analizuję propozycję...",
     "awaiting": "Oczekuję na propozycję",
-    "mockReasoning": "Analiza z perspektywy {label}."
+    "error": "Błąd agenta - ponów próbę",
+    "mockReasoning": "Analiza z perspektywy {label}.",
+    "rep": "Rep",
+    "statements": "wypowiedzi"
   },
   "tally": {
     "cardTitle": "Wyniki głosowania",
@@ -59,8 +62,12 @@
       "rules": "Zmiany zasad",
       "agents": "Cykl życia agentów"
     },
-    "stats": { "total": "Łącznie wydarzeń", "last24h": "Ostatnie 24h", "archive": "Archiwum" },
-    "export": { "button": "Eksport", "format_json": "JSON (pełne wydarzenia + podpisy)", "format_csv": "CSV", "format_pdf": "PDF (potwierdzenie notarialne)" },
+    "stats": { "total": "Łącznie wydarzeń", "last24h": "Ostatnie 24h", "proposals": "Wnioski", "executions": "Egzekucje", "archive": "Archiwum" },
+    "live_badge": "0G STORAGE - AKTYWNE",
+    "footer": "ZARCHIWIZOWANE - 0G STORAGE - 4.2 MB",
+    "refresh": "Odśwież",
+    "export_btn": "Eksport",
+    "verify": "Weryfikuj",
     "empty": "Brak wydarzeń pasujących do filtra"
   },
   "execute": {
@@ -73,7 +80,13 @@
       "archive": { "label": "Archiwum 0G", "desc": "CID zarejestrowany" }
     },
     "timelock": { "remaining": "pozostało z opóźnienia 48h", "eta": "ETA" },
-    "buttons": { "sign": "Podpisz multisig", "queue": "Kolejkuj w Timelock", "execute_disabled": "Egzekucja (oczekiwanie)", "view_basescan": "Zobacz na Basescan", "view_archive": "Zobacz archiwum 0G" }
+    "buttons": { "sign": "Podpisz multisig", "queue": "Kolejkuj w Timelock", "execute_disabled": "Egzekucja (oczekiwanie)", "view_basescan": "Zobacz na Basescan", "view_archive": "Zobacz archiwum 0G", "demo_next": "Demo: następny etap", "pending": "W toku..." },
+    "signers": "Podpisy multisig",
+    "tx_preview": "Podgląd transakcji",
+    "target": "Cel",
+    "function": "Funkcja",
+    "gas_estimate": "Szacowany gas",
+    "executed_label": "WYKONANE"
   },
   "ens": {
     "title": "Tożsamość ENS",

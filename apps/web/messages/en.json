@@ -27,7 +27,10 @@
   "agentCard": {
     "analyzing": "Analyzing proposal...",
     "awaiting": "Awaiting proposal",
-    "mockReasoning": "Analysis from {label} perspective."
+    "error": "Agent error - retry available",
+    "mockReasoning": "Analysis from {label} perspective.",
+    "rep": "Rep",
+    "statements": "statements"
   },
   "tally": {
     "cardTitle": "Vote tally",
@@ -59,8 +62,12 @@
       "rules": "Rules changes",
       "agents": "Agent lifecycle"
     },
-    "stats": { "total": "Total events", "last24h": "Last 24h", "archive": "Archive" },
-    "export": { "button": "Export", "format_json": "JSON (full events + signatures)", "format_csv": "CSV", "format_pdf": "PDF receipt (notarized)" },
+    "stats": { "total": "Total events", "last24h": "Last 24h", "proposals": "Proposals", "executions": "Executions", "archive": "Archive" },
+    "live_badge": "0G STORAGE - LIVE",
+    "footer": "ARCHIVED - 0G STORAGE - 4.2 MB",
+    "refresh": "Refresh",
+    "export_btn": "Export",
+    "verify": "Verify",
     "empty": "No events match filter"
   },
   "execute": {
@@ -73,7 +80,13 @@
       "archive": { "label": "0G Archive", "desc": "CID registered" }
     },
     "timelock": { "remaining": "remaining of 48h delay", "eta": "ETA" },
-    "buttons": { "sign": "Sign multisig", "queue": "Queue in Timelock", "execute_disabled": "Execute (waiting)", "view_basescan": "View on Basescan", "view_archive": "View 0G archive" }
+    "buttons": { "sign": "Sign multisig", "queue": "Queue in Timelock", "execute_disabled": "Execute (waiting)", "view_basescan": "View on Basescan", "view_archive": "View 0G archive", "demo_next": "Demo: next stage", "pending": "Pending..." },
+    "signers": "Multisig signatures",
+    "tx_preview": "Transaction preview",
+    "target": "Target",
+    "function": "Function",
+    "gas_estimate": "Gas estimate",
+    "executed_label": "EXECUTED"
   },
   "ens": {
     "title": "ENS Identity",

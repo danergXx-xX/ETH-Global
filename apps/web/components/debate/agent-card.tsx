@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { AgentPortrait } from "@/components/shared/agent-portrait";
 import { SourcePopover } from "@/components/shared/source-popover";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, useTranslations } from "@/lib/i18n";
 import type { AgentMeta, Claim, Decision } from "@/lib/types";
 import { MOCK_SOURCES } from "@/lib/mocks/debate";
 
@@ -31,6 +31,7 @@ export function AgentDebateCard({
   confidence,
 }: AgentCardProps) {
   const { locale } = useI18n();
+  const t = useTranslations("agentCard");
   const label = agent.label[locale] ?? agent.label.en;
   const bias = agent.bias[locale] ?? agent.bias.en;
 
@@ -80,7 +81,7 @@ export function AgentDebateCard({
         {status === "waiting" && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/30" />
-            <span>Awaiting turn...</span>
+            <span>{t("awaiting")}</span>
           </div>
         )}
 
@@ -114,7 +115,7 @@ export function AgentDebateCard({
 
         {status === "error" && (
           <div className="text-sm text-destructive-foreground">
-            Agent error - retry available
+            {t("error") !== "agentCard.error" ? t("error") : "Agent error - retry available"}
           </div>
         )}
       </CardContent>

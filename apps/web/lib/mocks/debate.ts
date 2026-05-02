@@ -4,7 +4,7 @@ export const MOCK_PROPOSAL: ProposalMeta = {
   id: "PROP-042",
   description: {
     en: "Allocate 100,000 USDC from treasury to Aave v3 USDC supply for 4.2% est. APY. 30-day initial term, auto-renew unless DAO cancels. Withdraw at any time (no lock).",
-    pl: "Przeznaczyc 100 000 USDC ze skarbca DAO na Aave v3 USDC supply dla szacowanego APY 4,2%. Okres poczatkowy 30 dni, auto-odnowienie chyba ze DAO anuluje. Wyplata w dowolnej chwili (bez locka).",
+    pl: "Przeznaczyć 100 000 USDC ze skarbca DAO na Aave v3 USDC supply dla szacowanego APY 4,2%. Okres początkowy 30 dni, auto-odnowienie chyba że DAO anuluje. Wypłata w dowolnej chwili (bez locka).",
   },
   amount: "100,000 USDC",
   target: "Aave v3 (Base)",

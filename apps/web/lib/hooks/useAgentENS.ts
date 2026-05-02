@@ -44,7 +44,7 @@ export function useAgentENS(agentId: AgentPersona | "treasury" | "parent"): ENSD
         ? "treasury.aicouncil.eth"
         : agent?.ens ?? `${agentId}.aicouncil.eth`;
 
-    const latency = 60 + Math.floor(Math.random() * 80);
+    const latency = 60 + (agentId.charCodeAt(0) % 80);
 
     return {
       name: ensName,

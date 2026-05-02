@@ -31,7 +31,13 @@ export function SubmissionForm({ onSubmit }: SubmissionFormProps) {
   const [description, setDescription] = useState("");
   const [state, setState] = useState<FormState>("empty");
 
-  const hasTokens = tokenBalance !== undefined && tokenBalance !== null && BigInt(String(tokenBalance)) > BigInt(0);
+  const hasTokens = (() => {
+    try {
+      return tokenBalance != null && BigInt(String(tokenBalance)) > BigInt(0);
+    } catch {
+      return false;
+    }
+  })();
 
   function getFormState(): FormState {
     if (state === "submitting" || state === "success") return state;

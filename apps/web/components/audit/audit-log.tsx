@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useTranslations } from "@/lib/i18n";
 import type { AuditEvent, AuditEventType } from "@/lib/types";
 import { MOCK_AUDIT_EVENTS } from "@/lib/mocks/audit";
 import { formatDistanceToNow } from "date-fns";
@@ -78,6 +79,7 @@ function EventRow({ event }: { event: AuditEvent }) {
 }
 
 export function AuditLog() {
+  const t = useTranslations("audit");
   const [activeFilter, setActiveFilter] = useState<AuditEventType | "all">("all");
 
   const filteredEvents = useMemo(() => {
@@ -99,10 +101,10 @@ export function AuditLog() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <h2 className="text-lg font-semibold">Audit Trail</h2>
+          <h2 className="text-lg font-semibold">{t("title")}</h2>
           <Badge className="bg-vote-for/15 text-vote-for border-vote-for/30 text-[10px]">
             <span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-vote-for animate-pulse-slow" />
-            0G STORAGE - LIVE
+            {t("live_badge")}
           </Badge>
         </div>
       </div>
@@ -149,7 +151,7 @@ export function AuditLog() {
           <CardContent className="py-1 px-4">
             {filteredEvents.length === 0 ? (
               <p className="py-8 text-center text-sm text-muted-foreground">
-                No events match filter
+                {t("empty")}
               </p>
             ) : (
               filteredEvents.map((event) => (
@@ -162,16 +164,16 @@ export function AuditLog() {
 
       {/* Footer */}
       <div className="flex items-center justify-between text-[10px] text-muted-foreground font-mono">
-        <span>ARCHIVED - 0G STORAGE - 4.2 MB</span>
+        <span>{t("footer")}</span>
         <div className="flex gap-2">
           <Button variant="ghost" size="sm" className="text-[10px] h-6">
-            Refresh
+            {t("refresh")}
           </Button>
           <Button variant="ghost" size="sm" className="text-[10px] h-6">
-            Export
+            {t("export_btn")}
           </Button>
           <Button variant="ghost" size="sm" className="text-[10px] h-6">
-            Verify
+            {t("verify")}
           </Button>
         </div>
       </div>

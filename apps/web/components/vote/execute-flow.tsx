@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { TimelockCountdown } from "./timelock-countdown";
+import { useTranslations } from "@/lib/i18n";
 import type { ExecuteStage, SignerInfo, TxPreview } from "@/lib/types";
 import { getBasescanTxUrl } from "@/lib/contracts";
 
@@ -52,12 +53,13 @@ function stageIndex(stage: ExecuteStage): number {
 }
 
 export function ExecuteFlow({ initialStage = "collecting_sigs" }: ExecuteFlowProps) {
+  const t = useTranslations("execute");
   const [stage, setStage] = useState<ExecuteStage>(initialStage);
   const currentIdx = stageIndex(stage);
   const signedCount = MOCK_SIGNERS.filter((s) => s.signed).length;
   const requiredSigs = 5;
 
-  const mockEta = Math.floor(Date.now() / 1000) + 42 * 3600 + 18 * 60;
+  const [mockEta] = useState(() => Math.floor(Date.now() / 1000) + 42 * 3600 + 18 * 60);
   const mockTxHash = "0xabc123def456789...";
 
   function advanceStage() {
@@ -109,7 +111,7 @@ export function ExecuteFlow({ initialStage = "collecting_sigs" }: ExecuteFlowPro
         <Card>
           <CardContent className="py-4 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Multisig signatures</span>
+              <span className="text-sm font-medium">{t("signers")}</span>
               <Badge
                 variant="outline"
                 className={
@@ -150,7 +152,7 @@ export function ExecuteFlow({ initialStage = "collecting_sigs" }: ExecuteFlowPro
         {/* Tx preview panel */}
         <Card>
           <CardContent className="py-4 space-y-3">
-            <span className="text-sm font-medium">Transaction preview</span>
+            <span className="text-sm font-medium">{t("tx_preview")}</span>
             <div className="rounded-md bg-secondary/50 p-3 font-mono text-xs space-y-1">
               <div>
                 <span className="text-muted-foreground">Target: </span>
@@ -221,21 +223,21 @@ export function ExecuteFlow({ initialStage = "collecting_sigs" }: ExecuteFlowPro
       <div className="flex justify-end gap-2">
         {stage === "collecting_sigs" && (
           <Button onClick={advanceStage}>
-            Sign multisig
+            {t("buttons.sign")}
           </Button>
         )}
         {stage === "threshold_reached" && (
           <Button onClick={advanceStage}>
-            Queue in Timelock
+            {t("buttons.queue")}
           </Button>
         )}
         {stage === "queued_timelock" && (
           <Button disabled variant="outline">
-            Execute (waiting)
+            {t("buttons.execute_disabled")}
           </Button>
         )}
         {stage === "executing" && (
-          <Button disabled>Pending...</Button>
+          <Button disabled>{t("buttons.pending")}</Button>
         )}
         {stage === "executed" && (
           <Button variant="outline" asChild>
@@ -244,7 +246,7 @@ export function ExecuteFlow({ initialStage = "collecting_sigs" }: ExecuteFlowPro
               target="_blank"
               rel="noopener noreferrer"
             >
-              View on Basescan
+              {t("buttons.view_basescan")}
             </a>
           </Button>
         )}
