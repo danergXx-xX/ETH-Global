@@ -22,6 +22,8 @@ Phases 1A through 1D run in parallel within Phase 1: 1A=smart contracts, 1B=wagm
 - `authorizedUpdater` permissioned writer separated from `Ownable` admin
 - Pre-deploy audit: Mateusz APPROVE 0 CRITICAL 0 HIGH, Critic 8.5/10, Vera 8.5/10
 - Final docs set: README v2, `docs/architecture.md`, `docs/JUDGES-ONBOARDING.md`, `docs/CHANGELOG.md`, expanded `docs/glossary.md` (Sesja 24)
+- `docs/SECURITY.md` responsible disclosure policy + Mateusz audit reference (Sesja 24)
+- `docs/CONTRIBUTING.md` local setup, branching model, commit conventions, PR checklist (Sesja 24)
 
 ## [0.18.0] - 2026-05-02
 

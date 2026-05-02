@@ -6,7 +6,7 @@
 [![ETHGlobal](https://img.shields.io/badge/ETHGlobal-Open_Agents_2026-blue.svg)](https://ethglobal.com/events/agents)
 [![Base Sepolia](https://img.shields.io/badge/Base-Sepolia-0052FF.svg)](https://sepolia.basescan.org)
 
-**[For judges - 5 min read](docs/JUDGES-ONBOARDING.md)** | **[Architecture](docs/architecture.md)** | **[Smart Contracts](#smart-contracts)** | **[Sponsor Integrations](#sponsor-integrations)** | **[Setup](#setup)** | **[Glossary](docs/glossary.md)** | **[Changelog](docs/CHANGELOG.md)**
+**[For judges - 5 min read](docs/JUDGES-ONBOARDING.md)** | **[Architecture](docs/architecture.md)** | **[Smart Contracts](#smart-contracts)** | **[Sponsor Integrations](#sponsor-integrations)** | **[Setup](#setup)** | **[Glossary](docs/glossary.md)** | **[Changelog](docs/CHANGELOG.md)** | **[Security](docs/SECURITY.md)** | **[Contributing](docs/CONTRIBUTING.md)**
 
 ## The Problem
 

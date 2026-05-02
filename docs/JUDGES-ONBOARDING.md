@@ -39,7 +39,7 @@ All five contracts deployed and verified on Base Sepolia (chainId 84532) on 2026
 | MockUSDC | [`0x606E...B59d`](https://sepolia.basescan.org/address/0x606EDE7755131e6206A29B67d88761eEbb3Bb59d) | 1M mUSDC treasury |
 | AgentReputation | [`0xf3BA...6f44`](https://sepolia.basescan.org/address/0xf3BAb9A2761131f4A9e5BA2d9e6395bea2186f44) | Moat 5 Proof-of-Work for agents |
 
-Pre-deploy security audit: 0 CRITICAL, 0 HIGH findings (Mateusz agent T3 review). 23/23 Foundry tests pass.
+Pre-deploy security audit: 0 CRITICAL, 0 HIGH findings (Mateusz agent T3 review, see [docs/SECURITY.md](SECURITY.md)). 23/23 Foundry tests pass.
 
 ## Five trust mechanisms
 
