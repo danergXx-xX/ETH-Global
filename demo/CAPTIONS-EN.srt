@@ -1,0 +1,123 @@
+1
+00:00:00,000 --> 00:00:05,000
+Twenty six billion dollars sit in DAO treasuries.
+
+2
+00:00:05,500 --> 00:00:11,000
+Yet most decisions are made by less than one percent of token holders.
+
+3
+00:00:11,500 --> 00:00:15,000
+Voter apathy. Quorum failures. Concentrated power. We can do better.
+
+4
+00:00:15,500 --> 00:00:19,000
+I submit a treasury proposal: allocate one hundred thousand USDC to Aave v3.
+
+5
+00:00:19,500 --> 00:00:24,000
+The AI parser decodes calldata. The proposer sees EXACTLY what gets signed.
+
+6
+00:00:24,500 --> 00:00:28,000
+No black box.
+
+7
+00:00:35,000 --> 00:00:40,000
+Five specialized agents debate live.
+
+8
+00:00:40,500 --> 00:00:45,000
+Bull, Bear, Risk, Tech, Sentiment. Each cites sources.
+
+9
+00:00:45,500 --> 00:00:51,000
+Each has vote weight backed by on-chain reputation.
+
+10
+00:00:51,500 --> 00:00:57,000
+You see them think. This is not a black box.
+
+11
+00:01:00,000 --> 00:01:06,000
+Five of seven multisig sign.
+
+12
+00:01:06,500 --> 00:01:12,000
+Forty eight hour timelock - window to revert.
+
+13
+00:01:12,500 --> 00:01:18,000
+On-chain execution. No middlemen.
+
+14
+00:01:20,000 --> 00:01:25,000
+Full debate archived on 0G Storage.
+
+15
+00:01:25,500 --> 00:01:28,500
+Every agent has an ENS identity.
+
+16
+00:01:28,500 --> 00:01:30,000
+Every decision auditable. Forever.
+
+17
+00:01:30,000 --> 00:01:36,000
+Five trust mechanisms, each grounded in the Mayer Davis Schoorman
+
+18
+00:01:36,000 --> 00:01:40,000
+ABI model from 1995.
+
+19
+00:01:40,000 --> 00:01:44,000
+Source attribution. Forty eight hour timelock.
+
+20
+00:01:44,000 --> 00:01:48,000
+Immutable audit log on 0G. ENS identity per agent.
+
+21
+00:01:48,000 --> 00:01:52,000
+Council Rules editable by DAO.
+
+22
+00:01:52,000 --> 00:01:55,000
+All in production.
+
+23
+00:01:55,000 --> 00:02:01,000
+Five moats: data freshness, multi-agent debate,
+
+24
+00:02:01,000 --> 00:02:06,000
+on-chain execution, source attribution, proof of work for agents.
+
+25
+00:02:06,000 --> 00:02:12,000
+Built on 0G Storage, Uniswap v4 hooks,
+
+26
+00:02:12,000 --> 00:02:18,000
+ENS subnames via NameStone, KeeperHub for automation.
+
+27
+00:02:18,000 --> 00:02:24,000
+Four contracts deployed on Base Sepolia.
+
+28
+00:02:24,000 --> 00:02:30,000
+Open source. Pilot ready with DAOs.
+
+29
+00:02:30,000 --> 00:02:40,000
+AI Treasury Council. Open source. Four contracts live on Base Sepolia.
+
+30
+00:02:40,000 --> 00:02:50,000
+Five agents ready. Your DAO can pilot.
+
+31
+00:02:50,000 --> 00:03:00,000
+Links in description.
