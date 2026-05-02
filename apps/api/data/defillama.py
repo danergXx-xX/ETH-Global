@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 BASE_URL = "https://api.llama.fi"
 CACHE_TTL_SECONDS = 300
 DEFAULT_WEIGHT = 0.85
-REQUEST_TIMEOUT = 15.0
+REQUEST_TIMEOUT = 30.0
 PROTOCOLS_CACHE_TTL = 600
 
 ALLOWED_HOSTS = frozenset({"api.llama.fi"})
