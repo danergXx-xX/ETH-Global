@@ -18,7 +18,7 @@ interface ENSData {
 type AgentId = AgentPersona | "treasury" | "parent";
 
 // Phase 2 (Sesja 25 Sol+Aiko): real viem ENS resolution na Sepolia.
-// Komponenty NIGDY nie wolaja viem ENS bezposrednio - hook to isolation layer.
+// Komponenty NIGDY nie wolaja viem ENS bezpośrednio - hook to isolation layer.
 const ENS_DOMAIN =
   process.env.NEXT_PUBLIC_ENS_DOMAIN || "aicouncil-danergy.eth";
 const SEPOLIA_RPC =
@@ -77,7 +77,7 @@ async function resolveAgentENS(agentId: AgentId): Promise<ENSData> {
 
   const start = performance.now();
 
-  // viem `getEnsText` cofa sie do PublicResolver Sepolia. Brak rekordu = null.
+  // viem `getEnsText` cofa się do PublicResolver Sepolia. Brak rekordu = null.
   const [addressResult, ...textResults] = await Promise.allSettled([
     sepoliaClient.getEnsAddress({ name }),
     ...keys.map((key) =>
@@ -99,7 +99,11 @@ async function resolveAgentENS(agentId: AgentId): Promise<ENSData> {
       ? addressResult.value
       : FALLBACK_ADDRESSES[agentId];
 
-  const avatar = records.avatar ?? null;
+  // MED-3 (Mateusz audit): walidacja avatar URL aby zablokowac javascript: / data: schemes.
+  // Jak ownership subname przejdzie kiedys do agentow lub DAO, kazdy moze ustawic dowolny URL.
+  const avatarRaw = records.avatar ?? null;
+  const avatar =
+    avatarRaw && /^(https?:|ipfs:)\/\//i.test(avatarRaw) ? avatarRaw : null;
   const resolvedAtLeastOneText = Object.keys(records).length > 0;
   const resolvedAddressOk =
     addressResult.status === "fulfilled" && addressResult.value !== null;
@@ -132,7 +136,7 @@ export function useAgentENS(agentId: AgentId): ENSData {
       try {
         return await resolveAgentENS(agentId);
       } catch (err) {
-        // Nie blokuj UI - log + fallback. ENS lookup moze padnac na rate-limit RPC.
+        // Nie blokuj UI - log + fallback. ENS lookup może padnac na rate-limit RPC.
         if (typeof console !== "undefined") {
           console.warn(`[useAgentENS] ${agentId}:`, err);
         }

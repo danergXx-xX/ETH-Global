@@ -105,7 +105,12 @@ type AgentSpec = {
 };
 
 const GITHUB_REPO = "https://github.com/danergXx-xX/ETH-Global";
-const AVATAR_BASE = "https://aicouncil.eth/avatars";
+// P1 (Vera audit): aicouncil.eth domain nie istnieje (broken images dla jurorow).
+// Avatars hostowane jako static assets w repo; GitHub raw serwuje publicznie.
+// Override przez AVATAR_BASE env var (np. IPFS gateway) gdy public/avatars/ powstanie.
+const AVATAR_BASE =
+  process.env.AVATAR_BASE ||
+  "https://raw.githubusercontent.com/danergXx-xX/ETH-Global/main/apps/web/public/avatars";
 const REPUTATION_CONTRACT_BASE_SEPOLIA =
   "0xf3BAb9A2761131f4A9e5BA2d9e6395bea2186f44";
 
@@ -130,7 +135,7 @@ const AGENTS: AgentSpec[] = [
     owner: "0x0000000000000000000000000000000000000002",
     texts: {
       name: "Bear Agent",
-      description: "Pesymistyczny analityk - wskazuje ryzyka i mozliwe spadki.",
+      description: "Pesymistyczny analityk - wskazuje ryzyka i możliwe spadki.",
       avatar: `${AVATAR_BASE}/bear.png`,
       url: GITHUB_REPO,
       "com.twitter": "@aicouncil",
@@ -160,7 +165,7 @@ const AGENTS: AgentSpec[] = [
     owner: "0x0000000000000000000000000000000000000004",
     texts: {
       name: "Technical Analyst",
-      description: "Analiza techniczna - wskazniki, formacje, momentum.",
+      description: "Analiza techniczna - wskaźniki, formacje, momentum.",
       avatar: `${AVATAR_BASE}/tech.png`,
       url: GITHUB_REPO,
       "com.twitter": "@aicouncil",
@@ -302,7 +307,7 @@ async function main() {
   }
   if (!isHexPrivateKey(pk)) {
     throw new Error(
-      "ENS_OWNER_PRIVATE_KEY musi byc 0x + 64 hex chars (raw private key).",
+      "ENS_OWNER_PRIVATE_KEY musi być 0x + 64 hex chars (raw private key).",
     );
   }
 
@@ -318,7 +323,7 @@ async function main() {
   console.log(`Balance:        ${formatEther(balance)} ETH`);
   if (balance < 10n ** 16n) {
     console.warn(
-      "OSTRZEZENIE: balance < 0.01 ETH - moze nie wystarczyc na 5 subname + text records.",
+      "OSTRZEZENIE: balance < 0.01 ETH - może nie wystarczyc na 5 subname + text records.",
     );
   }
 
@@ -342,7 +347,7 @@ async function main() {
     console.log(`    node:  ${node}`);
     console.log(`    label: ${label}`);
 
-    // Sprawdz collision (czy subnode juz istnieje z innym ownerem).
+    // Sprawdz collision (czy subnode już istnieje z innym ownerem).
     const existingOwner = await publicClient.readContract({
       address: ENS_REGISTRY,
       abi: ENS_REGISTRY_ABI,

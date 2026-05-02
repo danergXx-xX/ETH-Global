@@ -23,7 +23,7 @@ Doinstaluje `viem` + `tsx` (zadeklarowane w `package.json` jako devDependencies)
 
 ## 2. Konfiguracja klucza
 
-W `.env` w root repo (`.gitignore` juz pokrywa - NIE commituj):
+W `.env` w root repo (`.gitignore` już pokrywa - NIE commituj):
 
 ```
 ENS_OWNER_PRIVATE_KEY=0x<64 hex znakow klucza wallet 0x14b9...76F4>
@@ -64,7 +64,7 @@ Spodziewany koszt: **~0.005-0.015 ETH Sepolia** (5 subname * setSubnodeRecord + 
 
 Saldo wallet: `cast balance 0x14b97991f681D0b69074B5AD3CcC675765C276F4 --rpc-url $SEPOLIA_RPC_URL` (wymaga foundry).
 
-Skrypt loguje per-tx etherscan link. Czeka na `waitForTransactionReceipt` po kazdym wpisie - jesli zawiesi sie na rate-limicie publicznego RPC, podaj wlasny (Alchemy/Infura).
+Skrypt loguje per-tx etherscan link. Czeka na `waitForTransactionReceipt` po każdym wpisie - jeśli zawiesi się na rate-limicie publicznego RPC, podaj własny (Alchemy/Infura).
 
 ## 5. Weryfikacja
 
@@ -120,8 +120,8 @@ Test: `pnpm dev` -> otworz ENS Identity Card -> sprawdz ze renderuje real text r
 | `Wallet ... nie jest ownerem` | Klucz w env nie pasuje do ownera domeny. Sprawdz adres przez `cast wallet address $ENS_OWNER_PRIVATE_KEY`. |
 | `insufficient funds` | Wallet ma <0.01 ETH Sepolia. Faucet: https://www.alchemy.com/faucets/ethereum-sepolia. |
 | RPC rate limit / hang | Zmien `SEPOLIA_RPC_URL` na Alchemy / Infura. |
-| Text record nie pokazuje sie w ENS Manager | Manager cachuje. Po ~1 min refresh. Lub czytaj bezposrednio z PublicResolver. |
+| Text record nie pokazuje się w ENS Manager | Manager cachuje. Po ~1 min refresh. Lub czytaj bezpośrednio z PublicResolver. |
 
 ## 9. Rollback
 
-ENS subnames sa odwracalne (parent owner moze przepisac owner subnode na 0x0 lub wyczyscic resolver). Skrypt rollback nie jest wbudowany - manualnie przez ENS Manager UI lub `setSubnodeRecord(parentNode, label, 0x0, 0x0, 0)`.
+ENS subnames sa odwracalne (parent owner może przepisac owner subnode na 0x0 lub wyczyscic resolver). Skrypt rollback nie jest wbudowany - manualnie przez ENS Manager UI lub `setSubnodeRecord(parentNode, label, 0x0, 0x0, 0)`.

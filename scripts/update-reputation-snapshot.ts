@@ -69,23 +69,9 @@ const REPUTATION_ABI = [
       { name: "aligned", type: "uint256" },
     ],
   },
-  {
-    type: "function",
-    name: "getAgents",
-    stateMutability: "view",
-    inputs: [],
-    outputs: [{ name: "", type: "address[]" }],
-  },
-  {
-    type: "function",
-    name: "agents",
-    stateMutability: "view",
-    inputs: [{ name: "", type: "uint256" }],
-    outputs: [{ name: "", type: "address" }],
-  },
 ] as const;
 
-// Mapping: ENS label -> placeholder agent address (musi pokrywac sie z mint-ens-subnames.ts).
+// Mapping: ENS label -> placeholder agent address (musi pokrywac się z mint-ens-subnames.ts).
 // Gdy beda realne agent wallets, zmien ten map.
 const AGENT_LABELS: Array<{ label: string; address: Address }> = [
   { label: "bull", address: "0x0000000000000000000000000000000000000001" },
@@ -167,6 +153,35 @@ async function main() {
     throw new Error("Brak/zle ENS_OWNER_PRIVATE_KEY (oczekiwane 0x + 64 hex).");
   }
   const account = privateKeyToAccount(pk);
+
+  // Symetria z mint-ens-subnames.ts (Mateusz audit LOW-2): sprawdz wlasnosc parent
+  // ENS PRZED broadcast aby zablokowac wyslanie z niewlasciwego klucza.
+  const sepoliaPublic = createPublicClient({
+    chain: sepolia,
+    transport: http(sepoliaRpc),
+  });
+  const parentNode = namehash(PARENT_DOMAIN);
+  const ENS_REGISTRY_ADDR = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e" as Address;
+  const parentOwner = await sepoliaPublic.readContract({
+    address: ENS_REGISTRY_ADDR,
+    abi: [
+      {
+        type: "function",
+        name: "owner",
+        stateMutability: "view",
+        inputs: [{ name: "node", type: "bytes32" }],
+        outputs: [{ name: "", type: "address" }],
+      },
+    ] as const,
+    functionName: "owner",
+    args: [parentNode],
+  });
+  if (account.address.toLowerCase() !== String(parentOwner).toLowerCase()) {
+    throw new Error(
+      `Wallet ${account.address} nie jest ownerem ${PARENT_DOMAIN} (owner=${parentOwner}).`,
+    );
+  }
+
   const walletClient = createWalletClient({
     account,
     chain: sepolia,

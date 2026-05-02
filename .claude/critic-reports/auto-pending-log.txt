@@ -11,3 +11,4 @@
 [2026-05-02T18:53:46Z] Critic auto-pending dla commit 54707cb42351c9748552edeed6bc2d501bd3e82f (lines: 397, branch: feat/wagmi-ui, msg: feat(web): CONCLAVE dashboard with tabs, i18n PL+EN, SSR-safe providers)
 [2026-05-02T19:01:37Z] Critic auto-pending dla commit c00c2eccbbecae58e95524ffecfbbf0a1cdb7836 (lines: 164, branch: feat/wagmi-ui, msg: fix(web): address Critic + Vera review findings (CRITICAL + HIGH))
 [2026-05-02T20:44:10Z] Critic auto-pending dla commit be8d5cdf37d843f4196c12220cfb62ec67c13c75 (lines: 13353, branch: feat/phase2-ens, msg: Merge remote-tracking branch 'origin/feat/wagmi-ui' into feat/phase2-ens)
+[2026-05-02T20:50:15Z] Critic auto-pending dla commit 14660da2afca07fb2211cfe655368a0d8b2de1ac (lines: 538, branch: feat/phase2-ens, msg: feat(ens): swap useAgentENS mock to real viem Sepolia resolver)
