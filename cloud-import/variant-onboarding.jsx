@@ -93,7 +93,7 @@ function StepDots({ activeStep }) {
           ? { background: 'oklch(0.74 0.16 152)', color: 'oklch(0.18 0.04 152)', border: '2px solid oklch(0.74 0.16 152)' }
           : isActive
           ? { background: 'oklch(0.78 0.14 75)', color: 'oklch(0.18 0.04 75)', border: '2px solid oklch(0.78 0.14 75)', boxShadow: '0 0 12px oklch(0.78 0.14 75)' }
-          : { background: 'oklch(0.22 0.028 255)', color: 'oklch(0.56 0.014 255)', border: '2px solid oklch(0.30 0.030 255)' };
+          : { background: 'oklch(0.22 0.028 255)', color: 'oklch(0.66 0.014 255)', border: '2px solid oklch(0.30 0.030 255)' };
         return <div key={s.num} style={{ ...obStyles.dot, ...style }}>{isDone ? '✓' : s.num}</div>;
       })}
     </div>
@@ -140,7 +140,7 @@ function Step2({}) {
         background: 'oklch(0.22 0.028 255)',
         border: '1px solid oklch(0.30 0.030 255)',
       }}>
-        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'oklch(0.56 0.014 255)', marginBottom: 6 }}>Wallet connected</div>
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'oklch(0.66 0.014 255)', marginBottom: 6 }}>Wallet connected</div>
         <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'oklch(0.92 0.008 255)' }}>0xa1b2c3d4...e5f6</div>
         <div style={{ fontFamily: 'var(--font-sans)', fontSize: 12, color: 'oklch(0.78 0.012 255)', marginTop: 4 }}>Network: Base Sepolia (84532)</div>
       </div>

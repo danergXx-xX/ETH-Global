@@ -147,8 +147,8 @@ function EmptyView({ theme, t, locale, free, setFree, onParse }) {
     'swap 50,000 USDC for ETH on 1inch',
   ] : [
     'wploc 100k mUSDC na Aave v3 na 30 dni',
-    'wyslij 0.5 ETH na grant.builder.eth',
-    'wymien 50 000 USDC na ETH przez 1inch',
+    'wyślij 0.5 ETH na grant.builder.eth',
+    'wymień 50 000 USDC na ETH przez 1inch',
   ];
   return <>
     <div>
@@ -177,7 +177,7 @@ function EmptyView({ theme, t, locale, free, setFree, onParse }) {
       <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
         <path d="M8 1.5l1.6 4.4 4.7.3-3.6 3 1.2 4.5L8 11.4l-3.9 2.3 1.2-4.5-3.6-3 4.7-.3z" stroke={theme.amber} strokeWidth="1.2" strokeLinejoin="round" />
       </svg>
-      <span>{locale === 'en' ? 'AI parses your text into a structured proposal. You can edit every field afterwards.' : 'AI parsuje tekst na strukturyzowana propozycje. Mozesz edytowac każde pole.'}</span>
+      <span>{locale === 'en' ? 'AI parses your text into a structured proposal. You can edit every field afterwards.' : 'AI parsuje tekst na strukturyzowaną propozycję. Mozesz edytowac każde pole.'}</span>
     </div>
 
     <div style={{ flex: 1 }} />

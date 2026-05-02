@@ -17,7 +17,7 @@ const BRAND = {
   // i18n labels
   reasoningButton: {
     en: 'Challenge',
-    pl: 'Wykaz',
+    pl: 'Wykaż',
   },
   reasoningButtonShort: {
     en: 'Ask',

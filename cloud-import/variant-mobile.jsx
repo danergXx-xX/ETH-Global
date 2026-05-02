@@ -72,7 +72,7 @@ const mbStyles = {
     cursor: 'pointer',
   },
   tabActive: { color: 'oklch(0.86 0.10 75)' },
-  tabInactive: { color: 'oklch(0.56 0.014 255)' },
+  tabInactive: { color: 'oklch(0.66 0.014 255)' },
 };
 
 const MOBILE_AGENTS = [
@@ -155,7 +155,7 @@ function VariantMobileDebate({ overrides = {} }) {
             { label: 'Abstain', value: tally.abstain, color: 'oklch(0.66 0.014 255)' },
           ].map((t) => (
             <div key={t.label} style={{ padding: '10px 12px', background: 'oklch(0.22 0.028 255)', borderRadius: 6, border: '1px solid oklch(0.30 0.030 255)' }}>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 8, color: 'oklch(0.56 0.014 255)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>{t.label}</div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 8, color: 'oklch(0.66 0.014 255)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>{t.label}</div>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 600, color: t.color }}>{t.value}</div>
             </div>
           ))}
@@ -211,7 +211,7 @@ function VariantMobileDash({ overrides = {} }) {
 
         {/* Active proposals card */}
         <div style={{ padding: '16px 18px' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'oklch(0.56 0.014 255)', marginBottom: 8 }}>Active</div>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'oklch(0.66 0.014 255)', marginBottom: 8 }}>Active</div>
           <div style={{
             padding: '12px 14px', borderRadius: 8,
             background: 'color-mix(in oklch, oklch(0.78 0.14 75) 10%, transparent)',
@@ -227,7 +227,7 @@ function VariantMobileDash({ overrides = {} }) {
 
         {/* Positions */}
         <div style={{ padding: '4px 18px 16px' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'oklch(0.56 0.014 255)', marginBottom: 8 }}>Positions ({POSITIONS.length})</div>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'oklch(0.66 0.014 255)', marginBottom: 8 }}>Positions ({POSITIONS.length})</div>
           {POSITIONS.map((p) => (
             <div key={p.protocol} style={{
               display: 'grid', gridTemplateColumns: '8px 1fr auto auto',

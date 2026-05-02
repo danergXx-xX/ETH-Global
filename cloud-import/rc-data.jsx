@@ -36,7 +36,7 @@ const REASONING_THREADS = {
       pl: [
         'Co jeżeli mUSDC depegnie do 0.95 podczas 30-dniowego terminu?',
         'Dlaczego ignorujesz incydent GHO? Ta sama governance.',
-        'Pokaz wyliczenie VaR(95) krok po kroku.',
+        'Pokaż wyliczenie VaR(95) krok po kroku.',
       ],
     },
     // Pre-canned responses for the suggested questions (so click → real-feeling answer)
@@ -54,7 +54,7 @@ const REASONING_THREADS = {
           'Stress-test wykonany. mUSDC to 1:1 LayerZero-bridged USDC z proof-of-reserves. Najgorszy obserwowany depeg 30-dniowy dla wariantow USDC bridge przez ostatnie 18 mies.: 0.7% (Wormhole, marzec 2025), powrót w 4h. Depeg 5% byłby bezprecedensowy i implikowalby zdarzenie wyplacalnosci Coinbase lub Circle — wówczas roznica mUSDC vs USDC vs aUSDC jest nieistotna. Pozycja przeżyłaby w aUSDC; możemy wycofać po cenie nominalnej w momencie odbudowy USDC. Głos podtrzymany.',
         'Dlaczego ignorujesz incydent GHO? Ta sama governance.':
           'Nie ignoruję — kategoryzuję. Pauza collateral GHO była zmiana config w module GHO, nie podatnością w puli pozyczkowej. Kontrole pool-level Aave (rate limits, freeze, pause) sa adekwatnym odpowiednikiem i nigdy nie zostaly aktywowane przeciwko pozycji supply USDC. Inna powierzchnia ataku. Cross-link to prędkość governance, ktora odnotowałem jako soft factor; nie zmienia głosu.',
-        'Pokaz wyliczenie VaR(95) krok po kroku.':
+        'Pokaż wyliczenie VaR(95) krok po kroku.':
           'Inputs: 30d log returns aUSDC (Base) w oknach rolling 90d, n=63. Sigma dzienna, skalowanie do 30d: σ_30 = σ_1 * √30. VaR(95) = -1.645 * σ_30. Wynik: 0.34%, czyli 95% pewności ze pozycja traci max $170 w 30 dni. Źródło 6 ma surowy notebook na 0G storage (CID bafy...risk-q1-2026). Mogę pokazać widok arkusza jeżeli chcesz.',
       },
     },
@@ -107,7 +107,7 @@ const REASONING_THREADS = {
         'Czy 4.21% jest po slippage przy wyplacie?':
           'Aave nie ma slippage przy wyplatach USDC w naszej skali — jestesmy 0.027% puli, daleko poniżej kinka stopy zwiazanego z utylizacja. 4.21% to brutto APY; netto po gazie (~$2 round trip na Base) efektywna rentowność na 50k w 30 dni to 4.20%. Praktycznie ta sama liczba.',
         'Co jeżeli stopy spadną w połowie terminu?':
-          'Beda fluktuowac. Aave to zmienna stopa. 4.21% to rolling 30d wiec można czytac jako oczekiwana średnia. Range w 7d: 4.4-4.9%. Jeżeli stopa puli spadnie poniżej 3.31% T-bill benchmark na wiecej niz 7 dni, triggeruje sygnal exit — to config w Settings, nie manualna decyzja.',
+          'Beda fluktuowac. Aave to zmienna stopa. 4.21% to rolling 30d wiec można czytac jako oczekiwana średnia. Range w 7d: 4.4-4.9%. Jeżeli stopa puli spadnie poniżej 3.31% T-bill benchmark na wiecej niz 7 dni, triggeruje sygnał exit — to config w Settings, nie manualna decyzja.',
       },
     },
   },
@@ -186,7 +186,7 @@ const REASONING_THREADS = {
     },
     suggestedQuestions: {
       en: ['Show me the calldata.', 'What if the proxy gets upgraded mid-position?', 'Any reentrancy concerns?'],
-      pl: ['Pokaz calldata.', 'Co jeżeli proxy zostanie upgradeowane w trakcie pozycji?', 'Czy sa obawy o reentrancy?'],
+      pl: ['Pokaż calldata.', 'Co jeżeli proxy zostanie upgradeowane w trakcie pozycji?', 'Czy sa obawy o reentrancy?'],
     },
     cannedAnswers: {
       en: {
@@ -198,8 +198,8 @@ const REASONING_THREADS = {
           'Pool.supply has nonReentrant modifier. aToken transfers route through the Pool. The 3 medium audit findings are not reentrancy-related (one was about edge-case rate calc, two about unused storage slots). No active CVEs on this version.',
       },
       pl: {
-        'Pokaz calldata.':
-          'Tx 1 (approve): USDC.approve(Pool, 50000_000000). Calldata: 0x095ea7b3...000bebc200. Tx 2 (supply): Pool.supply(USDC, 50000_000000, treasury, 0). Calldata: 0x617ba037...0000000000. Mogę wyrenderowac symulacje w Tenderly jeżeli chcesz zweryfikowac state diff przed podpisem.',
+        'Pokaż calldata.':
+          'Tx 1 (approve): USDC.approve(Pool, 50000_000000). Calldata: 0x095ea7b3...000bebc200. Tx 2 (supply): Pool.supply(USDC, 50000_000000, treasury, 0). Calldata: 0x617ba037...0000000000. Mogę wyrenderowac symulacje w Tenderly jeżeli chcesz zweryfikować state diff przed podpisem.',
         'Co jeżeli proxy zostanie upgradeowane w trakcie pozycji?':
           'Upgrade proxy Aave v3 idzie przez Aave Governance — 7d timelock. Monitorujemy governance.aave.com pod katem aktywnych propozycji wplywajacych na Base USDC reserve. Jeżeli upgrade jest w kolejce, moja regula Settings auto-flaguje pozycje do rewizji i pauzuje auto-renew. Obecnie zero kolejkowanych upgradeow naszej rezerwy.',
         'Czy sa obawy o reentrancy?':
@@ -221,8 +221,8 @@ const REASONING_THREADS = {
       ],
       pl: [
         { kind: 'check',  text: 'aixbt composite: +0.31 (pozytywny). Trend 7d: stabilny.', sources: [10] },
-        { kind: 'check',  text: 'Forum governance Aave: niska aktywnosc, brak spornych propozycji.', sources: [4] },
-        { kind: 'check',  text: 'Wzmianki Aave na Twitter/X 7d: neutralne, glownie product updates.', sources: [10] },
+        { kind: 'check',  text: 'Forum governance Aave: niska aktywność, brak spornych propozycji.', sources: [4] },
+        { kind: 'check',  text: 'Wzmianki Aave na Twitter/X 7d: neutralne, głównie product updates.', sources: [10] },
         { kind: 'verdict',text: 'Brak czerwonych flag w sentymencie. ZA.', sources: [] },
       ],
     },
@@ -241,7 +241,7 @@ const REASONING_THREADS = {
       },
       pl: {
         'Jak wiarygodny jest aixbt?':
-          'aixbt ma 73% trafnosc kierunkowa na 7d-forward sentyment-vs-cena dla top-50 protokolow (ich opublikowana metodologia). Wage ich composite na 0.6 względem mojego scrape X/Discord. Traktuj jako jeden sygnal posrod kilku.',
+          'aixbt ma 73% trafnosc kierunkowa na 7d-forward sentyment-vs-cena dla top-50 protokolow (ich opublikowana metodologia). Wage ich composite na 0.6 względem mojego scrape X/Discord. Traktuj jako jeden sygnał posrod kilku.',
         'Czy bot traffic skrzywia sentyment?':
           'Detekcja botow działa upstream — aixbt odrzuca konta < 60d i high-frequency posting. Moj scrape stosuje podobny filtr. Liczba +0.31 jest po filtrze. Surowa była by +0.41 (bardziej pozytywna ale bot-inflated).',
         'Co z narracjami influencerow CT?':

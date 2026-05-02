@@ -34,7 +34,7 @@ const aaStyles = {
   },
   hint: {
     fontFamily: 'var(--font-mono)', fontSize: 10,
-    color: 'oklch(0.56 0.014 255)',
+    color: 'oklch(0.66 0.014 255)',
   },
   // Persona picker
   personaGrid: { display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 8 },

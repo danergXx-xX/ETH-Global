@@ -275,7 +275,7 @@ const REG_I18N = {
     latency: 'p50',
     lastSync: 'Ost. sync',
     coverage: 'Pokrycie',
-    showSource: 'Pokaz źródło na pulpicie',
+    showSource: 'Pokaż źródło na pulpicie',
   },
 };
 

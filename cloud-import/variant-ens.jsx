@@ -92,7 +92,7 @@ function ENSResolutionBadge({ state, latencyMs }) {
     <span style={{ ...ensStyles.resolutionBadge, background: s.bg, color: s.fg, border: `1px solid ${s.border}` }}>
       <span>{s.icon}</span>
       {s.label}
-      {latencyMs && <span style={{ color: 'oklch(0.56 0.014 255)', fontWeight: 400 }}>· {latencyMs}ms</span>}
+      {latencyMs && <span style={{ color: 'oklch(0.66 0.014 255)', fontWeight: 400 }}>· {latencyMs}ms</span>}
     </span>
   );
 }
@@ -124,7 +124,7 @@ function AgentEnsCard({ agent, state }) {
       <div>
         {Object.entries(agent.records).map(([k, v]) => (
           <div key={k} style={ensStyles.recordRow}>
-            <span style={{ color: 'oklch(0.56 0.014 255)' }}>{k}</span>
+            <span style={{ color: 'oklch(0.66 0.014 255)' }}>{k}</span>
             <span style={{ color: 'oklch(0.86 0.012 255)' }}>{v}</span>
           </div>
         ))}
@@ -186,7 +186,7 @@ function TreasuryEnsCard({ treasury, state }) {
           }}>Text records</div>
           {Object.entries(treasury.records).map(([k, v]) => (
             <div key={k} style={ensStyles.recordRow}>
-              <span style={{ color: 'oklch(0.56 0.014 255)' }}>{k}</span>
+              <span style={{ color: 'oklch(0.66 0.014 255)' }}>{k}</span>
               <span style={{ color: 'oklch(0.86 0.012 255)' }}>{v}</span>
             </div>
           ))}
@@ -203,7 +203,7 @@ function TreasuryEnsCard({ treasury, state }) {
               background: 'oklch(0.18 0.025 255)',
               border: '1px solid oklch(0.30 0.030 255)',
             }}>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'oklch(0.56 0.014 255)', letterSpacing: '0.10em', textTransform: 'uppercase' }}>USDC</div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'oklch(0.66 0.014 255)', letterSpacing: '0.10em', textTransform: 'uppercase' }}>USDC</div>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 600, color: 'oklch(0.92 0.008 255)' }}>{treasury.balance.usdc.toLocaleString()}</div>
             </div>
             <div style={{
@@ -211,7 +211,7 @@ function TreasuryEnsCard({ treasury, state }) {
               background: 'oklch(0.18 0.025 255)',
               border: '1px solid oklch(0.30 0.030 255)',
             }}>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'oklch(0.56 0.014 255)', letterSpacing: '0.10em', textTransform: 'uppercase' }}>ETH</div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'oklch(0.66 0.014 255)', letterSpacing: '0.10em', textTransform: 'uppercase' }}>ETH</div>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 600, color: 'oklch(0.92 0.008 255)' }}>{treasury.balance.eth}</div>
             </div>
           </div>
@@ -266,7 +266,7 @@ function VariantEns({ overrides = {} }) {
         <div style={{
           fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600,
           letterSpacing: '0.14em', textTransform: 'uppercase',
-          color: 'oklch(0.56 0.014 255)', marginBottom: 12,
+          color: 'oklch(0.66 0.014 255)', marginBottom: 12,
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
           <span>Council agents · 5 subnames</span>
@@ -281,14 +281,14 @@ function VariantEns({ overrides = {} }) {
           <div style={{
             fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600,
             letterSpacing: '0.14em', textTransform: 'uppercase',
-            color: 'oklch(0.56 0.014 255)', marginBottom: 12,
+            color: 'oklch(0.66 0.014 255)', marginBottom: 12,
           }}>Resolution log (debug)</div>
           <div style={{
             background: 'oklch(0.20 0.025 255)',
             border: '1px solid oklch(0.30 0.030 255)',
             borderRadius: 6, padding: 14,
           }}>
-            <div style={{ ...ensStyles.logRow, color: 'oklch(0.56 0.014 255)', fontWeight: 600 }}>
+            <div style={{ ...ensStyles.logRow, color: 'oklch(0.66 0.014 255)', fontWeight: 600 }}>
               <span>Name</span>
               <span>Status</span>
               <span>Latency</span>

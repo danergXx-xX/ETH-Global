@@ -69,7 +69,7 @@ const nfStyles = {
   body: { display: 'flex', flexDirection: 'column', gap: 3 },
   title: { fontFamily: 'var(--font-sans)', fontSize: 13.5, fontWeight: 500, color: 'oklch(0.92 0.008 255)' },
   summary: { fontFamily: 'var(--font-sans)', fontSize: 12, color: 'oklch(0.72 0.012 255)', lineHeight: 1.4 },
-  time: { fontFamily: 'var(--font-mono)', fontSize: 10, color: 'oklch(0.56 0.014 255)' },
+  time: { fontFamily: 'var(--font-mono)', fontSize: 10, color: 'oklch(0.66 0.014 255)' },
   rowAction: {
     padding: '4px 8px', borderRadius: 3,
     background: 'transparent',

@@ -4,6 +4,14 @@
 **Stack:** Next.js 16 + Tailwind v4 + shadcn/ui + dark mode default + bilingual PL+EN (Aiko Phase 1B reimplementacja)
 **Source mockupow:** Cloud Claude Design (Sesja 0-11) + Vela Sesja 12 (Opus 4.7 1M context)
 **Visual canvas:** `cloud-import/Live Debate Viewer.html` (otworz w Chrome zeby zobaczyc 14 DCSections w canvas)
+
+**Lokalny HTTP server (rekomendowane do mockup preview):**
+```bash
+# BEZPIECZNY (localhost-only) - per Mateusz Sec audit:
+python3 -m http.server 8765 --bind 127.0.0.1 --directory cloud-import
+# Otworz: http://localhost:8765/Live%20Debate%20Viewer.html
+```
+NIGDY nie odpalaj bez `--bind 127.0.0.1` na publicznym Wi-Fi (hackathon, cafe) - default Pythona to 0.0.0.0 (wszystkie interfejsy).
 **Branch:** `feat/ux-mockups`
 
 > **Architektoniczna uwaga dla Aiko:** Cloud + Vela mockupy sa **visual canvas** (React 18 + Babel-standalone via CDN, oklch inline styles). NIE production. Aiko reimplementuje 1:1 wizualnie ale w prawdziwym stack: Next.js 16 + TypeScript strict + Tailwind v4 + shadcn/ui + wagmi v2 + viem + custom i18n.tsx. Kazdy `variant-*.jsx` = referencja, nie kod do skopiowania.

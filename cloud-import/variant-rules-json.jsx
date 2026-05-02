@@ -50,7 +50,7 @@ const rjStyles = {
   rightPane: { display: 'flex', flexDirection: 'column' },
   preview: { flex: 1, overflowY: 'auto', padding: '18px 22px' },
   previewSection: { padding: 14, borderRadius: 6, background: 'oklch(0.22 0.028 255)', border: '1px solid oklch(0.30 0.030 255)', marginBottom: 14 },
-  previewSectionLabel: { fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'oklch(0.56 0.014 255)', marginBottom: 10 },
+  previewSectionLabel: { fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'oklch(0.66 0.014 255)', marginBottom: 10 },
   validation: { padding: 14, borderTop: '1px solid oklch(0.28 0.028 255)', background: 'oklch(0.20 0.025 255)', maxHeight: 200, overflowY: 'auto' },
   validationRow: { display: 'grid', gridTemplateColumns: '90px 1fr', gap: 12, padding: '6px 0', fontFamily: 'var(--font-mono)', fontSize: 11, borderTop: '1px solid oklch(0.28 0.028 255)' },
   footer: { padding: '12px 22px', display: 'flex', alignItems: 'center', gap: 12, background: 'oklch(0.20 0.025 255)', borderTop: '1px solid oklch(0.30 0.030 255)', fontFamily: 'var(--font-mono)', fontSize: 10, color: 'oklch(0.66 0.014 255)', letterSpacing: '0.04em', flexShrink: 0 },
@@ -235,7 +235,7 @@ function VariantRulesJson({ overrides = {} }) {
           <RjPreview rules={rules} isDirty={isDirty} />
           {state === 'committing' && (
             <div style={{ padding: 16, borderTop: '1px solid oklch(0.28 0.028 255)', background: 'oklch(0.20 0.025 255)' }}>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'oklch(0.56 0.014 255)', marginBottom: 10, display: 'flex', justifyContent: 'space-between' }}>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'oklch(0.66 0.014 255)', marginBottom: 10, display: 'flex', justifyContent: 'space-between' }}>
                 <span>Multisig sigs</span>
                 <span style={{ color: signedCount >= required ? 'oklch(0.86 0.10 152)' : 'oklch(0.86 0.10 75)' }}>{signedCount} / {required} required</span>
               </div>
@@ -243,7 +243,7 @@ function VariantRulesJson({ overrides = {} }) {
                 <div key={s.ens} style={{ display: 'grid', gridTemplateColumns: '14px 1fr auto', gap: 10, padding: '6px 0', fontFamily: 'var(--font-mono)', fontSize: 11, borderTop: '1px solid oklch(0.28 0.028 255)' }}>
                   <span style={{ width: 12, height: 12, borderRadius: 6, background: s.signed ? 'oklch(0.74 0.16 152)' : 'oklch(0.30 0.030 255)' }} />
                   <span style={{ color: s.signed ? 'oklch(0.92 0.008 255)' : 'oklch(0.66 0.014 255)' }}>{s.ens}</span>
-                  <span style={{ color: s.signed ? 'oklch(0.74 0.16 152)' : 'oklch(0.56 0.014 255)' }}>{s.signed ? '✓ ' + s.ago : s.ago}</span>
+                  <span style={{ color: s.signed ? 'oklch(0.74 0.16 152)' : 'oklch(0.66 0.014 255)' }}>{s.signed ? '✓ ' + s.ago : s.ago}</span>
                 </div>
               ))}
             </div>

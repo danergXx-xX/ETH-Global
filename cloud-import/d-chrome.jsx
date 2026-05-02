@@ -59,7 +59,7 @@ function DTopBar({ locale, setLocale, theme, setThemeMode, themeMode, t, mode, e
         </DIconBtn>
       </DTooltip>
       <DTooltip theme={theme} label={locale === 'en' ? 'Switch to Polish' : 'Switch to English'}
-        hint={locale === 'en' ? 'Council debates and verdicts are translated live.' : 'Debaty i werdykty rady tlumaczone na zywo.'}>
+        hint={locale === 'en' ? 'Council debates and verdicts are translated live.' : 'Debaty i werdykty rady tlumaczone na żywo.'}>
         <button onClick={() => setLocale(locale === 'en' ? 'pl' : 'en')} style={{
           padding: '0 16px', background: 'transparent', border: 'none', borderLeft: `1px solid ${theme.border}`,
           color: theme.textDim, fontSize: 11.5, fontFamily: 'var(--font-mono)', cursor: 'pointer', fontWeight: 700, letterSpacing: '0.04em',

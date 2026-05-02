@@ -57,7 +57,7 @@ const executeStyles = {
   stageDesc: {
     textAlign: 'center', marginTop: 3,
     fontFamily: 'var(--font-sans)', fontSize: 10.5,
-    color: 'oklch(0.56 0.014 255)',
+    color: 'oklch(0.66 0.014 255)',
   },
   // Hero block
   hero: {
@@ -94,7 +94,7 @@ const executeStyles = {
   panelLabel: {
     fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600,
     letterSpacing: '0.14em', textTransform: 'uppercase',
-    color: 'oklch(0.56 0.014 255)', marginBottom: 14,
+    color: 'oklch(0.66 0.014 255)', marginBottom: 14,
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
   },
   // Signers
@@ -207,7 +207,7 @@ function StageStrip({ activeIdx, stages }) {
           ? { background: 'oklch(0.74 0.16 152)', color: 'oklch(0.18 0.04 152)', border: '2px solid oklch(0.74 0.16 152)' }
           : isActive
           ? { background: 'oklch(0.78 0.14 75)', color: 'oklch(0.18 0.04 75)', border: '2px solid oklch(0.78 0.14 75)', boxShadow: '0 0 12px oklch(0.78 0.14 75)' }
-          : { background: 'oklch(0.22 0.028 255)', color: 'oklch(0.56 0.014 255)', border: '2px solid oklch(0.30 0.030 255)' };
+          : { background: 'oklch(0.22 0.028 255)', color: 'oklch(0.66 0.014 255)', border: '2px solid oklch(0.30 0.030 255)' };
         return (
           <div key={s.id}>
             <div style={{ ...executeStyles.stageDot, ...dotStyle }}>
@@ -215,7 +215,7 @@ function StageStrip({ activeIdx, stages }) {
             </div>
             <div style={{
               ...executeStyles.stageLabel,
-              color: isFuture ? 'oklch(0.50 0.014 255)' : isActive ? 'oklch(0.86 0.10 75)' : 'oklch(0.86 0.012 255)',
+              color: isFuture ? 'oklch(0.62 0.014 255)' : isActive ? 'oklch(0.86 0.10 75)' : 'oklch(0.86 0.012 255)',
             }}>{s.label}</div>
             <div style={executeStyles.stageDesc}>{s.desc}</div>
           </div>
@@ -226,14 +226,14 @@ function StageStrip({ activeIdx, stages }) {
 }
 
 function TimelockCountdown({ remaining, total }) {
-  // Circular progress: kolorowy luk = remaining time, kurczy sie gdy zostaje mniej.
+  // Circular progress: kolorowy luk = remaining time, kurczy się gdy zostaje mniej.
   // remaining w sekundach. Mockup statyczny - Aiko Phase 1B doda useEffect+RAF tick.
   const pct = Math.max(0, Math.min(1, remaining / total));
   const size = 140;
   const stroke = 8;
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
-  // strokeDashoffset = c * (1 - pct) → luk pokazuje pct = remaining/total (kurczy sie)
+  // strokeDashoffset = c * (1 - pct) → luk pokazuje pct = remaining/total (kurczy się)
   const offset = c * (1 - pct);
   const hours = Math.floor(remaining / 3600);
   const minutes = Math.floor((remaining % 3600) / 60);
@@ -252,7 +252,7 @@ function TimelockCountdown({ remaining, total }) {
         <div style={{
           fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 600,
           letterSpacing: '0.14em', textTransform: 'uppercase',
-          color: 'oklch(0.56 0.014 255)', marginBottom: 4,
+          color: 'oklch(0.66 0.014 255)', marginBottom: 4,
         }}>Timelock ETA</div>
         <div style={{
           fontFamily: 'var(--font-display)', fontSize: 32, fontWeight: 600,
@@ -282,9 +282,9 @@ function SignerRow({ s }) {
         boxShadow: s.signed ? '0 0 6px oklch(0.74 0.16 152)' : 'none',
       }} />
       <span style={{ color: s.signed ? 'oklch(0.92 0.008 255)' : 'oklch(0.66 0.014 255)' }}>
-        {s.ens} <span style={{ color: 'oklch(0.50 0.014 255)' }}>· {s.addr}</span>
+        {s.ens} <span style={{ color: 'oklch(0.62 0.014 255)' }}>· {s.addr}</span>
       </span>
-      <span style={{ color: s.signed ? 'oklch(0.74 0.16 152)' : 'oklch(0.56 0.014 255)', fontSize: 10 }}>
+      <span style={{ color: s.signed ? 'oklch(0.74 0.16 152)' : 'oklch(0.66 0.014 255)', fontSize: 10 }}>
         {s.signed ? '✓ ' + s.ago : s.ago}
       </span>
     </div>
@@ -336,7 +336,7 @@ function TxPreviewPanel({ tx }) {
       <div style={{ marginBottom: 12 }}>
         <div style={{ fontSize: 11, color: 'oklch(0.66 0.014 255)', marginBottom: 4 }}>Target contract</div>
         <code style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'oklch(0.92 0.008 255)' }}>{tx.target}</code>
-        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'oklch(0.56 0.014 255)', marginTop: 2 }}>{tx.targetLabel}</div>
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'oklch(0.66 0.014 255)', marginTop: 2 }}>{tx.targetLabel}</div>
       </div>
 
       <div style={{ marginBottom: 12 }}>
@@ -345,7 +345,7 @@ function TxPreviewPanel({ tx }) {
       </div>
 
       <div style={executeStyles.calldataBox}>
-        <span style={{ color: 'oklch(0.56 0.014 255)' }}>calldata</span>
+        <span style={{ color: 'oklch(0.66 0.014 255)' }}>calldata</span>
         <br />{tx.calldata}
       </div>
 
@@ -353,14 +353,14 @@ function TxPreviewPanel({ tx }) {
         <div style={{
           fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600,
           letterSpacing: '0.10em', textTransform: 'uppercase',
-          color: 'oklch(0.56 0.014 255)', marginBottom: 6,
+          color: 'oklch(0.66 0.014 255)', marginBottom: 6,
         }}>Decoded args</div>
         {tx.decodedArgs.map((arg, i) => (
           <div key={i} style={executeStyles.argRow}>
             <span style={{ color: 'oklch(0.66 0.014 255)' }}>{arg.name}</span>
             <div>
               <div style={{ color: 'oklch(0.92 0.008 255)' }}>{arg.value}</div>
-              <div style={{ fontSize: 10, color: 'oklch(0.56 0.014 255)' }}>{arg.label}</div>
+              <div style={{ fontSize: 10, color: 'oklch(0.66 0.014 255)' }}>{arg.label}</div>
             </div>
           </div>
         ))}
@@ -374,8 +374,8 @@ function BalanceDiffPanel({ diff }) {
     <div style={executeStyles.panel}>
       <div style={executeStyles.panelLabel}>Balance diff (pre → post)</div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 12, marginBottom: 8 }}>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'oklch(0.56 0.014 255)' }}>BEFORE</span>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'oklch(0.56 0.014 255)' }}>AFTER</span>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'oklch(0.66 0.014 255)' }}>BEFORE</span>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'oklch(0.66 0.014 255)' }}>AFTER</span>
       </div>
       {diff.pre.map((p, i) => {
         const post = diff.post[i];
@@ -384,10 +384,10 @@ function BalanceDiffPanel({ diff }) {
           <div key={i} style={executeStyles.diffRow}>
             <div>
               <div style={{ color: 'oklch(0.92 0.008 255)' }}>{p.asset}</div>
-              <div style={{ fontSize: 10, color: 'oklch(0.56 0.014 255)' }}>{p.location}</div>
+              <div style={{ fontSize: 10, color: 'oklch(0.66 0.014 255)' }}>{p.location}</div>
             </div>
             <span style={{ color: 'oklch(0.78 0.012 255)' }}>{p.amount.toLocaleString()}</span>
-            <span style={{ color: 'oklch(0.50 0.014 255)' }}>→</span>
+            <span style={{ color: 'oklch(0.62 0.014 255)' }}>→</span>
             <span style={{
               color: changed ? (post.amount > p.amount ? 'oklch(0.86 0.10 152)' : 'oklch(0.86 0.10 22)') : 'oklch(0.78 0.012 255)',
               fontWeight: changed ? 700 : 400,

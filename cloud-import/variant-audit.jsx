@@ -42,7 +42,7 @@ const auditStyles = {
   statLabel: {
     fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 600,
     letterSpacing: '0.14em', textTransform: 'uppercase',
-    color: 'oklch(0.56 0.014 255)',
+    color: 'oklch(0.66 0.014 255)',
   },
   statValue: {
     fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 600,
@@ -88,7 +88,7 @@ const auditStyles = {
   },
   eventTimestamp: {
     fontFamily: 'var(--font-mono)', fontSize: 10,
-    color: 'oklch(0.56 0.014 255)',
+    color: 'oklch(0.66 0.014 255)',
     display: 'flex', flexDirection: 'column', gap: 2,
   },
   eventTimestampRel: {
@@ -336,7 +336,7 @@ function ExportPanel({ onClose, state }) {
         <span style={{
           fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600,
           letterSpacing: '0.14em', textTransform: 'uppercase',
-          color: 'oklch(0.56 0.014 255)',
+          color: 'oklch(0.66 0.014 255)',
         }}>Format</span>
         {['JSON (full events + signatures)', 'CSV (timestamps + summaries)', 'PDF receipt (notarized)'].map((opt, i) => (
           <label key={i} style={{
@@ -434,7 +434,7 @@ function VariantAudit({ overrides = {} }) {
         </span>
         <code style={{ fontSize: 10, color: 'oklch(0.78 0.012 255)' }}>bafy...latest-cid</code>
         <div style={{ flex: 1 }} />
-        <span style={{ color: 'oklch(0.56 0.014 255)' }}>
+        <span style={{ color: 'oklch(0.66 0.014 255)' }}>
           Showing {visibleEvents.length} of {data.stats.total}
         </span>
         <button style={auditStyles.footerBtn}>↻ Refresh</button>
