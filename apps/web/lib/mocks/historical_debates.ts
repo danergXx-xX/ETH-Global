@@ -108,7 +108,7 @@ export const HISTORICAL_DEBATES: HistoricalDebate[] = [
           "VaR(95) on 50K USDC supply over 30 days bounded at 920 USDC. Sharpe 1.7 vs idle stable. Within 5 percent solo-protocol soft cap (this is 4.7 percent of treasury).",
         primary_source: {
           title: "Internal risk model - VaR backtest 90d",
-          url: "https://0g.ai/storage/cid/bafyrisk-q1-2026",
+          url: "https://www.perplexity.ai/search?q=defi+VaR+models+aave+v3+usdc+2026",
           type: "perplexity",
           weight: 0.86,
         },

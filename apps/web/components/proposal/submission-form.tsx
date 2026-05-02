@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { useTranslations } from "@/lib/i18n";
+import { useI18n, useTranslations } from "@/lib/i18n";
 import { useTokenBalance } from "@/lib/hooks";
 import { SUGGESTED_PROPOSALS } from "@/lib/mocks/suggested_proposals";
 
@@ -27,6 +27,7 @@ interface SubmissionFormProps {
 
 export function SubmissionForm({ onSubmit }: SubmissionFormProps) {
   const t = useTranslations("proposal");
+  const { locale } = useI18n();
   const { address, isConnected } = useAccount();
   const { data: tokenBalance } = useTokenBalance(address);
   const [description, setDescription] = useState("");
@@ -101,15 +102,17 @@ export function SubmissionForm({ onSubmit }: SubmissionFormProps) {
                 (p) => p.id === e.target.value,
               );
               if (!picked) return;
-              const text = `${picked.title.en}\n\n${picked.description.en}\n\n${picked.full_context.en}`;
+              const text = `${picked.title[locale]}\n\n${picked.description[locale]}`;
               setDescription(text);
               if (state === "success") setState("empty");
             }}
           >
-            <option value="">Pick a demo scenario...</option>
+            <option value="">
+              {locale === "pl" ? "Wybierz scenariusz demo..." : "Pick a demo scenario..."}
+            </option>
             {SUGGESTED_PROPOSALS.map((p) => (
               <option key={p.id} value={p.id}>
-                {p.title.en}
+                {p.title[locale]}
               </option>
             ))}
           </select>

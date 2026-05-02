@@ -62,7 +62,7 @@ Przeciwwskazania: re-routing tankowców (Cape of Good Hope) dodaje tylko ok. 2 t
     tags: ["geopolitics", "macro-hedge", "futures"],
     suggested_action_data: {
       type: "transfer",
-      token: "0x0000000000000000000000000000000000000A11",
+      token: "0x0000000000000000000000000000000000000a11",
       recipient: "0x0000000000000000000000000000000000000001",
       amount_wei: "200000000000",
     },
@@ -102,8 +102,8 @@ Sentyment podzielony: retail (Crypto Twitter) euforycznie bullish, powołując s
     tags: ["btc", "halving", "rebalance", "twap"],
     suggested_action_data: {
       type: "swap",
-      token_in: "0x0000000000000000000000000000000000000B22",
-      token_out: "0x0000000000000000000000000000000000000A11",
+      token_in: "0x0000000000000000000000000000000000000b22",
+      token_out: "0x0000000000000000000000000000000000000a11",
       amount_in_wei: "500000000",
       min_amount_out_wei: "239000000000",
       dex: "uniswap_v3",
@@ -144,7 +144,7 @@ Metryki ryzyka: koszt gazu 42 USD przy obecnym basefee, nieistotny vs 14,5 tys. 
     tags: ["depeg", "emergency", "stablecoin", "time-sensitive"],
     suggested_action_data: {
       type: "transfer",
-      token: "0x0000000000000000000000000000000000000A11",
+      token: "0x0000000000000000000000000000000000000a11",
       recipient: "0x0000000000000000000000000000000000000002",
       amount_wei: "150000000000",
     },
@@ -188,7 +188,7 @@ Ryzyka bezczynności: atak się powodzi, contagion uderza, ekspozycja 80 tys. US
     tags: ["governance-attack", "meta-dao", "defensive"],
     suggested_action_data: {
       type: "transfer",
-      token: "0x0000000000000000000000000000000000000A11",
+      token: "0x0000000000000000000000000000000000000a11",
       recipient: "0x0000000000000000000000000000000000000003",
       amount_wei: "10000000000",
     },

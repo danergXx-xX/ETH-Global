@@ -139,3 +139,28 @@ def test_historical_debates_chronological_order() -> None:
 def test_get_debate_by_id_hit_and_miss() -> None:
     assert get_debate_by_id("DEBATE-HIST-01") is not None
     assert get_debate_by_id("DOES-NOT-EXIST") is None
+
+
+def test_historical_debates_cids_unique() -> None:
+    """Each concluded debate has its own 0G Storage CID."""
+    cids = [d["og_storage_cid"] for d in HISTORICAL_DEBATES]
+    assert len(cids) == len(set(cids))
+
+
+def test_proposal_token_addresses_lowercase() -> None:
+    """Action data addresses are all-lowercase placeholders.
+
+    Mixed-case 0x... triggers EIP-55 checksum validation in eth_utils
+    when piped through /api/proposals/encode. Lowercase is always valid.
+    """
+    import re
+    address_re = re.compile(r"^0x[0-9a-f]{40}$")
+    for proposal in SUGGESTED_PROPOSALS:
+        action = proposal["suggested_action_data"]
+        for key in ("token", "recipient", "token_in", "token_out"):
+            value = action.get(key)
+            if value is None:
+                continue
+            assert address_re.match(value), (
+                f"{proposal['id']}.{key}={value} not lowercase EIP-55-safe"
+            )

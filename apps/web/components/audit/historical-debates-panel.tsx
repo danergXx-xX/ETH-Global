@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useI18n } from "@/lib/i18n";
 import {
   HISTORICAL_DEBATES,
   type HistoricalDebate,
@@ -25,9 +26,11 @@ function shortTx(hash: string): string {
 
 function DebateRow({
   debate,
+  locale,
   onClick,
 }: {
   debate: HistoricalDebate;
+  locale: "en" | "pl";
   onClick: () => void;
 }) {
   const tally = debate.vote_tally;
@@ -40,15 +43,14 @@ function DebateRow({
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="text-sm font-medium truncate">
-            {debate.proposal.title.en}
+            {debate.proposal.title[locale]}
           </div>
           <div className="text-[11px] text-muted-foreground font-mono">
             {debate.proposal.id} - {debate.proposal.amount}
           </div>
         </div>
         <Badge className={`shrink-0 ${VERDICT_COLORS[debate.verdict]}`}>
-          {debate.verdict} {tally.FOR}-{tally.AGAINST}
-          {tally.ABSTAIN > 0 ? `-${tally.ABSTAIN}` : ""}
+          {debate.verdict} {tally.FOR}-{tally.AGAINST}-{tally.ABSTAIN}
         </Badge>
       </div>
       <div className="flex items-center gap-3 text-[10px] text-muted-foreground font-mono">
@@ -61,13 +63,19 @@ function DebateRow({
   );
 }
 
-function DebateDetail({ debate }: { debate: HistoricalDebate }) {
+function DebateDetail({
+  debate,
+  locale,
+}: {
+  debate: HistoricalDebate;
+  locale: "en" | "pl";
+}) {
   return (
     <div className="rounded-md border border-border bg-secondary/30 p-3 space-y-3">
       <div>
-        <div className="text-sm font-semibold">{debate.proposal.title.en}</div>
+        <div className="text-sm font-semibold">{debate.proposal.title[locale]}</div>
         <div className="text-xs text-muted-foreground mt-0.5">
-          {debate.proposal.description.en}
+          {debate.proposal.description[locale]}
         </div>
       </div>
 
@@ -123,6 +131,7 @@ function DebateDetail({ debate }: { debate: HistoricalDebate }) {
 }
 
 export function HistoricalDebatesPanel() {
+  const { locale } = useI18n();
   const [openId, setOpenId] = useState<string | null>(
     HISTORICAL_DEBATES[0]?.id ?? null,
   );
@@ -132,7 +141,9 @@ export function HistoricalDebatesPanel() {
     <Card className="border-border mb-4">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm">
-          Concluded debates (audit trail)
+          {locale === "pl"
+            ? "Zakończone debaty (audit trail)"
+            : "Concluded debates (audit trail)"}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -141,11 +152,12 @@ export function HistoricalDebatesPanel() {
             <DebateRow
               key={d.id}
               debate={d}
+              locale={locale}
               onClick={() => setOpenId(openId === d.id ? null : d.id)}
             />
           ))}
         </div>
-        {open && <DebateDetail debate={open} />}
+        {open && <DebateDetail debate={open} locale={locale} />}
       </CardContent>
     </Card>
   );

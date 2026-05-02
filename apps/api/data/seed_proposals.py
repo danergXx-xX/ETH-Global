@@ -79,7 +79,7 @@ SUGGESTED_PROPOSALS: list[dict[str, Any]] = [
         "tags": ["geopolitics", "macro-hedge", "futures"],
         "suggested_action_data": {
             "type": "transfer",
-            "token": "0x0000000000000000000000000000000000000A11",
+            "token": "0x0000000000000000000000000000000000000a11",
             "recipient": "0x0000000000000000000000000000000000000001",
             "amount_wei": "200000000000",
         },
@@ -153,8 +153,8 @@ SUGGESTED_PROPOSALS: list[dict[str, Any]] = [
         "tags": ["btc", "halving", "rebalance", "twap"],
         "suggested_action_data": {
             "type": "swap",
-            "token_in": "0x0000000000000000000000000000000000000B22",
-            "token_out": "0x0000000000000000000000000000000000000A11",
+            "token_in": "0x0000000000000000000000000000000000000b22",
+            "token_out": "0x0000000000000000000000000000000000000a11",
             "amount_in_wei": "500000000",
             "min_amount_out_wei": "239000000000",
             "dex": "uniswap_v3",
@@ -231,7 +231,7 @@ SUGGESTED_PROPOSALS: list[dict[str, Any]] = [
         "tags": ["depeg", "emergency", "stablecoin", "time-sensitive"],
         "suggested_action_data": {
             "type": "transfer",
-            "token": "0x0000000000000000000000000000000000000A11",
+            "token": "0x0000000000000000000000000000000000000a11",
             "recipient": "0x0000000000000000000000000000000000000002",
             "amount_wei": "150000000000",
         },
@@ -317,7 +317,7 @@ SUGGESTED_PROPOSALS: list[dict[str, Any]] = [
         "tags": ["governance-attack", "meta-dao", "defensive"],
         "suggested_action_data": {
             "type": "transfer",
-            "token": "0x0000000000000000000000000000000000000A11",
+            "token": "0x0000000000000000000000000000000000000a11",
             "recipient": "0x0000000000000000000000000000000000000003",
             "amount_wei": "10000000000",
         },
