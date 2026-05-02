@@ -201,3 +201,27 @@ class TestSingleton:
         finally:
             get_settings.cache_clear()  # type: ignore[attr-defined]
             ru.reset_singleton_for_tests()
+
+    def test_placeholder_addresses_blocked_in_prod(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Operational guard: placeholder 0x..001-005 must NEVER reach prod env."""
+        ru.reset_singleton_for_tests()
+        from config import Settings, get_settings
+
+        get_settings.cache_clear()  # type: ignore[attr-defined]
+        monkeypatch.setattr(
+            "config.Settings",
+            lambda **kw: Settings(
+                env="prod",
+                agent_reputation_address="0xf3BAb9A2761131f4A9e5BA2d9e6395bea2186f44",
+                base_sepolia_rpc_url="https://sepolia.base.org",
+                backend_wallet_private_key="",
+            ),
+        )
+        try:
+            with pytest.raises(RuntimeError, match="placeholder PERSONA_ADDRESSES"):
+                ru.get_reputation_updater()
+        finally:
+            get_settings.cache_clear()  # type: ignore[attr-defined]
+            ru.reset_singleton_for_tests()

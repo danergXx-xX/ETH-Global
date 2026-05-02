@@ -290,6 +290,17 @@ def get_reputation_updater() -> ReputationUpdater | None:
         )
         return None
 
+    # Operational guard: placeholder addresses 0x..001-005 must NEVER hit prod.
+    # Phase 2 ENS will replace these with real per-agent wallets.
+    if settings.env == "prod":
+        for persona, addr in PERSONA_ADDRESSES.items():
+            if 1 <= int(addr, 16) <= 100:
+                raise RuntimeError(
+                    f"placeholder PERSONA_ADDRESSES detected in production "
+                    f"(persona={persona}, address={addr}). Phase 2 ENS subnames "
+                    f"must assign real addresses before prod deploy."
+                )
+
     _singleton = ReputationUpdater(
         rpc_url=settings.base_sepolia_rpc_url,
         contract_address=settings.agent_reputation_address,

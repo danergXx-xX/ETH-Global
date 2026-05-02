@@ -154,3 +154,36 @@ class TestWebSocketEndpoint:
         with client.websocket_connect("/ws/debate?proposal_id=ok&text=short") as ws:
             msg = ws.receive_json()
             assert msg["type"] == "error"
+
+    def test_websocket_rate_limit_blocks_after_threshold(self) -> None:
+        """11th connection per IP within a minute must be rejected."""
+        import main as main_module
+        from limits.storage import MemoryStorage
+        from limits.strategies import MovingWindowRateLimiter
+
+        async def fake_run_debate(_text: str) -> dict:
+            return _stub_debate_result()
+
+        # Reset limiter storage to isolate test from prior runs
+        main_module._ws_storage = MemoryStorage()
+        main_module._ws_rate_limiter = MovingWindowRateLimiter(main_module._ws_storage)
+
+        with patch.object(ds, "run_debate", fake_run_debate), patch.object(
+            ds, "get_reputation_updater", return_value=None
+        ):
+            client = TestClient(main_module.app)
+            # 10 successful connects (limit = 10/minute)
+            for i in range(10):
+                with client.websocket_connect(
+                    f"/ws/debate?proposal_id=p{i}&text=Long+enough+proposal+text"
+                ) as ws:
+                    first = ws.receive_json()
+                    assert first["type"] == "agent_statement"
+
+            # 11th must hit rate limit
+            with client.websocket_connect(
+                "/ws/debate?proposal_id=p11&text=Long+enough+proposal+text"
+            ) as ws:
+                msg = ws.receive_json()
+                assert msg["type"] == "error"
+                assert "rate limit" in msg["message"].lower()

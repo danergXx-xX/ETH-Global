@@ -1,3 +1,4 @@
+import asyncio
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from typing import AsyncIterator
@@ -8,6 +9,9 @@ from eth_utils import to_checksum_address
 from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from limits import parse as parse_limit
+from limits.storage import MemoryStorage
+from limits.strategies import MovingWindowRateLimiter
 from slowapi import Limiter
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
@@ -42,6 +46,11 @@ setup_logging(env=settings.env, log_level=settings.log_level)
 log = structlog.get_logger()
 
 limiter = Limiter(key_func=get_remote_address)
+
+# WebSocket rate limit (slowapi nie obsluguje WS natywnie - uzywamy limits bezposrednio)
+_ws_storage = MemoryStorage()
+_ws_rate_limiter = MovingWindowRateLimiter(_ws_storage)
+_WS_DEBATE_LIMIT = parse_limit("10/minute")
 
 
 def _rate_limit_handler(request: Request, exc: RateLimitExceeded) -> JSONResponse:
@@ -181,8 +190,19 @@ async def ws_debate(websocket: WebSocket) -> None:
       - proposal_id: client-side identifier (validated)
       - text:        proposal text (10..2000 chars)
 
+    Rate limit: 10 connections/minute per client IP (DoS protection).
     Stream order: agent_statement* -> consensus -> reputation_update -> complete.
     """
+    client_ip = websocket.client.host if websocket.client else "unknown"
+    if not _ws_rate_limiter.hit(_WS_DEBATE_LIMIT, "ws_debate", client_ip):
+        await websocket.accept()
+        await websocket.send_json(
+            {"type": "error", "message": "rate limit exceeded (10/min)", "recoverable": False}
+        )
+        log.warning("ws_debate_rate_limited", client=client_ip)
+        await websocket.close(code=1008)
+        return
+
     await websocket.accept()
     proposal_id_raw = websocket.query_params.get("proposal_id", "")
     text = websocket.query_params.get("text", "")
@@ -296,9 +316,7 @@ async def get_all_agent_reputations() -> dict[str, object]:
                 "error": str(exc),
             }
 
-    import asyncio as _asyncio
-
-    items = await _asyncio.gather(
+    items = await asyncio.gather(
         *[_one(p, a) for p, a in PERSONA_ADDRESSES.items()]
     )
     return {"agents": items}

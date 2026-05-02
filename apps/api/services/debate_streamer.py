@@ -39,14 +39,15 @@ def _utcnow_iso() -> str:
 
 
 def _serialize_sources(sources: list[Any]) -> list[dict[str, Any]]:
+    """Flatten pydantic Source models or pass-through dicts. Unknown types logged + dropped."""
     out: list[dict[str, Any]] = []
     for s in sources or []:
-        # AgentClaim.sources are pydantic Source models; flatten for the wire
-        try:
+        if hasattr(s, "model_dump"):
             out.append(s.model_dump(mode="json"))
-        except AttributeError:
-            if isinstance(s, dict):
-                out.append(s)
+        elif isinstance(s, dict):
+            out.append(s)
+        else:
+            log.warning("unknown_source_type_dropped", source_type=type(s).__name__)
     return out
 
 
