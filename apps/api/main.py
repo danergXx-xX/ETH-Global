@@ -13,7 +13,9 @@ from config import get_settings
 from logging_config import RequestIDMiddleware, setup_logging
 from orchestrator import run_debate
 from schemas import HealthResponse
-from storage.factory import StorageFallbackError, upload_with_fallback
+import httpx
+
+from storage.factory import StorageConfigError, StorageFallbackError, upload_with_fallback
 
 settings = get_settings()
 setup_logging(env=settings.env, log_level=settings.log_level)
@@ -92,8 +94,8 @@ async def debate(req: DebateRequest) -> DebateResponse:
             provider=provider,
             fallback=storage_result.fallback_used,
         )
-    except (StorageFallbackError, Exception) as storage_err:
-        log.error("audit_trail_failed", error=str(storage_err))
+    except (StorageFallbackError, StorageConfigError, httpx.HTTPError, ConnectionError, OSError) as storage_err:
+        log.error("audit_trail_failed", error=str(storage_err), error_type=type(storage_err).__name__)
 
     return DebateResponse(
         decisions=result["decisions"],

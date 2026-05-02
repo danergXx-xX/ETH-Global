@@ -12,6 +12,7 @@ from storage.factory import (
     create_storage,
     upload_with_fallback,
 )
+from storage.interface import UploadResult
 from storage.ipfs import IPFSStorage
 from storage.zerog import ZeroGStorage
 
@@ -57,7 +58,7 @@ async def test_ipfs_upload_happy_path() -> None:
     """IPFS adapter returns CID from web3.storage response."""
     storage = IPFSStorage(token="test-token")
     ipfs_ok = _mock_response(
-        200, {"cid": "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi"},
+        200, {"IpfsHash": "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi"},
     )
 
     with patch.object(storage._client, "post", new_callable=AsyncMock) as mock_post:
@@ -66,7 +67,7 @@ async def test_ipfs_upload_happy_path() -> None:
 
     assert result.provider == "ipfs"
     assert result.cid == "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi"
-    assert "ipfs.w3s.link" in result.gateway_url
+    assert "pinata.cloud" in result.gateway_url
     assert result.bytes_uploaded > 0
     assert result.fallback_used is False
 
@@ -134,6 +135,35 @@ def test_factory_unknown_provider_raises() -> None:
         create_storage("s3")  # type: ignore[arg-type]
 
 
+def test_factory_missing_zerog_key_raises() -> None:
+    """Factory raises StorageConfigError when ZEROG_PRIVATE_KEY is empty."""
+    mock_settings = _make_settings(storage_provider="0g", zerog_private_key="")
+    with patch("storage.factory.get_settings", return_value=mock_settings):
+        with pytest.raises(StorageConfigError, match="ZEROG_PRIVATE_KEY"):
+            create_storage()
+
+
+@pytest.mark.asyncio
+async def test_zerog_rpc_error_raises() -> None:
+    """0G adapter raises ZeroGStorageError on JSON-RPC error response."""
+    from storage.zerog import ZeroGStorageError
+
+    storage = ZeroGStorage(
+        indexer_url="https://indexer.test",
+        evm_rpc_url="https://rpc.test",
+        private_key="0xdeadbeef",
+    )
+    error_resp = _mock_response(200, {
+        "jsonrpc": "2.0",
+        "error": {"code": -32000, "message": "node not synced"},
+        "id": 1,
+    })
+    with patch.object(storage._client, "post", new_callable=AsyncMock) as mock_post:
+        mock_post.return_value = error_resp
+        with pytest.raises(ZeroGStorageError, match="node not synced"):
+            await storage.upload(SAMPLE_DATA)
+
+
 # -- Helpers --
 
 def _make_settings(
@@ -155,9 +185,7 @@ def _make_settings(
     return s
 
 
-def _make_upload_result(provider: str, cid: str):  # type: ignore[no-untyped-def]
-    from storage.interface import UploadResult
-
+def _make_upload_result(provider: str, cid: str) -> UploadResult:
     return UploadResult(
         cid=cid,
         gateway_url=f"https://{cid}.ipfs.w3s.link/",

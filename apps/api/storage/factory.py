@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import Literal
 
+import httpx
 import structlog
 
 from config import get_settings
@@ -39,12 +40,12 @@ async def upload_with_fallback(data: dict) -> UploadResult:
     """Upload to primary provider, auto-fallback to IPFS on failure."""
     settings = get_settings()
     primary_provider = settings.storage_provider
+    backend = create_storage(primary_provider)
 
     try:
-        backend = create_storage(primary_provider)
         result = await backend.upload(data)
         return result
-    except Exception as primary_err:
+    except (ConnectionError, httpx.HTTPError, OSError) as primary_err:
         if primary_provider == "ipfs":
             log.error("ipfs_upload_failed", error=str(primary_err))
             raise
@@ -62,12 +63,12 @@ async def upload_with_fallback(data: dict) -> UploadResult:
                 f"Primary ({primary_provider}) failed and IPFS fallback unavailable: {primary_err}"
             ) from primary_err
 
+        ipfs = IPFSStorage(token=settings.web3_storage_token)
         try:
-            ipfs = IPFSStorage(token=settings.web3_storage_token)
             result = await ipfs.upload(data)
             result.fallback_used = True
             return result
-        except Exception as fallback_err:
+        except (ConnectionError, httpx.HTTPError, OSError) as fallback_err:
             log.error(
                 "storage_all_failed",
                 primary_error=str(primary_err),
@@ -76,6 +77,10 @@ async def upload_with_fallback(data: dict) -> UploadResult:
             raise StorageFallbackError(
                 f"Both {primary_provider} and IPFS failed"
             ) from fallback_err
+        finally:
+            await ipfs.close()
+    finally:
+        await backend.close()
 
 
 class StorageConfigError(Exception):

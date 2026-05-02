@@ -27,6 +27,7 @@ UPLOAD_TIMEOUT = 30.0
 RETRIEVE_TIMEOUT = 15.0
 MAX_UPLOAD_BYTES = 5 * 1024 * 1024  # 5 MB
 CID_HEX_PATTERN = re.compile(r"^[a-f0-9]{64}$")
+ZEROG_GATEWAY = "https://indexer-storage-testnet-turbo.0g.ai"
 
 
 class ZeroGStorage:
@@ -59,7 +60,7 @@ class ZeroGStorage:
         await self._upload_segments(encoded, root_hash)
 
         elapsed_ms = int((time.monotonic() - start) * 1000)
-        gateway_url = f"https://indexer-storage-testnet-turbo.0g.ai/file/{root_hash}"
+        gateway_url = f"{ZEROG_GATEWAY}/file/{root_hash}"
 
         log.info(
             "zerog_upload_complete",
@@ -82,7 +83,7 @@ class ZeroGStorage:
             raise ZeroGStorageError(f"Invalid CID format: must be 64 hex chars, got {cid!r}")
         log.info("zerog_retrieve_start", provider="0g", root_hash=cid)
         resp = await self._client.get(
-            f"https://indexer-storage-testnet-turbo.0g.ai/file/{cid}",
+            f"{ZEROG_GATEWAY}/file/{cid}",
             timeout=RETRIEVE_TIMEOUT,
         )
         resp.raise_for_status()

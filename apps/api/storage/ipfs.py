@@ -1,8 +1,11 @@
-"""IPFS adapter via web3.storage w3up API.
+"""IPFS adapter via Pinata pinning service.
 
-Uploads JSON data as a file to web3.storage, returns IPFS CID.
-Uses the w3up HTTP bridge (https://up.web3.storage) with Bearer token auth.
+Uploads JSON data to IPFS via Pinata API, returns IPFS CID.
+Uses pinJSONToIPFS endpoint with Bearer JWT auth.
 Fallback for when 0G Storage is unavailable.
+
+Note: web3.storage legacy API (api.web3.storage/upload) was sunset
+Jan 2024. Pinata chosen for simpler auth model (JWT, no UCAN).
 """
 from __future__ import annotations
 
@@ -17,8 +20,8 @@ from storage.interface import UploadResult
 
 log = structlog.get_logger()
 
-W3S_UPLOAD_URL = "https://up.web3.storage/bridge"
-W3S_LEGACY_URL = "https://api.web3.storage/upload"
+PINATA_PIN_URL = "https://api.pinata.cloud/pinning/pinJSONToIPFS"
+PINATA_GATEWAY = "https://gateway.pinata.cloud/ipfs"
 UPLOAD_TIMEOUT = 30.0
 RETRIEVE_TIMEOUT = 15.0
 MAX_UPLOAD_BYTES = 5 * 1024 * 1024  # 5 MB
@@ -26,14 +29,14 @@ CID_PATTERN = re.compile(r"^[a-zA-Z0-9]{46,64}$")
 
 
 class IPFSStorage:
-    """IPFS storage backend via web3.storage."""
+    """IPFS storage backend via Pinata pinning service."""
 
     def __init__(self, token: str) -> None:
         self._token = token
         self._client = httpx.AsyncClient(timeout=UPLOAD_TIMEOUT)
 
     async def upload(self, data: dict) -> UploadResult:
-        """Upload JSON data to IPFS via web3.storage."""
+        """Upload JSON data to IPFS via Pinata."""
         encoded = json.dumps(data, separators=(",", ":"), sort_keys=True).encode()
         if len(encoded) > MAX_UPLOAD_BYTES:
             raise IPFSStorageError(f"Data too large: {len(encoded)} bytes (max {MAX_UPLOAD_BYTES})")
@@ -50,17 +53,22 @@ class IPFSStorage:
             "Content-Type": "application/json",
         }
 
+        payload = {
+            "pinataContent": data,
+            "pinataMetadata": {"name": "ai-council-debate"},
+        }
+
         resp = await self._client.post(
-            W3S_LEGACY_URL,
+            PINATA_PIN_URL,
             headers=headers,
-            content=encoded,
+            json=payload,
         )
         resp.raise_for_status()
         result = resp.json()
-        cid = result["cid"]
+        cid = result["IpfsHash"]
 
         elapsed_ms = int((time.monotonic() - start) * 1000)
-        gateway_url = f"https://{cid}.ipfs.w3s.link/"
+        gateway_url = f"{PINATA_GATEWAY}/{cid}"
 
         log.info(
             "ipfs_upload_complete",
@@ -82,7 +90,7 @@ class IPFSStorage:
         if not CID_PATTERN.match(cid):
             raise IPFSStorageError(f"Invalid CID format: {cid!r}")
         log.info("ipfs_retrieve_start", provider="ipfs", cid=cid)
-        gateway_url = f"https://{cid}.ipfs.w3s.link/"
+        gateway_url = f"{PINATA_GATEWAY}/{cid}"
         resp = await self._client.get(gateway_url, timeout=RETRIEVE_TIMEOUT)
         resp.raise_for_status()
         return resp.json()  # type: ignore[no-any-return]
