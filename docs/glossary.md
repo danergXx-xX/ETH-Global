@@ -67,19 +67,16 @@ A technique that reuses repeated prompt prefixes within API calls to reduce cost
 **Consensus**
 The combined outcome after all 5 agents vote. Simple majority: if more agents vote FOR than AGAINST, the consensus is FOR. If votes are tied, the result is SPLIT. ABSTAIN votes do not count toward either side.
 
-## Project Phases
+## Project Overview
 
-**Phase 0 - Foundations**
-Monorepo setup, frontend scaffold, backend API, first agent (Bull) live with Anthropic API. Browser-only demo, no blockchain.
+These are not glossary terms but context for understanding where features fit in the build timeline.
 
-**Phase 1 - On-Chain**
-Smart contracts deployed to Base Sepolia. Wallet connect, propose/vote/execute flow, 0G Storage audit trail integration.
+**Phase 0 - Foundations:** Monorepo setup, frontend scaffold, backend API, first agent (Bull) live. Browser-only demo, no blockchain.
 
-**Phase 2 - ENS Integration**
-NameStone subnames minted for each agent. Frontend resolves and displays ENS names with reputation text records.
+**Phase 1 - On-Chain:** Smart contracts deployed to Base Sepolia. Wallet connect, propose/vote/execute flow, 0G Storage audit trail.
 
-**Phase 3 - Polish and Trust**
-Source attribution tools for agents, Council Rules JSON (human override config), optional Adversarial Auditor (6th agent), 0G Compute stretch goal.
+**Phase 2 - ENS Integration:** NameStone subnames minted for each agent. Frontend resolves ENS names with reputation text records.
 
-**Phase 4 - Ship**
-Deploy to Vercel + Railway. Record 3-minute demo video. Final README, FEEDBACK.md for sponsors, ETHGlobal submission.
+**Phase 3 - Polish and Trust:** Source attribution tools, Council Rules JSON, optional Adversarial Auditor (6th agent).
+
+**Phase 4 - Ship:** Deploy to Vercel + Railway. Record demo video. Final README, FEEDBACK.md, ETHGlobal submission.

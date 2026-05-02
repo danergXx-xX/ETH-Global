@@ -112,10 +112,10 @@ All contracts deployed on **Base Sepolia** (2026-05-02). Based on OpenZeppelin C
 
 | Contract | Address | Role |
 |----------|---------|------|
-| **CouncilToken** | [`0x5fE2...4381`](https://sepolia.basescan.org/address/0x5fe2a5e971d9faaff9cc0b0c9981da44fefc4381) | ERC20Votes governance token (AICT). Timestamp-based clock mode. |
-| **TimelockController** | [`0x76A6...1B0f`](https://sepolia.basescan.org/address/0x76a69bb6aef69a2e76fa6c9632ff6ca101441b0f) | 48-hour delay before execution. Admin revoked - fully decentralized. |
-| **AICouncilGovernor** | [`0x1f95...01F0`](https://sepolia.basescan.org/address/0x1f95c796c5dc47d08b20cf3220a2afa995e301f0) | Governor with 60% quorum, 1-day voting, 0 proposal threshold. |
-| **MockUSDC** | [`0x606E...59d`](https://sepolia.basescan.org/address/0x606ede7755131e6206a29b67d88761eebb3bb59d) | Testnet stablecoin (mUSDC, 6 decimals). 1M minted to Timelock treasury. |
+| **CouncilToken** | [`0x5fE2...C4381`](https://sepolia.basescan.org/address/0x5fE2a5E971d9FAafF9cC0b0C9981da44fefC4381) | ERC20Votes governance token (AICT). Timestamp-based clock mode. |
+| **TimelockController** | [`0x76A6...41B0f`](https://sepolia.basescan.org/address/0x76A69Bb6aeF69A2E76fA6C9632Ff6Ca101441B0f) | 48-hour delay before execution. Admin revoked - fully decentralized. |
+| **AICouncilGovernor** | [`0x1f95...e301F0`](https://sepolia.basescan.org/address/0x1f95C796C5dc47d08B20CF3220a2AFa995e301F0) | Governor with 60% quorum, 1-day voting, 0 proposal threshold. |
+| **MockUSDC** | [`0x606E...Bb59d`](https://sepolia.basescan.org/address/0x606EDE7755131e6206A29B67d88761eEbb3Bb59d) | Testnet stablecoin (mUSDC, 6 decimals). 1M minted to Timelock treasury. |
 
 **Governance parameters:** voting delay 1 block (~12s) -> 1-day voting period -> 48h timelock -> execution.
 
