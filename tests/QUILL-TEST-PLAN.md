@@ -38,6 +38,18 @@
 | API validation (empty, too long) | integration | `integration/api-debate.spec.ts` | DONE |
 | Post-deploy smoke | smoke | `smoke/post-deploy.sh` | DONE |
 
+### Regression Suite - Cross-module (Sesja 15)
+
+| Modul | Typ testu | Plik | Status |
+|-------|-----------|------|--------|
+| Orchestrator imports real Bull (CRITICAL-01) | integration | `integration/test_cross_modules.py` | DONE |
+| Full /api/debate with mocked Anthropic | integration | `integration/test_cross_modules.py` | DONE |
+| /api/proposals/encode with real addresses | integration | `integration/test_cross_modules.py` | DONE |
+| DataAggregator persona priority order | integration | `integration/test_cross_modules.py` | DONE |
+| ABI files + EIP-55 checksums | integration | `integration/test_cross_modules.py` | DONE |
+| .env.example completeness | integration | `integration/test_cross_modules.py` | DONE |
+| CLAUDE.md sanity check | integration | `integration/test_cross_modules.py` | DONE |
+
 ### Phase 1 - On-chain (planowane)
 
 | Modul | Typ testu | Plik |
