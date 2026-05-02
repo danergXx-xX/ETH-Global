@@ -5,14 +5,26 @@ from datetime import datetime, timezone
 from typing import AsyncIterator
 
 import structlog
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from config import get_settings
+from governance import (
+    MOCK_USDC_ADDRESS,
+    MOCK_USDC_DECIMALS,
+    SAMPLE_RECIPIENTS,
+    encode_mock_usdc_transfer,
+)
 from logging_config import RequestIDMiddleware, setup_logging
 from orchestrator import run_debate
-from schemas import HealthResponse
+from schemas import (
+    HealthResponse,
+    ProposalEncodeRequest,
+    ProposalEncoded,
+    RecipientInfo,
+    RecipientsResponse,
+)
 import httpx
 
 from storage.factory import StorageConfigError, StorageFallbackError, upload_with_fallback
@@ -104,4 +116,46 @@ async def debate(req: DebateRequest) -> DebateResponse:
         audit_trail_cid=audit_cid,
         audit_trail_gateway=audit_gateway,
         storage_provider=provider,
+    )
+
+
+@app.post("/api/proposals/encode")
+async def encode_proposal(request: ProposalEncodeRequest) -> ProposalEncoded:
+    """Encode treasury action into Governor-compatible calldata."""
+    log.info(
+        "encode_proposal_requested",
+        action_type=request.action.type,
+        recipient=request.action.recipient,
+    )
+    try:
+        encoded = encode_mock_usdc_transfer(
+            request.action.recipient,
+            request.action.amount_wei,
+        )
+    except ValueError as exc:
+        log.warning("encode_proposal_invalid_input", error=str(exc))
+        raise HTTPException(status_code=422, detail=f"Invalid input: {exc}") from exc
+
+    return ProposalEncoded(**encoded)
+
+
+@app.get("/api/proposals/recipients")
+async def list_recipients() -> RecipientsResponse:
+    """List available demo recipients for proposal UI."""
+    from eth_utils import to_checksum_address
+
+    items = [
+        RecipientInfo(
+            key=key,
+            address=to_checksum_address(info["address"]),
+            label=info["label"],
+            description=info["description"],
+        )
+        for key, info in SAMPLE_RECIPIENTS.items()
+    ]
+    return RecipientsResponse(
+        recipients=items,
+        token_address=to_checksum_address(MOCK_USDC_ADDRESS),
+        token_symbol="mUSDC",
+        token_decimals=MOCK_USDC_DECIMALS,
     )

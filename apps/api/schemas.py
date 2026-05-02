@@ -51,9 +51,10 @@ class AgentDecision(BaseModel):
 
 class TransferAction(BaseModel):
     type: Literal["transfer"] = "transfer"
-    token: str = Field(..., description="Token contract address")
-    recipient: str = Field(..., description="Recipient address")
-    amount_wei: str = Field(..., description="Amount as string (uint256)")
+    token: str = Field(..., pattern=r"^0x[a-fA-F0-9]{40}$", description="Token contract address")
+    recipient: str = Field(..., pattern=r"^0x[a-fA-F0-9]{40}$", description="Recipient address")
+    # str not int: uint256 > JS MAX_SAFE_INTEGER causes precision loss in JSON
+    amount_wei: str = Field(..., pattern=r"^\d+$", description="Amount as string (uint256)")
 
 
 class SwapAction(BaseModel):
@@ -189,6 +190,44 @@ class AgentReputation(BaseModel):
     successful_decisions: int = Field(default=0, description="Voted with majority that succeeded post-execute")
     slashed_decisions: int = Field(default=0, description="Voted against successful execution")
     vote_weight: float = Field(default=1.0, ge=0.0, le=2.0, description="Computed from reputation, affects vote weight in future debates")
+
+
+# ============================================================
+# PROPOSAL ENCODING (Phase 1D - execution payload)
+# ============================================================
+
+class ProposalEncodeRequest(BaseModel):
+    """Request to encode treasury action into Governor-compatible calldata.
+
+    Phase 1D: only TransferAction. Phase 1+: expand to TreasuryAction union.
+    """
+    action: TransferAction
+
+
+class ProposalEncoded(BaseModel):
+    """Encoded calldata ready for Governor.propose()."""
+    target: str = Field(..., pattern=r"^0x[a-fA-F0-9]{40}$")
+    value: int = Field(default=0, ge=0)
+    calldata: str = Field(..., pattern=r"^0x[a-fA-F0-9]+$")
+    signature: str
+    description: str
+    basescan_url: str | None = None
+
+
+class RecipientInfo(BaseModel):
+    """Sample recipient for demo proposals."""
+    key: str
+    address: str = Field(..., pattern=r"^0x[a-fA-F0-9]{40}$")
+    label: str
+    description: str
+
+
+class RecipientsResponse(BaseModel):
+    """Available demo recipients + treasury token info."""
+    recipients: list[RecipientInfo]
+    token_address: str = Field(..., pattern=r"^0x[a-fA-F0-9]{40}$")
+    token_symbol: str
+    token_decimals: int
 
 
 # ============================================================
