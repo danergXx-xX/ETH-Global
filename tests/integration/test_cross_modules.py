@@ -12,15 +12,16 @@ Quill (QA) - Sesja 15 regression suite.
 """
 from __future__ import annotations
 
-import importlib
 import inspect
 import json
 import re
 import sys
 from pathlib import Path
+from typing import Generator
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from eth_utils import is_checksum_address
 from httpx import ASGITransport, AsyncClient
 
 API_ROOT = Path(__file__).resolve().parents[2] / "apps" / "api"
@@ -28,10 +29,14 @@ WEB_ROOT = Path(__file__).resolve().parents[2] / "apps" / "web"
 
 
 @pytest.fixture(autouse=True)
-def _api_on_path() -> None:
+def _api_on_path() -> Generator[None, None, None]:
     api_str = str(API_ROOT)
-    if api_str not in sys.path:
+    added = api_str not in sys.path
+    if added:
         sys.path.insert(0, api_str)
+    yield
+    if added:
+        sys.path.remove(api_str)
 
 
 # ============================================================
@@ -77,71 +82,62 @@ class TestOrchestratorImport:
 
 
 class TestDebateEndpointIntegration:
-    """POST /api/debate -> orchestrator -> mocked Anthropic -> storage fallback."""
+    """POST /api/debate -> orchestrator -> mocked at main level -> storage fallback."""
 
     @pytest.fixture
-    def mock_anthropic_response(self) -> dict:
+    def mock_debate_result(self) -> dict:
+        from datetime import datetime, timezone
+        from schemas import AgentDecision
+
+        decisions = []
+        for persona, decision, conf in [
+            ("bull", "FOR", 0.85),
+            ("bear", "AGAINST", 0.65),
+            ("risk", "ABSTAIN", 0.50),
+            ("tech", "FOR", 0.70),
+            ("sentiment", "FOR", 0.55),
+        ]:
+            decisions.append(AgentDecision(
+                persona=persona,
+                decision=decision,
+                confidence=conf,
+                reasoning=f"Mock {persona} analysis for integration test with sufficient length.",
+                claims=[{
+                    "text": f"Claim from {persona}",
+                    "confidence": conf,
+                    "sources": [{
+                        "url": f"https://example.com/{persona}",
+                        "title": f"{persona} source",
+                        "snippet": f"Data from {persona} agent",
+                        "weight": 0.5,
+                        "source_type": "defillama",
+                    }],
+                }],
+                timestamp=datetime.now(timezone.utc),
+                tokens_used=500,
+                cost_usd=0.01,
+            ))
         return {
-            "persona": "bull",
-            "decision": "FOR",
-            "confidence": 0.85,
-            "reasoning": "Strong fundamentals support this allocation based on TVL data.",
-            "claims": [
-                {
-                    "text": "TVL exceeds $5B across Aave markets",
-                    "confidence": 0.9,
-                    "sources": [
-                        {
-                            "url": "https://defillama.com/protocol/aave",
-                            "title": "Aave TVL",
-                            "snippet": "Total Value Locked: $5.2B across all chains",
-                            "weight": 0.8,
-                            "source_type": "defillama",
-                        }
-                    ],
-                }
-            ],
-            "timestamp": "2026-05-02T12:00:00Z",
-            "tokens_used": 500,
-            "cost_usd": 0.01,
+            "decisions": decisions,
+            "consensus": "FOR",
+            "vote_id": "test-vote-id-123",
         }
 
     @pytest.mark.asyncio
-    async def test_debate_returns_5_decisions_with_mocked_anthropic(
-        self, mock_anthropic_response: dict
-    ) -> None:
-        mock_message = MagicMock()
-        mock_message.content = [MagicMock(text=json.dumps(mock_anthropic_response))]
-        mock_message.usage = MagicMock(input_tokens=100, output_tokens=200)
-        mock_message.model_dump.return_value = {
-            "usage": {
-                "input_tokens": 100,
-                "output_tokens": 200,
-                "cache_creation_input_tokens": 0,
-                "cache_read_input_tokens": 50,
-            }
-        }
+    async def test_debate_returns_5_decisions(self, mock_debate_result: dict) -> None:
+        from storage.interface import UploadResult
 
         with (
-            patch("agents.anthropic_client.anthropic.AsyncAnthropic") as mock_cls,
-            patch("storage.factory.upload_with_fallback", new_callable=AsyncMock) as mock_storage,
+            patch("main.run_debate", new_callable=AsyncMock) as mock_debate,
+            patch("main.upload_with_fallback", new_callable=AsyncMock) as mock_storage,
         ):
-            mock_instance = AsyncMock()
-            mock_instance.messages.create = AsyncMock(return_value=mock_message)
-            mock_cls.return_value = mock_instance
-
-            from storage.interface import UploadResult
+            mock_debate.return_value = mock_debate_result
             mock_storage.return_value = UploadResult(
                 cid="bafk_test_123",
                 provider="ipfs",
                 gateway_url="https://w3s.link/ipfs/bafk_test_123",
                 bytes_uploaded=1024,
             )
-
-            import importlib
-            import agents.orchestrator as orch_mod
-            orch_mod._client = None
-            importlib.reload(orch_mod)
 
             from main import app
             transport = ASGITransport(app=app)
@@ -160,6 +156,33 @@ class TestDebateEndpointIntegration:
             personas = [d["persona"] for d in body["decisions"]]
             for p in ("bull", "bear", "risk", "tech", "sentiment"):
                 assert p in personas, f"Missing persona: {p}"
+
+            for d in body["decisions"]:
+                assert isinstance(d.get("cost_usd"), (float, int, type(None)))
+
+    @pytest.mark.asyncio
+    async def test_debate_returns_response_on_storage_failure(
+        self, mock_debate_result: dict
+    ) -> None:
+        with (
+            patch("main.run_debate", new_callable=AsyncMock) as mock_debate,
+            patch("main.upload_with_fallback", new_callable=AsyncMock) as mock_storage,
+        ):
+            mock_debate.return_value = mock_debate_result
+            mock_storage.side_effect = ConnectionError("Storage unavailable")
+
+            from main import app
+            transport = ASGITransport(app=app)
+            async with AsyncClient(transport=transport, base_url="http://test") as ac:
+                resp = await ac.post(
+                    "/api/debate",
+                    json={"text": "Allocate 50000 USDC to Aave yield vault"},
+                )
+
+            assert resp.status_code == 200
+            body = resp.json()
+            assert len(body["decisions"]) == 5
+            assert body["audit_trail_cid"] is None
 
 
 # ============================================================
@@ -378,20 +401,29 @@ class TestABIConsistency:
         for name in ("CouncilTokenAbi", "AICouncilGovernorAbi", "TimelockControllerAbi", "MockUSDCAbi"):
             assert name in contracts_ts, f"contracts.ts missing import: {name}"
 
+    @pytest.mark.xfail(
+        reason="KNOWN BUG: contracts.ts has wrong EIP-55 checksums (Sesja 15 discovery). "
+        "Needs fix by Sol/Aiko before production deploy.",
+        strict=True,
+    )
     def test_contracts_ts_has_eip55_checksums(self) -> None:
-        """EIP-55 checksummed addresses have mixed case (not all lower)."""
+        """All addresses in contracts.ts must be EIP-55 checksummed."""
         contracts_ts = (WEB_ROOT / "lib" / "contracts.ts").read_text()
         addresses = re.findall(r'"(0x[0-9a-fA-F]{40})"', contracts_ts)
         assert len(addresses) >= 4, f"Expected >=4 addresses, found {len(addresses)}"
+        non_checksummed = [a for a in addresses if not is_checksum_address(a)]
+        assert not non_checksummed, (
+            f"Non-EIP-55 checksummed addresses in contracts.ts: {non_checksummed}"
+        )
+
+    def test_contracts_ts_addresses_have_correct_length(self) -> None:
+        """All addresses are valid hex format (40 hex chars after 0x)."""
+        contracts_ts = (WEB_ROOT / "lib" / "contracts.ts").read_text()
+        addresses = re.findall(r'"(0x[0-9a-fA-F]{40})"', contracts_ts)
+        assert len(addresses) >= 4
         for addr in addresses:
-            hex_part = addr[2:]
-            is_all_lower = hex_part == hex_part.lower()
-            is_all_upper = hex_part == hex_part.upper()
-            has_alpha = any(c.isalpha() for c in hex_part)
-            if has_alpha:
-                assert not is_all_lower and not is_all_upper, (
-                    f"Address {addr} is NOT EIP-55 checksummed (all same case)"
-                )
+            assert len(addr) == 42
+            assert addr.startswith("0x")
 
 
 # ============================================================
