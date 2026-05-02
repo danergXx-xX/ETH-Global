@@ -9,6 +9,7 @@ Usage for Nova/Aiko:
 
 Lifecycle: call close() on app shutdown to release HTTP clients.
 """
+
 from __future__ import annotations
 
 import httpx
@@ -67,7 +68,13 @@ class DataAggregator:
                     results=len(sources),
                     query=query,
                 )
-            except (httpx.HTTPStatusError, httpx.RequestError, httpx.TimeoutException, ValueError, OSError) as exc:
+            except (
+                httpx.HTTPStatusError,
+                httpx.RequestError,
+                httpx.TimeoutException,
+                ValueError,
+                OSError,
+            ) as exc:
                 log.warning("source_fetch_failed", source=src_name, query=query, error=str(exc))
 
         return all_sources

@@ -1,4 +1,5 @@
 """RSS data source adapter (CoinDesk + Reuters crypto feeds)."""
+
 from __future__ import annotations
 
 import asyncio

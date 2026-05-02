@@ -4,7 +4,9 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from typing import AsyncIterator
 
+import httpx
 import structlog
+from eth_utils import to_checksum_address
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -26,8 +28,6 @@ from schemas import (
     RecipientInfo,
     RecipientsResponse,
 )
-import httpx
-
 from storage.factory import StorageConfigError, StorageFallbackError, upload_with_fallback
 
 settings = get_settings()
@@ -94,8 +94,16 @@ async def debate(req: DebateRequest) -> DebateResponse:
             provider=provider,
             fallback=storage_result.fallback_used,
         )
-    except (StorageFallbackError, StorageConfigError, httpx.HTTPError, ConnectionError, OSError) as storage_err:
-        log.error("audit_trail_failed", error=str(storage_err), error_type=type(storage_err).__name__)
+    except (
+        StorageFallbackError,
+        StorageConfigError,
+        httpx.HTTPError,
+        ConnectionError,
+        OSError,
+    ) as storage_err:
+        log.error(
+            "audit_trail_failed", error=str(storage_err), error_type=type(storage_err).__name__
+        )
 
     return DebateResponse(
         decisions=result["decisions"],
@@ -130,8 +138,6 @@ async def encode_proposal(request: ProposalEncodeRequest) -> ProposalEncoded:
 @app.get("/api/proposals/recipients")
 async def list_recipients() -> RecipientsResponse:
     """List available demo recipients for proposal UI."""
-    from eth_utils import to_checksum_address
-
     items = [
         RecipientInfo(
             key=key,

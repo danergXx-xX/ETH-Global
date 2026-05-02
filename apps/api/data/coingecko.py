@@ -1,4 +1,5 @@
 """CoinGecko free tier API adapter with rate limiting and caching."""
+
 from __future__ import annotations
 
 import re
@@ -144,7 +145,11 @@ class CoinGeckoSource:
         change_24h = market.get("price_change_percentage_24h")
         change_7d = market.get("price_change_percentage_7d")
         market_cap = market.get("market_cap", {}).get("usd")
-        tvl = market.get("total_value_locked", {}).get("usd") if market.get("total_value_locked") else None
+        tvl = (
+            market.get("total_value_locked", {}).get("usd")
+            if market.get("total_value_locked")
+            else None
+        )
 
         parts = [f"{name}:"]
         if price_usd is not None:
@@ -154,9 +159,9 @@ class CoinGeckoSource:
         if change_7d is not None:
             parts.append(f"7d {change_7d:+.1f}%")
         if market_cap is not None:
-            parts.append(f"MCap ${market_cap/1e9:.1f}B")
+            parts.append(f"MCap ${market_cap / 1e9:.1f}B")
         if tvl is not None:
-            parts.append(f"TVL ${tvl/1e6:.0f}M")
+            parts.append(f"TVL ${tvl / 1e6:.0f}M")
 
         snippet = " | ".join(parts)[:500]
         cg_url = f"https://www.coingecko.com/en/coins/{token_id}"

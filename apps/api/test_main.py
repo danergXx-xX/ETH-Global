@@ -93,9 +93,7 @@ def test_debate_text_too_long(client: TestClient) -> None:
 
 
 @patch("main.run_debate", new_callable=AsyncMock)
-def test_debate_null_audit_on_storage_error(
-    mock_debate: AsyncMock, client: TestClient
-) -> None:
+def test_debate_null_audit_on_storage_error(mock_debate: AsyncMock, client: TestClient) -> None:
     mock_debate.return_value = {
         "decisions": _mock_decisions(),
         "consensus": "FOR",

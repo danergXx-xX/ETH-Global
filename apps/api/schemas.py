@@ -4,6 +4,7 @@ SSOT dla typow - frontend (apps/web) generuje TS types via openapi-typescript.
 
 Schemat handoffu: Hugo dostarcza, Aiko konsumuje przez generated types.
 """
+
 from __future__ import annotations
 from datetime import datetime
 from typing import Literal
@@ -19,6 +20,7 @@ AgentPersona = Literal["bull", "bear", "risk", "tech", "sentiment", "adversarial
 
 class Source(BaseModel):
     """Source attribution per agent claim (Moat 4 - Sora trust research)."""
+
     url: str
     title: str
     snippet: str = Field(..., max_length=500)
@@ -28,13 +30,17 @@ class Source(BaseModel):
 
 class AgentClaim(BaseModel):
     """Pojedynczy claim agenta z confidence + sources."""
+
     text: str
     confidence: float = Field(..., ge=0.0, le=1.0)
-    sources: list[Source] = Field(default_factory=list, min_length=1, description="Min 1 source per claim")
+    sources: list[Source] = Field(
+        default_factory=list, min_length=1, description="Min 1 source per claim"
+    )
 
 
 class AgentDecision(BaseModel):
     """Decyzja agenta po analizie proposal."""
+
     persona: AgentPersona
     decision: Literal["FOR", "AGAINST", "ABSTAIN"]
     confidence: float = Field(..., ge=0.0, le=1.0)
@@ -48,6 +54,7 @@ class AgentDecision(BaseModel):
 # ============================================================
 # TREASURY ACTIONS
 # ============================================================
+
 
 class TransferAction(BaseModel):
     type: Literal["transfer"] = "transfer"
@@ -81,8 +88,10 @@ TreasuryAction = TransferAction | SwapAction | DepositAction
 # PROPOSAL FLOW
 # ============================================================
 
+
 class CreateProposalRequest(BaseModel):
     """User submits new proposal for AI Council to debate."""
+
     text: str = Field(..., min_length=10, max_length=2000)
     action: TreasuryAction
     user_address: str = Field(..., pattern=r"^0x[a-fA-F0-9]{40}$")
@@ -114,7 +123,9 @@ class ProposalStatus(BaseModel):
 
 class CreateProposalResponse(BaseModel):
     proposal_id: str
-    websocket_url: str = Field(..., description="ws://.../api/debate/{proposal_id} for live updates")
+    websocket_url: str = Field(
+        ..., description="ws://.../api/debate/{proposal_id} for live updates"
+    )
     estimated_debate_seconds: int = Field(default=30)
     status: ProposalStatus
 
@@ -123,8 +134,10 @@ class CreateProposalResponse(BaseModel):
 # DEBATE EVENTS (WebSocket)
 # ============================================================
 
+
 class DebateEvent(BaseModel):
     """Base class - WebSocket events."""
+
     type: Literal[
         "agent_started",
         "agent_thinking",
@@ -180,32 +193,44 @@ class ErrorEvent(DebateEvent):
 # AGENT REPUTATION (Moat 5 - Matthew PoW for agents)
 # ============================================================
 
+
 class AgentReputation(BaseModel):
     """On-chain reputation per agent (Moat 5)."""
+
     agent_id: AgentPersona
     ens_subname: str = Field(..., description="bull.aicouncil.eth itp.")
     address: str = Field(..., description="Agent's on-chain address")
     reputation: int = Field(default=100, description="Current reputation score (uint256 on-chain)")
     debates_count: int = Field(default=0)
-    successful_decisions: int = Field(default=0, description="Voted with majority that succeeded post-execute")
+    successful_decisions: int = Field(
+        default=0, description="Voted with majority that succeeded post-execute"
+    )
     slashed_decisions: int = Field(default=0, description="Voted against successful execution")
-    vote_weight: float = Field(default=1.0, ge=0.0, le=2.0, description="Computed from reputation, affects vote weight in future debates")
+    vote_weight: float = Field(
+        default=1.0,
+        ge=0.0,
+        le=2.0,
+        description="Computed from reputation, affects vote weight in future debates",
+    )
 
 
 # ============================================================
 # PROPOSAL ENCODING (Phase 1D - execution payload)
 # ============================================================
 
+
 class ProposalEncodeRequest(BaseModel):
     """Request to encode treasury action into Governor-compatible calldata.
 
     Phase 1D: only TransferAction. Phase 1+: expand to TreasuryAction union.
     """
+
     action: TransferAction
 
 
 class ProposalEncoded(BaseModel):
     """Encoded calldata ready for Governor.propose()."""
+
     target: str = Field(..., pattern=r"^0x[a-fA-F0-9]{40}$")
     value: int = Field(default=0, ge=0)
     calldata: str = Field(..., pattern=r"^0x[a-fA-F0-9]+$")
@@ -216,6 +241,7 @@ class ProposalEncoded(BaseModel):
 
 class RecipientInfo(BaseModel):
     """Sample recipient for demo proposals."""
+
     key: str
     address: str = Field(..., pattern=r"^0x[a-fA-F0-9]{40}$")
     label: str
@@ -224,6 +250,7 @@ class RecipientInfo(BaseModel):
 
 class RecipientsResponse(BaseModel):
     """Available demo recipients + treasury token info."""
+
     recipients: list[RecipientInfo]
     token_address: str = Field(..., pattern=r"^0x[a-fA-F0-9]{40}$")
     token_symbol: str
@@ -234,13 +261,16 @@ class RecipientsResponse(BaseModel):
 # DEBATE REQUEST / RESPONSE (main.py endpoint)
 # ============================================================
 
+
 class DebateRequest(BaseModel):
     """Input for POST /api/debate."""
+
     text: str = Field(..., min_length=10, max_length=2000)
 
 
 class DebateResponse(BaseModel):
     """Output from POST /api/debate."""
+
     decisions: list[AgentDecision]
     consensus: Literal["FOR", "AGAINST", "ABSTAIN", "SPLIT"]
     vote_id: str
@@ -252,6 +282,7 @@ class DebateResponse(BaseModel):
 # ============================================================
 # HEALTH + META
 # ============================================================
+
 
 class HealthResponse(BaseModel):
     status: Literal["ok", "degraded", "down"] = "ok"

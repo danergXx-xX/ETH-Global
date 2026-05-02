@@ -1,4 +1,5 @@
 """DefiLlama API adapter for protocol TVL data."""
+
 from __future__ import annotations
 
 import re
@@ -145,7 +146,7 @@ class DefiLlamaSource:
 
         parts = [f"{name} ({category}):"]
         if total_tvl > 0:
-            parts.append(f"TVL ${total_tvl/1e6:.0f}M")
+            parts.append(f"TVL ${total_tvl / 1e6:.0f}M")
         if chains:
             parts.append(f"Chains: {', '.join(chains[:5])}")
         if audits:
