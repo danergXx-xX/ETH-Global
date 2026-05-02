@@ -172,9 +172,38 @@ linked: SCRIPT.md (per segment)
 
 **Audio cue:** "Pięciu z siedmiu multisig podpisuje. Timelock 48 godzin..." (PL)
 
+### Execution recipe Frame 7 (jak technicznie nagrac)
+
+**Setup PRZED nagraniem:**
+- 1 prawdziwy wallet Dana z testowym ETH na Base Sepolia (juz mamy: `0x4872F81A0fFeb204D13f17644e26e7345F7d148a`)
+- 4 mock signers - **NIE potrzeba prawdziwych walletow** dla 4 z 5. Backend mockuje `multisigState` endpoint zwracajacy 4 signed=true + 1 signed=false (Dan jako 5-ty)
+- Mock signers ENS labels (display only): `alice.dao.eth`, `bob.dao.eth`, `carol.dao.eth`, `dave.dao.eth` - NIE rezolvowane przez viem, hardcoded w `apps/web/lib/mocks/signers.ts`
+
+**Sekwencja Dana w nagraniu:**
+1. Stage = collecting_sigs, progress 4/7 widoczny (4 mock + 0 real, czeka na Dana)
+2. Dan klika "Sign multisig" -> MetaMask popup (real)
+3. Dan podpisuje (1.5s) -> backend update progress 5/7 -> threshold reached (5 jako MIN_THRESHOLD)
+4. Stage transition automatic -> "queued_timelock" z animacja
+
+**Backend mock endpoint:** `GET /api/multisig/state?proposalId=42` zwraca:
+```json
+{
+  "proposalId": 42,
+  "threshold": 5,
+  "signers": [
+    {"ens": "alice.dao.eth", "signed": true},
+    {"ens": "bob.dao.eth", "signed": true},
+    {"ens": "carol.dao.eth", "signed": true},
+    {"ens": "dave.dao.eth", "signed": true},
+    {"ens": "dan.aicouncil.eth", "signed": false}
+  ]
+}
+```
+Po `POST /api/multisig/sign?proposalId=42&signature=0x...` -> ostatni signer `signed: true`.
+
 ---
 
-## Frame 8 - Timelock Countdown (1:15-1:20)
+## Frame 8 - Timelock Countdown (1:10-1:15)
 
 **Scena:** TimelockCountdown circular SVG - the trust mechanism #2 wow.
 
@@ -193,11 +222,28 @@ linked: SCRIPT.md (per segment)
 - Ring fill animuje smooth
 - Demo cheat: po 2s skip do "Execute" stage (sedziowie rozumieja)
 
+### Execution recipe Frame 8 (jak technicznie skipnac countdown)
+
+**Opcja A (preferowana) - URL param "demo mode":**
+- URL `/?demo=fast` aktywuje `DEMO_MODE_FAST=true` w localStorage
+- TimelockCountdown komponent czyta flag i ustawia `simulatedRemainingSeconds = 2` (zamiast realnej differencji do `executeAfter` timestamp)
+- Po 2s `onCountdownComplete()` -> auto-transition na stage "executing"
+- Implementacja: `apps/web/components/TimelockCountdown.tsx` `useEffect` z conditional initial state
+
+**Opcja B (fallback) - hardcoded executeAfter w mock:**
+- Backend mock `GET /api/proposals/42` zwraca `executeAfter: now() + 2 seconds`
+- Frontend liczy realnie countdown - ale od 2s, nie 48h
+- Wada: mniej kontroli (jezeli demo zwleka 5s, countdown osiaga 0 zanim Dan dojdzie)
+
+**Decyzja Eva:** Opcja A. Demo controlled by user, nie clock.
+
+**Wizualizacja w demo:** countdown widoczny startuje od "42h 18m" (display only), ale realnie tick co 1s odejmuje 1h (czyli 2s wzrokowo = 2h ubytek na ring). Dan moze zatrzymac na arbitrary value i kliknac "Execute" - ring nie blokuje (disabled state moves po 2s).
+
 **Audio cue:** "...okno na cofnięcie." (PL) [tail]
 
 ---
 
-## Frame 9 - Basescan Tx Confirmation (1:20-1:30)
+## Frame 9 - Basescan Tx Confirmation (1:15-1:20)
 
 **WOW MOMENT 2.** Live tx, real Basescan.
 
@@ -225,7 +271,7 @@ linked: SCRIPT.md (per segment)
 
 ---
 
-## Frame 10 - Audit Log + 0G CID (1:30-1:50)
+## Frame 10 - Audit Log + 0G CID + ENS (1:20-1:30)
 
 **Scena:** Audit Trail w Conclave UI + ENS Card side-by-side (split screen).
 
@@ -251,46 +297,48 @@ linked: SCRIPT.md (per segment)
 
 ---
 
-## Frame 11 - Trust + Moats Infographic (1:50-2:30)
+## Frame 11 - Trust + Moats App-First Showcase (1:30-2:30)
 
-**Scena:** infografika + sponsor tech showcase.
+**Scena:** **REWRITE per Vera #7 (show > tell ratio 67% -> 80%).** Zamiast statycznych infografik z ikonami - app close-ups dominuja. Tytul/label nazw trust mech pojawia sie jako small overlay text na boku, nie jako pelnoekranowa lista. **Sync ze SCRIPT timing 1:30-2:30 (60s pelen Tech segment).**
 
 **Co na ekranie:**
 
-**Phase 1 (1:50-2:15):** Trust mechanisms infographic
-- Vertical layout, 5 rows
-- Per row: ikona (40x40) + label + 1-line description
-- Background: subtle gradient navy
-- Per row pojawia się z 0.8s stagger:
-  1. Source Attribution (book icon, blue) - "Every claim cited"
-  2. Timelock 48h (clock icon, amber) - "Window to revert"
-  3. 0G Audit Trail (chain icon, green) - "Immutable record"
-  4. ENS Reputation (badge icon, purple) - "On-chain identity"
-  5. HITL Council Rules (sliders icon, cyan) - "User-editable thresholds"
-- Cuts do faktycznej apki per trust mech (4s każdy):
-  - Source popover hover (close-up)
-  - Timelock countdown close-up
-  - Audit log scroll
-  - ENS resolution table
-  - Council Rules JSON edit (live diff)
+**Phase 1 (1:30-1:55):** Trust mechanisms - app close-ups z overlay labels (25s, 5x5s)
+- Per trust mech: 5s close-up faktycznej apki + small overlay (top-right, 20% screen) z nazwa mechanizmu + 1-zdaniowym hookiem
+- 5 close-upow w sekwencji:
+  - **1:30-1:35:** Source popover hover w Live Debate (close-up na Reuters URL + snippet + weight 0.87). Overlay top-right: "**Source Attribution** · Every claim cited"
+  - **1:35-1:40:** Timelock countdown SVG full-screen pulse (close-up zoom 1.0->1.2). Overlay: "**Timelock 48h** · Window to revert"
+  - **1:40-1:45:** Audit log scroll z 0G CID expand pop-out (close-up). Overlay: "**0G Audit Trail** · Immutable record"
+  - **1:45-1:50:** ENS card resolution log table z latencjami (close-up scroll). Overlay: "**ENS Identity** · On-chain reputation"
+  - **1:50-1:55:** Council Rules JSON editor live diff (key change `5` -> `10` highlighted) + multisig sign animation. Overlay: "**HITL Rules** · User-editable thresholds"
 
-**Phase 2 (2:15-2:30):** Sponsor tech showcase
-- 5 sponsor cards w grid 2-3-2 layout (lub horizontal carousel)
-- Per card: sponsor logo + 1-line value + UI cut do faktycznej integracji:
-  - **0G Storage** (Kenji): explorer URL z CID + cost "$0.001/transcript"
-  - **Uniswap v4** (Hayden): code snippet `CouncilHook.sol`
-  - **ENS Subnames** (Nick): NameStone dashboard z 5 subnames
-  - **KeeperHub** (Luca): Basescan tx executed by KeeperHub address
-  - **Multi-chain ready**: arch diagram (Base Sepolia + mainnet roadmap)
+**Phase 2 (1:55-2:30):** Sponsor tech - app/code close-ups (35s, 5x7s)
+- 5 sponsor moments po 7s kazdy z cross-fade 0.3s miedzy
+- **1:55-2:02:** **0G Storage** (Kenji) - real 0G explorer URL w browser bar + nasz CID highlighted + storage stats panel. Overlay logo 0G top-left small + tagline "subcent per transcript". Voice-over emphasis: "0G Storage"
+- **2:02-2:09:** **Uniswap v4** (Hayden) - code snippet `apps/contracts/src/hooks/CouncilHook.sol` z highlighted `beforeSwap()` + `afterSwap()` lines (15-20 linii Solidity widoczne). Overlay logo Uniswap + tagline "Custom v4 hook". Voice-over: "Uniswap v4 hooks"
+- **2:09-2:16:** **ENS Subnames** (Nick) - NameStone dashboard z 5 mintowanymi subnames pod aicouncil.eth + text records visible. Overlay logo ENS + tagline "5 subnames per agent". Voice-over: "ENS subnames przez NameStone"
+- **2:16-2:23:** **KeeperHub** (Luca) - Basescan tx z "From: 0xKeeperHub..." zoomed + arch diagram inset (timelock -> KeeperHub bot -> tx). Overlay logo KeeperHub + tagline "Automated execution". Voice-over: "KeeperHub do automatyzacji"
+- **2:23-2:30:** **Multi-chain ready** - small arch diagram (top-right corner) + zoomed Base Sepolia explorer ze statystyka 4 deployments + Mainnet roadmap inset. Overlay: "Multi-chain ready · Q3 2026 mainnet". Voice-over: "Cztery kontrakty na Base Sepolia. Open source. Gotowe do pilotu z DAO."
 
-**Ruch kamery:** smooth pan przez infografike (subtle vertical scroll). Sponsor cards: cuts cleanly co 5s.
+**Ruch kamery:** per close-up subtle Ken Burns zoom 1.0 -> 1.05 nad 4s. Cross-fade 0.3s miedzy close-upami.
 
 **Efekty:**
-- Stagger animations dla list items
-- Cross-fade miedzy sponsor cards
-- Highlight pulse na sponsor logos
+- Overlay labels: top-right corner, semi-transparent (70% bg), Inter SemiBold 18pt amber title + 14pt white subtitle
+- Highlight pulse na key UI elementach per close-up (e.g. 0G CID amber ring, ENS resolution latency badge)
+- Voice-over emphasis word zsynchronizowany z visual cut (np. "0G Storage" przy 2:15 cut)
 
-**Audio cue:** "Pięć mechanizmów zaufania, każdy oparty o akademicki research..." (PL trust segment) -> "Pięć moats: świeże dane, debata wieloagentowa..." (PL moats segment)
+**Audio cue:** "Pięć mechanizmów zaufania, każdy oparty o akademicki research Mayer-Davis-Schoorman z 1995. Atrybucja źródeł. Czterdziestoośmiogodzinny timelock. Niezmienialny audit log na 0G. Tożsamość ENS per agent. Reguły Rady edytowalne przez DAO. Wszystko zbudowane na Base Sepolia." (PL trust segment 1:50-2:15) -> "Pięć moats: świeże dane, debata wieloagentowa, on-chain wykonanie, atrybucja źródeł, dowód pracy agentów. Zbudowane na 0G Storage, Uniswap v4 hooks, ENS subnames przez NameStone, KeeperHub do automatyzacji. Cztery kontrakty na Base Sepolia. Open source. Gotowe do pilotu z DAO." (PL moats segment 2:15-2:30)
+
+### Show > tell impact (per Vera #7)
+
+| Element | PRZED rewrite | PO rewrite |
+|---|---|---|
+| Statyczne infografiki | 14s (1:30-1:34 + 1:55-2:05) | 0s (usuniete) |
+| App close-ups trust mech | 21s (1:34-1:55) | 25s (1:30-1:55) |
+| Sponsor app/code cuts | 25s (2:05-2:30) | 35s (1:55-2:30) |
+| **Total app/code time / 180s** | **121s = 67%** | **~144s = 80%** |
+
+Spelnia Charter Eva 80% target.
 
 ---
 

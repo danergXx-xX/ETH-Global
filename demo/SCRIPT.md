@@ -128,19 +128,13 @@ Close (2:30-3:00) - 30s - CTA + GitHub + names
 
 ### 5 Trust Mechanisms (1:30-1:55) - 25s
 
-**Co widac:**
-- 1:30-1:34: Infografika animowana - 5 ikon w rzedzie pojawiajacych się kolejno, kazda z 0.8s stagger:
-  1. **Source Attribution** (book icon, blue) - "Every claim cited"
-  2. **Timelock 48h** (clock icon, amber) - "Window to revert"
-  3. **0G Audit Trail** (chain icon, green) - "Immutable record"
-  4. **ENS Reputation** (badge icon, purple) - "On-chain identity"
-  5. **HITL Council Rules** (sliders icon, cyan) - "User-editable thresholds"
-- 1:34-1:55: Per trust mech krotki cut do faktycznej apki (4s każdy):
-  - 1:34-1:38: Hover na claim w debate -> source popover z URL [Reuters] + snippet + weight
-  - 1:38-1:42: Timelock countdown circular - close-up animacji
-  - 1:42-1:46: Audit log scroll z 0G CID linkiem
-  - 1:46-1:50: ENS card resolution log table z latencjami
-  - 1:50-1:55: Council Rules JSON editor - user zmienia `require_human_approval_above_pct: 5` -> `10`, validate, multisig sign
+**Co widac (REWRITE per Vera #7 show > tell 80%):**
+- 1:30-1:55: 5 close-upow faktycznej apki (5s każdy) z overlay top-right (label + 1-zdaniowy hook). NIE statyczna infografika - pelne app cuts:
+  - 1:30-1:35: Hover na claim w debate -> source popover [Reuters] + snippet + weight 0.87. Overlay: "**Source Attribution** · Every claim cited"
+  - 1:35-1:40: Timelock countdown SVG full-screen pulse zoom 1.0->1.2. Overlay: "**Timelock 48h** · Window to revert"
+  - 1:40-1:45: Audit log scroll z 0G CID expand pop-out. Overlay: "**0G Audit Trail** · Immutable record"
+  - 1:45-1:50: ENS card resolution log table z latencjami. Overlay: "**ENS Identity** · On-chain reputation"
+  - 1:50-1:55: Council Rules JSON editor live diff (key change `5` -> `10` highlighted) + multisig sign. Overlay: "**HITL Rules** · User-editable thresholds"
 
 **Voice-over PL:**
 > "Pięć mechanizmów zaufania, każdy oparty o akademicki research Mayer-Davis-Schoorman z 1995. Atrybucja źródeł. Czterdziestoośmiogodzinny timelock. Niezmienialny audit log na 0G. Tożsamość ENS per agent. Reguły Rady edytowalne przez DAO. Wszystko zbudowane na Base Sepolia."
@@ -150,19 +144,13 @@ Close (2:30-3:00) - 30s - CTA + GitHub + names
 
 ### 5 Moats + Sponsor Tech (1:55-2:30) - 35s
 
-**Co widac:**
-- 1:55-2:05: Infografika "5 Moats" - vertical list z checkmarks:
-  1. **Data freshness** - RSS + CoinGecko + DefiLlama live (Lumen)
-  2. **Multi-agent debate** - 5 personas, prompt caching
-  3. **Smart contract execution** - 4 contracts deployed Base Sepolia
-  4. **Source attribution** - per claim, weighted
-  5. **PoW for agents** - AgentReputation.sol (Moat 5 Matthew)
-- 2:05-2:30: Sponsor tech showcase, każdy 5s, z prawdziwym UI cut:
-  - 2:05-2:10: **0G Storage** (Kenji) - cut na 0G explorer URL z naszym CID + text "Storage cost: subcent per transcript" (zmiekczone vs $0.001 - wymaga defendable kalkulacji w FEEDBACK.md zanim nagranie)
-  - 2:10-2:15: **Uniswap v4** (Hayden) - cut na nasz custom hook code snippet (apps/contracts/src/hooks/CouncilHook.sol) + "Treasury swap routed via v4 hook"
-  - 2:15-2:20: **ENS Subnames** (Nick) - cut na NameStone dashboard z 5 mintowanymi subnames pod aicouncil.eth
-  - 2:20-2:25: **KeeperHub** (Luca) - cut na Basescan tx executed by KeeperHub bot address + "Automated execution post-timelock"
-  - 2:25-2:30: **Multi-chain ready** - architecture diagram z Base Sepolia (deployed) + Mainnet path (Q3 2026 roadmap)
+**Co widac (REWRITE - sponsor cuts rozszerzone do 7s każdy, infografika 5 moats USUNIETA - moats wymieniane w voice-over, dowody w sponsor cuts):**
+- 1:55-2:30: Sponsor tech showcase, każdy 7s z cross-fade 0.3s, prawdziwy UI cut + overlay logo + tagline:
+  - 1:55-2:02: **0G Storage** (Kenji) - real 0G explorer URL z naszym CID highlighted + storage stats panel. Overlay logo 0G + tagline "subcent per transcript" (zmiekczone vs $0.001 - wymaga defendable kalkulacji w FEEDBACK.md zanim nagranie)
+  - 2:02-2:09: **Uniswap v4** (Hayden) - code snippet `apps/contracts/src/hooks/CouncilHook.sol` z highlighted `beforeSwap()` + `afterSwap()` (15-20 linii Solidity). Overlay logo Uniswap + tagline "Custom v4 hook"
+  - 2:09-2:16: **ENS Subnames** (Nick) - NameStone dashboard z 5 mintowanymi subnames pod aicouncil.eth + text records. Overlay logo ENS + tagline "5 subnames per agent"
+  - 2:16-2:23: **KeeperHub** (Luca) - Basescan tx z "From: 0xKeeperHub..." zoomed + arch diagram inset (timelock -> KeeperHub -> tx). Overlay logo KeeperHub + tagline "Automated execution"
+  - 2:23-2:30: **Multi-chain ready** - small arch diagram + zoomed Base Sepolia explorer ze statystyka 4 deployments + Mainnet roadmap inset. Overlay tagline "Multi-chain ready · Q3 2026 mainnet"
 
 **Voice-over PL:**
 > "Pięć moats: świeże dane, debata wieloagentowa, on-chain wykonanie, atrybucja źródeł, dowód pracy agentów. Zbudowane na 0G Storage, Uniswap v4 hooks, ENS subnames przez NameStone, KeeperHub do automatyzacji. Cztery kontrakty na Base Sepolia. Open source. Gotowe do pilotu z DAO."
