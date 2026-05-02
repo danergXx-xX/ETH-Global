@@ -7,6 +7,7 @@ Fallback for when 0G Storage is unavailable.
 from __future__ import annotations
 
 import json
+import re
 import time
 
 import httpx
@@ -20,6 +21,8 @@ W3S_UPLOAD_URL = "https://up.web3.storage/bridge"
 W3S_LEGACY_URL = "https://api.web3.storage/upload"
 UPLOAD_TIMEOUT = 30.0
 RETRIEVE_TIMEOUT = 15.0
+MAX_UPLOAD_BYTES = 5 * 1024 * 1024  # 5 MB
+CID_PATTERN = re.compile(r"^[a-zA-Z0-9]{46,64}$")
 
 
 class IPFSStorage:
@@ -32,6 +35,8 @@ class IPFSStorage:
     async def upload(self, data: dict) -> UploadResult:
         """Upload JSON data to IPFS via web3.storage."""
         encoded = json.dumps(data, separators=(",", ":"), sort_keys=True).encode()
+        if len(encoded) > MAX_UPLOAD_BYTES:
+            raise IPFSStorageError(f"Data too large: {len(encoded)} bytes (max {MAX_UPLOAD_BYTES})")
         start = time.monotonic()
 
         log.info(
@@ -74,6 +79,8 @@ class IPFSStorage:
 
     async def retrieve(self, cid: str) -> dict:
         """Retrieve JSON data from IPFS gateway."""
+        if not CID_PATTERN.match(cid):
+            raise IPFSStorageError(f"Invalid CID format: {cid!r}")
         log.info("ipfs_retrieve_start", provider="ipfs", cid=cid)
         gateway_url = f"https://{cid}.ipfs.w3s.link/"
         resp = await self._client.get(gateway_url, timeout=RETRIEVE_TIMEOUT)

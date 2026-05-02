@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import time
 
 import httpx
@@ -24,6 +25,8 @@ log = structlog.get_logger()
 
 UPLOAD_TIMEOUT = 30.0
 RETRIEVE_TIMEOUT = 15.0
+MAX_UPLOAD_BYTES = 5 * 1024 * 1024  # 5 MB
+CID_HEX_PATTERN = re.compile(r"^[a-f0-9]{64}$")
 
 
 class ZeroGStorage:
@@ -38,6 +41,8 @@ class ZeroGStorage:
     async def upload(self, data: dict) -> UploadResult:
         """Upload JSON data to 0G Storage network."""
         encoded = json.dumps(data, separators=(",", ":"), sort_keys=True).encode()
+        if len(encoded) > MAX_UPLOAD_BYTES:
+            raise ZeroGStorageError(f"Data too large: {len(encoded)} bytes (max {MAX_UPLOAD_BYTES})")
         root_hash = hashlib.sha256(encoded).hexdigest()
         start = time.monotonic()
 
@@ -73,6 +78,8 @@ class ZeroGStorage:
 
     async def retrieve(self, cid: str) -> dict:
         """Retrieve JSON data from 0G Storage by root hash."""
+        if not CID_HEX_PATTERN.match(cid):
+            raise ZeroGStorageError(f"Invalid CID format: must be 64 hex chars, got {cid!r}")
         log.info("zerog_retrieve_start", provider="0g", root_hash=cid)
         resp = await self._client.get(
             f"https://indexer-storage-testnet-turbo.0g.ai/file/{cid}",
