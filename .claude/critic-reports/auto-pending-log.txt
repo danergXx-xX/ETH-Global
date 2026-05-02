@@ -3,3 +3,5 @@
 [2026-05-02T15:50:30Z] Critic auto-pending dla commit 74fdacd507be10682be0b5368c52ab11fde93b15 (lines: 131, branch: feat/feedback-md, msg: docs(feedback): add FEEDBACK.md for ENS + 0G Labs sponsors)
 [2026-05-02T18:08:27Z] Critic auto-pending dla commit bcea915b4bfcb9c522b85438a6ea95fc3432e59b (lines: 604, branch: feat/phase3-source-attribution, msg: feat(agents): Phase 3 source attribution - pre-fetch strategy)
 [2026-05-02T18:12:32Z] Critic auto-pending dla commit 045369dd46e2a6887a7339d71bcceb61dca452ba (lines: 56, branch: feat/phase3-source-attribution, msg: fix(agents): address Critic + Vera review findings)
+[2026-05-02T19:46:54Z] Critic auto-pending dla commit 2393e2d4c46c788c923de44077329592c56a4bcc (lines: 459, branch: feat/docs-final, msg: docs: add architecture, judges onboarding, changelog (Sesja 24))
+[2026-05-02T19:52:05Z] Critic auto-pending dla commit 7344b5d9db536d98b9e14ef0e0130fe801b37fd4 (lines: 69, branch: feat/docs-final, msg: docs: README v2 + glossary expanded for Sesja 24)

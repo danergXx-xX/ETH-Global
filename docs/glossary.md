@@ -80,7 +80,7 @@ Every claim an agent makes includes a citation: the URL where the data came from
 A technique that reuses repeated prompt prefixes within API calls to reduce cost and latency. When 5 agents analyze the same proposal, the shared system prompt and proposal text are cached so each agent call does not re-process the identical prefix.
 
 **Consensus**
-The combined outcome after all 5 agents vote. Simple majority: if more agents vote FOR than AGAINST, the consensus is FOR. If votes are tied, the result is SPLIT. ABSTAIN votes do not count toward either side.
+The combined outcome after all 5 agents vote. Simple majority of agent opinions: if more agents vote FOR than AGAINST, the consensus is FOR. If votes are tied, the result is SPLIT. ABSTAIN votes do not count toward either side. This is the off-chain agent consensus and is independent of the on-chain `Quorum` (60%) used by the Governor.
 
 **WebSocket Streaming**
 A persistent connection between the browser and the backend that lets agent reasoning stream token-by-token. Instead of waiting 30 seconds for the full debate, users see each agent type out their analysis live. Implemented as `/ws/debate` endpoint with native WebSocket on the frontend (auto-reconnect with exponential backoff).

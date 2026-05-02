@@ -4,6 +4,8 @@ All notable changes to AI Treasury Council. Format follows [Keep a Changelog](ht
 
 Versions track the 50-hour ETHGlobal Open Agents 2026 sprint (2026-05-01 to 2026-05-03).
 
+Phases 1A through 1D run in parallel within Phase 1: 1A=smart contracts, 1B=wagmi frontend wallet flows, 1C=0G storage integration, 1D=execution payload encoding. Version order reflects merge order, not phase numbering.
+
 ## [0.20.0] - 2026-05-03 (planned)
 
 ### Added
@@ -30,7 +32,7 @@ Versions track the 50-hour ETHGlobal Open Agents 2026 sprint (2026-05-01 to 2026
 - Bilingual i18n PL+EN via custom provider (next-intl incompatible with Turbopack + pnpm + Next 16, see ADR-002)
 
 ### Fixed
-- Critic + Vera review findings on wagmi UI components (CRITICAL XSS in i18n bundle interpolation, HIGH localStorage safety on language toggle)
+- Critic + Vera review findings on wagmi UI components: hardened i18n bundle interpolation against injection-style risks, tightened localStorage safety on language toggle
 
 ## [0.17.0] - 2026-05-02
 
@@ -60,7 +62,7 @@ Versions track the 50-hour ETHGlobal Open Agents 2026 sprint (2026-05-01 to 2026
 
 ### Added
 - 23 cross-module integration tests (Quill Sesja 15)
-- Regression baseline: 150 tests PASS across contracts + backend + e2e
+- Regression baseline: 134 tests PASS across contracts + backend + e2e (pre-Phase 3 source attribution; reaches 141 after 0.17.0)
 
 ## [0.14.0] - 2026-05-02
 

@@ -26,7 +26,9 @@ Submit a treasury proposal (e.g. "Allocate 100k USDC to Aave for yield"). Five A
 
 Each agent cites its sources (RSS feeds, CoinGecko, DefiLlama) with confidence weights. The full debate transcript is stored immutably on **0G Storage**. Token holders then vote on-chain via OpenZeppelin Governor with a 48-hour timelock before execution.
 
-**Try the demo:** [demo.aitc.app](https://demo.aitc.app) (live Sun 3.05) | **Watch the 3-min walkthrough:** [youtube.com/TBD](https://youtube.com/TBD)
+> **MVP scope:** Bull is fully wired with live data sources. Bear, Risk, Tech, and Sentiment currently return curated mock responses pending Phase 4 final polish.
+
+**Try the demo:** [demo.aitc.app](https://demo.aitc.app) (deploys Sunday 2026-05-03 18:00 PL) | **Watch the 3-min walkthrough:** [youtube.com/TBD](https://youtube.com/TBD) (Phase 4)
 
 > Judging this project? Start with [docs/JUDGES-ONBOARDING.md](docs/JUDGES-ONBOARDING.md) for a 5-minute evaluation guide with sponsor track relevance.
 >
@@ -39,14 +41,14 @@ Each agent cites its sources (RSS feeds, CoinGecko, DefiLlama) with confidence w
 Every debate transcript (agent decisions, sources, confidence scores, consensus) is uploaded to **0G Storage** after each council session. The content-addressed hash is available on-chain for verification. Automatic fallback to IPFS if 0G is unreachable.
 
 - Storage layer: `apps/api/storage/` (factory pattern with 0G primary + IPFS fallback)
-- See [FEEDBACK.md](FEEDBACK.md) for detailed developer experience feedback
+- See [FEEDBACK.md](docs/FEEDBACK.md) for detailed developer experience feedback
 
 ### ENS - Agent Identity via NameStone Subnames
 
 Each of the 5 agents gets an ENS subname under `aicouncil.eth` (e.g. `bull.aicouncil.eth`, `bear.aicouncil.eth`). Subnames are minted via NameStone API with text records for agent role and historical accuracy.
 
 - Frontend resolves subnames via viem ENS utilities
-- See [FEEDBACK.md](FEEDBACK.md) for detailed developer experience feedback
+- See [FEEDBACK.md](docs/FEEDBACK.md) for detailed developer experience feedback
 
 ## Architecture
 
@@ -114,10 +116,10 @@ All contracts deployed on **Base Sepolia** (2026-05-02). Based on OpenZeppelin C
 
 | Contract | Address | Role |
 |----------|---------|------|
-| **CouncilToken** | [`0x5fE2...C4381`](https://sepolia.basescan.org/address/0x5fE2a5E971d9FAafF9cC0b0C9981da44fefC4381) | ERC20Votes governance token (AICT). Timestamp-based clock mode. |
-| **TimelockController** | [`0x76A6...41B0f`](https://sepolia.basescan.org/address/0x76A69Bb6aeF69A2E76fA6C9632Ff6Ca101441B0f) | 48-hour delay before execution. Admin revoked - fully decentralized. |
-| **AICouncilGovernor** | [`0x1f95...e301F0`](https://sepolia.basescan.org/address/0x1f95C796C5dc47d08B20CF3220a2AFa995e301F0) | Governor with 60% quorum, 1-day voting, 0 proposal threshold. |
-| **MockUSDC** | [`0x606E...Bb59d`](https://sepolia.basescan.org/address/0x606EDE7755131e6206A29B67d88761eEbb3Bb59d) | Testnet stablecoin (mUSDC, 6 decimals). 1M minted to Timelock treasury. |
+| **CouncilToken** | [`0x5fE2...4381`](https://sepolia.basescan.org/address/0x5fE2a5E971d9FAafF9cC0b0C9981da44fefC4381) | ERC20Votes governance token (AICT). Timestamp-based clock mode. |
+| **TimelockController** | [`0x76A6...1B0f`](https://sepolia.basescan.org/address/0x76A69Bb6aeF69A2E76fA6C9632Ff6Ca101441B0f) | 48-hour delay before execution. Admin revoked - fully decentralized. |
+| **AICouncilGovernor** | [`0x1f95...01F0`](https://sepolia.basescan.org/address/0x1f95C796C5dc47d08B20CF3220a2AFa995e301F0) | Governor with 60% quorum, 1-day voting, 0 proposal threshold. |
+| **MockUSDC** | [`0x606E...B59d`](https://sepolia.basescan.org/address/0x606EDE7755131e6206A29B67d88761eEbb3Bb59d) | Testnet stablecoin (mUSDC, 6 decimals). 1M minted to Timelock treasury. |
 | **AgentReputation** | [`0xf3BA...6f44`](https://sepolia.basescan.org/address/0xf3BAb9A2761131f4A9e5BA2d9e6395bea2186f44) | Moat 5 Proof-of-Work for agents. 5 agents registered, initial reputation 100 each. |
 
 **Governance parameters:** voting delay 1 block (~12s) -> 1-day voting period -> 48h timelock -> execution.
@@ -140,7 +142,7 @@ See [`docs/architecture.md`](docs/architecture.md) for the reputation update flo
 
 ## Frontend (Phase 1B in flight)
 
-The [CONCLAVE dashboard](apps/web/MOCKUPS.md) is a wagmi v2 + RainbowKit interface designed for sędziów to evaluate the system in 60 seconds. Eight production components: Live Debate Viewer with typewriter streaming, Proposal Form, Verdict Card, Vote+Execute Flow with TimelockCountdown, Audit Log, ENS Identity Card, Council Rules Editor, and mobile views.
+The [CONCLAVE dashboard](apps/web/MOCKUPS.md) is a wagmi v2 + RainbowKit interface designed for sędziów to evaluate the system in 60 seconds. Eight components designed and handed off to engineering, implementation in progress on `feat/wagmi-ui`: Live Debate Viewer with typewriter streaming, Proposal Form, Verdict Card, Vote+Execute Flow with TimelockCountdown, Audit Log, ENS Identity Card, Council Rules Editor, and mobile views.
 
 Bilingual UI (Polish + English) via custom i18n provider (next-intl was incompatible with Turbopack + pnpm + Next 16; documented in ADR-002).
 
@@ -211,7 +213,7 @@ curl -X POST http://localhost:8000/api/debate \
 
 ## Testing
 
-140+ tests across three layers:
+141 tests across three layers:
 
 | Layer | Framework | Tests | Command |
 |-------|-----------|-------|---------|

@@ -9,7 +9,7 @@ This doc complements [README.md](../README.md). README is the 60-second pitch; t
 | Layer | Stack | Owner | Status |
 |-------|-------|-------|--------|
 | Frontend | Next.js 16, Tailwind v4, shadcn/ui, RainbowKit, wagmi v2, viem | `apps/web/` | Phase 0+0.5 done, Phase 1B (CONCLAVE dashboard, wagmi flows) in flight on `feat/wagmi-ui` |
-| Backend API | Python 3.11, FastAPI, Pydantic v2, structlog, slowapi rate limit | `apps/api/` | 100/100 tests pass, rate-limited, source attribution wired |
+| Backend API | Python 3.11, FastAPI, Pydantic v2, structlog, slowapi rate limit | `apps/api/` | 97/97 tests pass, rate-limited, source attribution wired |
 | AI agents | Anthropic SDK with prompt caching, async generator streaming | `apps/api/agents/` | Bull live with sources, 4 mock placeholders |
 | Storage | 0G Storage via JSON-RPC + IPFS Pinata fallback (factory pattern) | `apps/api/storage/` | Wired |
 | Data | RSS (Reuters, CoinDesk), CoinGecko, DefiLlama, DataAggregator | `apps/api/data/` | Wired into Bull pre-fetch |
@@ -63,7 +63,7 @@ flowchart TB
   Gov --> Token
   Gov --> TL
   TL -->|transfer mUSDC| USDC
-  ENSCard -->|resolve subname + text records| Sub
+  ENSCard -.->|Phase 2: resolve subname + text records| Sub
   Audit -->|fetch by CID| ZeroG
 ```
 
@@ -179,7 +179,7 @@ Resolution path: Frontend `ENSCard` -> `viem.getEnsText({ name, key })` -> displ
 | CouncilToken | [`0x5fE2...4381`](https://sepolia.basescan.org/address/0x5fE2a5E971d9FAafF9cC0b0C9981da44fefC4381) | ERC20Votes governance token, 5 minted, timestamp clock | n/a |
 | TimelockController | [`0x76A6...1B0f`](https://sepolia.basescan.org/address/0x76A69Bb6aeF69A2E76fA6C9632Ff6Ca101441B0f) | 48h delay, admin revoked | #2 Timelock countdown |
 | AICouncilGovernor | [`0x1f95...01F0`](https://sepolia.basescan.org/address/0x1f95C796C5dc47d08B20CF3220a2AFa995e301F0) | 60% quorum, 1d voting, 0 threshold | n/a |
-| MockUSDC | [`0x606E...Bb59d`](https://sepolia.basescan.org/address/0x606EDE7755131e6206A29B67d88761eEbb3Bb59d) | Treasury asset, 1M mUSDC | n/a |
+| MockUSDC | [`0x606E...B59d`](https://sepolia.basescan.org/address/0x606EDE7755131e6206A29B67d88761eEbb3Bb59d) | Treasury asset, 1M mUSDC | n/a |
 | AgentReputation | [`0xf3BA...6f44`](https://sepolia.basescan.org/address/0xf3BAb9A2761131f4A9e5BA2d9e6395bea2186f44) | Moat 5 PoW for agents | #4 ENS reputation |
 
 Pre-deploy security audit: 0 CRITICAL, 0 HIGH (Mateusz T3, Sesja 16 + Sesja 19).
