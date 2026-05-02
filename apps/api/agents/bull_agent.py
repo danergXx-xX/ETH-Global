@@ -101,6 +101,7 @@ async def run_bull(
         return decision
 
     log.warning("bull_json_parse_failed_retrying")
+    # Retry uses simplified prompt (no sources context) to maximize JSON parse success
     retry_message = f"{RETRY_PROMPT}\n\nOriginal proposal: {proposal_text}"
     response_text, usage_retry = await anthropic_client.call_with_cache(
         system_prompt=system_prompt,
