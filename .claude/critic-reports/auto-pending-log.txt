@@ -1,3 +1,4 @@
 [2026-05-02T12:11:16Z] Critic auto-pending dla commit a9e0f98c9ea74ed7c65da1b5af7e243f85965959 (lines: 322, branch: feat/storage-0g, msg: feat(storage): abstract interface + 0G adapter + IPFS fallback)
 [2026-05-02T12:11:36Z] Critic auto-pending dla commit c212d9b865933637a4b4487af2ac50eb1c02d3f7 (lines: 166, branch: feat/storage-0g, msg: test(storage): 5 tests - 0G/IPFS happy path, fallback, error handling)
 [2026-05-02T15:50:30Z] Critic auto-pending dla commit 74fdacd507be10682be0b5368c52ab11fde93b15 (lines: 131, branch: feat/feedback-md, msg: docs(feedback): add FEEDBACK.md for ENS + 0G Labs sponsors)
+[2026-05-02T18:36:30Z] Critic auto-pending dla commit 13209181c9958070ad2f09ceb0a94602e73ef4e3 (lines: 10322, branch: feat/wagmi-ui, msg: feat(web): setup wagmi v2 + RainbowKit + shadcn components + Conclave theme)
