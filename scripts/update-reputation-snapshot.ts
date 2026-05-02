@@ -102,7 +102,7 @@ function isHexPrivateKey(value: string): value is Hex {
 async function main() {
   const broadcast = process.argv.includes("--broadcast");
   const sepoliaRpc =
-    process.env.SEPOLIA_RPC_URL || "https://eth-sepolia.public.blastapi.io";
+    process.env.SEPOLIA_RPC_URL || "https://ethereum-sepolia-rpc.publicnode.com";
   const baseSepoliaRpc =
     process.env.BASE_SEPOLIA_RPC_URL || "https://sepolia.base.org";
   const reputationContract = (process.env.REPUTATION_CONTRACT ||

@@ -27,7 +27,7 @@ W `.env` w root repo (`.gitignore` juz pokrywa - NIE commituj):
 
 ```
 ENS_OWNER_PRIVATE_KEY=0x<64 hex znakow klucza wallet 0x14b9...76F4>
-SEPOLIA_RPC_URL=https://eth-sepolia.public.blastapi.io
+SEPOLIA_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
 BASE_SEPOLIA_RPC_URL=https://sepolia.base.org
 ```
 
@@ -107,7 +107,7 @@ UI nadal czyta live z Base Sepolia (`useReadContract` z AgentReputation.getReput
 ```
 NEXT_PUBLIC_ENS_DOMAIN=aicouncil-danergy.eth
 NEXT_PUBLIC_ENS_NETWORK=sepolia
-NEXT_PUBLIC_SEPOLIA_RPC_URL=https://eth-sepolia.public.blastapi.io
+NEXT_PUBLIC_SEPOLIA_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
 ```
 
 Test: `pnpm dev` -> otworz ENS Identity Card -> sprawdz ze renderuje real text records (nie mock).

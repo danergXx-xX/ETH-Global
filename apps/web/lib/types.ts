@@ -117,7 +117,7 @@ export interface TxPreview {
 export const AGENTS: AgentMeta[] = [
   {
     persona: "bull",
-    ens: "bull.aicouncil.eth",
+    ens: "bull.aicouncil-danergy.eth",
     label: { en: "Bull", pl: "Optymista" },
     bias: { en: "opportunity-seeking", pl: "szuka okazji" },
     rep: 87,
@@ -126,7 +126,7 @@ export const AGENTS: AgentMeta[] = [
   },
   {
     persona: "bear",
-    ens: "bear.aicouncil.eth",
+    ens: "bear.aicouncil-danergy.eth",
     label: { en: "Bear", pl: "Sceptyk" },
     bias: { en: "risk-aware", pl: "wyczulony na ryzyko" },
     rep: 91,
@@ -135,7 +135,7 @@ export const AGENTS: AgentMeta[] = [
   },
   {
     persona: "risk",
-    ens: "risk.aicouncil.eth",
+    ens: "risk.aicouncil-danergy.eth",
     label: { en: "Risk", pl: "Ryzyko" },
     bias: { en: "quantitative", pl: "kwantytatywny" },
     rep: 94,
@@ -144,7 +144,7 @@ export const AGENTS: AgentMeta[] = [
   },
   {
     persona: "tech",
-    ens: "tech.aicouncil.eth",
+    ens: "tech.aicouncil-danergy.eth",
     label: { en: "Tech", pl: "Technologia" },
     bias: { en: "technical due diligence", pl: "audyt techniczny" },
     rep: 82,
@@ -153,7 +153,7 @@ export const AGENTS: AgentMeta[] = [
   },
   {
     persona: "sentiment",
-    ens: "sentiment.aicouncil.eth",
+    ens: "sentiment.aicouncil-danergy.eth",
     label: { en: "Sentiment", pl: "Sentyment" },
     bias: { en: "market psychology", pl: "psychologia rynku" },
     rep: 76,

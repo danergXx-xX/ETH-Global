@@ -208,7 +208,7 @@ async function main() {
   const broadcast = process.argv.includes("--broadcast");
   const rpcUrl =
     process.env.SEPOLIA_RPC_URL ||
-    "https://eth-sepolia.public.blastapi.io";
+    "https://ethereum-sepolia-rpc.publicnode.com";
 
   console.log("=".repeat(70));
   console.log("Phase 2 ENS - mint subnames (DIRECT viem)");
