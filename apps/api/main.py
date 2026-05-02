@@ -7,7 +7,6 @@ from typing import AsyncIterator
 import structlog
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
 
 from config import get_settings
 from governance import (
@@ -19,6 +18,8 @@ from governance import (
 from logging_config import RequestIDMiddleware, setup_logging
 from agents.orchestrator import run_debate
 from schemas import (
+    DebateRequest,
+    DebateResponse,
     HealthResponse,
     ProposalEncodeRequest,
     ProposalEncoded,
@@ -56,19 +57,6 @@ app.add_middleware(
 app.add_middleware(RequestIDMiddleware)
 
 
-class DebateRequest(BaseModel):
-    text: str = Field(..., min_length=1, max_length=2000)
-
-
-class DebateResponse(BaseModel):
-    decisions: list[dict]
-    consensus: str
-    vote_id: str
-    audit_trail_cid: str | None = None
-    audit_trail_gateway: str | None = None
-    storage_provider: str | None = None
-
-
 @app.get("/health")
 async def health() -> HealthResponse:
     return HealthResponse(
@@ -91,7 +79,7 @@ async def debate(req: DebateRequest) -> DebateResponse:
     try:
         transcript = {
             "proposal": req.text,
-            "decisions": result["decisions"],
+            "decisions": [d.model_dump(mode="json") for d in result["decisions"]],
             "consensus": result["consensus"],
             "vote_id": result["vote_id"],
             "timestamp": datetime.now(timezone.utc).isoformat(),

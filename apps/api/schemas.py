@@ -231,6 +231,25 @@ class RecipientsResponse(BaseModel):
 
 
 # ============================================================
+# DEBATE REQUEST / RESPONSE (main.py endpoint)
+# ============================================================
+
+class DebateRequest(BaseModel):
+    """Input for POST /api/debate."""
+    text: str = Field(..., min_length=1, max_length=2000)
+
+
+class DebateResponse(BaseModel):
+    """Output from POST /api/debate."""
+    decisions: list[AgentDecision]
+    consensus: Literal["FOR", "AGAINST", "ABSTAIN", "SPLIT"]
+    vote_id: str
+    audit_trail_cid: str | None = None
+    audit_trail_gateway: str | None = None
+    storage_provider: str | None = None
+
+
+# ============================================================
 # HEALTH + META
 # ============================================================
 

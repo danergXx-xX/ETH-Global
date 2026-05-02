@@ -154,7 +154,7 @@ async def run_debate(proposal_text: str) -> dict:
     )
 
     return {
-        "decisions": [d.model_dump(mode="json") for d in all_decisions],
+        "decisions": all_decisions,
         "consensus": consensus,
         "vote_id": str(uuid4()),
     }
