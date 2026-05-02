@@ -103,7 +103,9 @@ function MobileAgentRow({ a }) {
           {a.status === 'analyzing' ? 'analyzing...' : `conf ${(a.conf * 100).toFixed(0)}%`}
         </span>
       </div>
-      <button style={{ padding: '5px 9px', borderRadius: 3, background: 'transparent', border: '1px solid oklch(0.40 0.030 255)', color: 'oklch(0.78 0.012 255)', fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 600, cursor: 'pointer' }}>↳</button>
+      <button style={{ padding: '5px 9px', borderRadius: 3, background: 'transparent', border: '1px solid oklch(0.40 0.030 255)', color: 'oklch(0.78 0.012 255)', fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 600, cursor: 'pointer' }}
+        onClick={() => { if (window.openReasoningChat) window.openReasoningChat(a.id, a.name + ' voted ' + a.vote, 'en'); }}
+      >↳</button>
     </div>
   );
 }
@@ -113,7 +115,7 @@ function VariantMobileDebate({ overrides = {} }) {
   return (
     <div style={mbStyles.card}>
       <div style={mbStyles.topBar}>
-        <ConclaveLogo size={20} color="oklch(0.96 0.006 255)" accent="oklch(0.78 0.13 252)" dim="oklch(0.66 0.014 255)" />
+        <div style={{ width: 20, height: 20, borderRadius: 10, background: 'oklch(0.78 0.13 252)', display: 'grid', placeItems: 'center', color: 'oklch(0.18 0.025 255)', fontSize: 11, fontWeight: 700 }}>●</div>
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700, letterSpacing: 1.5, color: 'oklch(0.96 0.006 255)' }}>CONCLAVE</span>
         <span style={mbStyles.walletPill}>
           <span style={{ width: 5, height: 5, borderRadius: 3, background: 'oklch(0.74 0.16 152)' }} />
@@ -164,7 +166,9 @@ function VariantMobileDebate({ overrides = {} }) {
           color: 'oklch(0.18 0.04 75)',
           fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700,
           letterSpacing: '0.10em', textTransform: 'uppercase', cursor: 'pointer',
-        }}>↳ Challenge any agent</button>
+        }}
+        onClick={() => { if (window.openReasoningChat) window.openReasoningChat('bull', 'PROP-042 debate', 'en'); }}
+        >↳ Challenge any agent</button>
       </div>
     </div>
   );
@@ -182,7 +186,7 @@ function VariantMobileDash({ overrides = {} }) {
   return (
     <div style={mbStyles.card}>
       <div style={mbStyles.topBar}>
-        <ConclaveLogo size={20} color="oklch(0.96 0.006 255)" accent="oklch(0.78 0.13 252)" dim="oklch(0.66 0.014 255)" />
+        <div style={{ width: 20, height: 20, borderRadius: 10, background: 'oklch(0.78 0.13 252)', display: 'grid', placeItems: 'center', color: 'oklch(0.18 0.025 255)', fontSize: 11, fontWeight: 700 }}>●</div>
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700, letterSpacing: 1.5, color: 'oklch(0.96 0.006 255)' }}>CONCLAVE</span>
         <span style={mbStyles.walletPill}>
           <span style={{ width: 5, height: 5, borderRadius: 3, background: 'oklch(0.74 0.16 152)' }} />

@@ -144,7 +144,9 @@ function AgentEnsCard({ agent, state }) {
           color: 'oklch(0.78 0.012 255)',
           fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600,
           letterSpacing: '0.06em', cursor: 'pointer', flex: 1,
-        }}>↳ Challenge</button>
+        }}
+        onClick={() => { if (window.openReasoningChat) window.openReasoningChat(agent.id, agent.records?.description || '', 'en'); }}
+        >↳ Challenge</button>
       </div>
     </div>
   );
@@ -231,7 +233,7 @@ function VariantEns({ overrides = {} }) {
         <span style={{ color: 'oklch(0.78 0.012 255)' }}>ENS IDENTITY</span>
         <span style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
           <span style={{ width: 6, height: 6, borderRadius: 3, background: state === 'resolved' ? 'oklch(0.74 0.16 152)' : state === 'error' ? 'oklch(0.70 0.18 22)' : 'oklch(0.78 0.14 75)' }} />
-          <span>{data.parent} · 7 SUBNAMES</span>
+          <span>{data.parent} · {data.agents.length + 1} SUBNAMES</span>
         </span>
       </div>
 

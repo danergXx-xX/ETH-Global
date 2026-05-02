@@ -226,13 +226,15 @@ function StageStrip({ activeIdx, stages }) {
 }
 
 function TimelockCountdown({ remaining, total }) {
-  // Circular progress, ramping; remaining w sekundach.
+  // Circular progress: kolorowy luk = remaining time, kurczy sie gdy zostaje mniej.
+  // remaining w sekundach. Mockup statyczny - Aiko Phase 1B doda useEffect+RAF tick.
   const pct = Math.max(0, Math.min(1, remaining / total));
   const size = 140;
   const stroke = 8;
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
-  const offset = c * (1 - (1 - pct));  // filled = elapsed
+  // strokeDashoffset = c * (1 - pct) → luk pokazuje pct = remaining/total (kurczy sie)
+  const offset = c * (1 - pct);
   const hours = Math.floor(remaining / 3600);
   const minutes = Math.floor((remaining % 3600) / 60);
   return (

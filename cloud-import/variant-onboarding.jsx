@@ -224,13 +224,18 @@ function StepCompleted({}) {
 function VariantOnboarding({ overrides = {} }) {
   const step = overrides.step || 1;
 
-  const stepDef = ONBOARDING_STEPS[step - 1] || {};
   const isCompleted = step === 'completed';
+  const stepDef = isCompleted ? {} : (ONBOARDING_STEPS[step - 1] || {});
 
   return (
     <div style={obStyles.card}>
       <div style={obStyles.hero}>
-        {!isCompleted && <ConclaveMark size="lg" theme={D_DARK} locale="en" />}
+        {!isCompleted && (
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 12, color: 'oklch(0.96 0.006 255)', fontFamily: 'var(--font-mono)', fontSize: 22, fontWeight: 700, letterSpacing: 1.5 }}>
+            <div style={{ width: 40, height: 40, borderRadius: 20, background: 'oklch(0.78 0.13 252)', display: 'grid', placeItems: 'center', color: 'oklch(0.18 0.025 255)' }}>●</div>
+            CONCLAVE
+          </div>
+        )}
         {!isCompleted && (
           <>
             <h2 style={obStyles.heroTitle}>{stepDef.label}</h2>

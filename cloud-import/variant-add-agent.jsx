@@ -133,7 +133,7 @@ function VariantAddAgent({ overrides = {} }) {
           <label style={aaStyles.label}>Persona type</label>
           <div style={aaStyles.personaGrid}>
             {PERSONAS.map((p) => {
-              const isActive = (filled && p.id === 'custom') || (!filled && false);
+              const isActive = filled && p.id === 'custom';
               return (
                 <div key={p.id} style={{ ...aaStyles.personaTile, ...(isActive ? aaStyles.personaTileActive : {}) }}>
                   <div style={{
