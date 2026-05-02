@@ -7,9 +7,9 @@ linked: SCRIPT.md, STORYBOARD.md
 
 # Juror Lens - Demo Per Sponsor Strategy
 
-> **Filozofia Eva:** sedziowie pamietaja JEDEN moment. Twoje zadanie - zaprojektowac TEN moment per juror. Kazdy sponsor jurora powinien zobaczyc swoja technologie zywa na ekranie + uslyszec swoja nazwe w voice-over.
+> **Filozofia Eva:** sedziowie pamietaja JEDEN moment. Twoje zadanie - zaprojektowac TEN moment per juror. Każdy sponsor jurora powinien zobaczyc swoja technologie zywa na ekranie + uslyszec swoja nazwe w voice-over.
 
-> **Strategia voice-over:** 5 sponsorow x 5s kazdy w segmencie 2:05-2:30 (Tech sponsor showcase). Dodatkowo per-juror konkretne momenty wczesniej w demo.
+> **Strategia voice-over:** 5 sponsorow x 5s każdy w segmencie 2:05-2:30 (Tech sponsor showcase). Dodatkowo per-juror konkretne momenty wcześniej w demo.
 
 ---
 
@@ -26,14 +26,14 @@ linked: SCRIPT.md, STORYBOARD.md
 2. **1:42-1:46** - Trust mech close-up: audit log scroll, click na 0G CID -> otwiera 0G explorer w nowej zakladce (real link)
 3. **2:05-2:10** - **DEDICATED SPONSOR SEGMENT (5s):**
    - UI cut: 0G explorer pokazuje nasz CID + storage stats
-   - Overlay text: **"0G Storage cost: $0.001 per debate transcript"** (pokazac economic case)
-   - Comparison: "vs IPFS pinning $0.05/month per file" (subtle, nie aggressive)
+   - Overlay text: **"0G Storage: subcent cost per transcript"** (zmiekczone z konkretnej liczby - wymaga defendable kalkulacji w FEEDBACK.md ZANIM nagranie)
+   - Comparison: "vs IPFS pinning ~$0.05/month per file" (subtle, nie aggressive)
 4. **1:30 infographic** - 5 trust mech, "0G Audit Trail" jako #3 z chain icon
 
 ### Voice-over emfazy dla Kenji
-- "Cala debata zarchiwizowana na 0G Storage" (1:20-1:25 segment)
+- "Cała debata zarchiwizowana na 0G Storage" (1:20-1:25 segment)
 - "Niezmienialny audit log na 0G" (1:30-1:55 trust mech segment)
-- "Storage cost: dziesiata czesc centa za transkrypt debaty" (2:05-2:10 sponsor segment)
+- "Storage cost: subcent per transkrypt debaty" (2:05-2:10 sponsor segment) - zmiekczenie $0.001 claim, defendable bez konkretnej kalkulacji w live Q&A
 
 ### Hidden details Kenji zauwazy
 - ENS subnames in audit log entries (`bull.aicouncil.eth · VOTED FOR · CID bafy...`) - human-readable + decentralized identity + decentralized storage = trifecta
@@ -71,7 +71,7 @@ linked: SCRIPT.md, STORYBOARD.md
 ### Decyzja jezeli Uniswap NIE wired (eskalacja Maxima)
 - Frame 7 voice-over: zamiast "Swap przez Uniswap" -> "Treasury action executed on-chain"
 - Sponsor segment 2:10-2:15: skip Uniswap, dodaj "Multi-DEX ready" frame zamiast
-- NIE klam ze uzywamy jesli nie - sedziowie sprawdza repo
+- NIE klam ze uzywamy jeśli nie - sedziowie sprawdza repo
 
 ---
 
@@ -84,7 +84,7 @@ linked: SCRIPT.md, STORYBOARD.md
 - **NameStone integration** (oficjalny partner)
 
 ### Demo moments dla Nick
-1. **0:35-1:00** - Live Debate: kazdy z 5 agentow ma ENS subname pod avatarem (`bull.aicouncil.eth`, `bear.aicouncil.eth`, ...)
+1. **0:35-1:00** - Live Debate: każdy z 5 agentow ma ENS subname pod avatarem (`bull.aicouncil.eth`, `bear.aicouncil.eth`, ...)
 2. **1:25-1:30** - **WOW MOMENT for Nick:** ENS Identity Card
    - 5 subnames pod aicouncil.eth z resolution latencjami
    - Text records visible: `rep.score=87`, `rep.statements=142`, `llm=claude-sonnet-4.6`
@@ -95,12 +95,12 @@ linked: SCRIPT.md, STORYBOARD.md
    - Overlay text: **"5 ENS subnames per agent · Reputation as text records"**
 
 ### Voice-over emfazy dla Nick
-- "Kazdy agent ma swoja tozsamosc ENS" (1:25-1:30)
-- "Tozsamosc ENS per agent" (1:30-1:55 trust mech)
+- "Każdy agent ma swoją tożsamość ENS" (1:25-1:30)
+- "Tożsamość ENS per agent" (1:30-1:55 trust mech)
 - "Subnames przez NameStone" (2:15-2:20 sponsor)
 
 ### Hidden details Nick zauwazy
-- ENS uzywane spojnie w CALYM demo (nie tylko w jednym miejscu)
+- ENS uzywane spojnie w CAŁYM demo (nie tylko w jednym miejscu)
 - Audit log eventy maja ENS names, nie raw addresses (UX win)
 - Multisig signers maja ENS names (`alice.dao.eth`, `bob.dao.eth`)
 - Treasury wallet ma `treasury.aicouncil.eth` z text records (description, url, twitter, github)
@@ -109,8 +109,8 @@ linked: SCRIPT.md, STORYBOARD.md
 
 ### Risk jezeli NameStone Phase 2 nie skonczone
 - Demo uzywa **mock ENS labels** jako string literals (per MOCKUPS.md Q1 decision)
-- Voice-over: NIE klam. Mow "ENS subnames" w przyszlym czasie? Lepsza opcja: mow "ENS subnames live", pokaz mock UI ktory looks identical, FEEDBACK.md transparency o stanie
-- Eskalacja: jezeli mock ENS - Nick moze sprawdzic on-chain. Risk discovery.
+- Voice-over: NIE klam. Mow "ENS subnames" w przyszlym czasie? Lepsza opcja: mow "ENS subnames live", pokaz mock UI który looks identical, FEEDBACK.md transparency o stanie
+- Eskalacja: jezeli mock ENS - Nick może sprawdzic on-chain. Risk discovery.
 
 ---
 
@@ -149,12 +149,12 @@ linked: SCRIPT.md, STORYBOARD.md
 ## 5. Ben - Gensyn ($5,000 A2A track)
 
 ### Co Ben ceni
-- **Agent-to-Agent (A2A) communication** - agenci komunikuja sie miedzy soba, nie tylko z usera
+- **Agent-to-Agent (A2A) communication** - agenci komunikuja się miedzy soba, nie tylko z usera
 - **Decentralized AI orchestration**
 - **Verifiable agent outputs** (signed, attributable)
 
 ### Demo moments dla Ben
-1. **0:35-1:00** - **CALY SEGMENT B = A2A communication.** 5 agentow:
+1. **0:35-1:00** - **CAŁY SEGMENT B = A2A communication.** 5 agentow:
    - Czyta argumenty siebie nawzajem (Bear odpowiada na Bull's claims)
    - Adjustuje confidence based on others (Tech weights down jezeli Risk highlights concern)
    - Final tally weighted by reputation (na-chain reputation system)
@@ -166,13 +166,13 @@ linked: SCRIPT.md, STORYBOARD.md
 
 ### Hidden details Ben zauwazy
 - AgentReputation.sol on-chain (Moat 5 PoW Matthew)
-- Source attribution per claim = agenty cite zewnetrzne zrodla AND siebie nawzajem (e.g. Bear cytuje Bull's confidence as evidence)
+- Source attribution per claim = agenty cite zewnetrzne źródła AND siebie nawzajem (e.g. Bear cytuje Bull's confidence as evidence)
 - Council Rules JSON ma parametry agent vote weights (HITL adjustable)
 
-### Probability: **35%** (medium - Gensyn nie ma dedicated segment w sponsor showcase, ale CALY core demo IS A2A. Risk: Ben moze chciec wiecej Gensyn-specific tech mention)
+### Probability: **35%** (medium - Gensyn nie ma dedicated segment w sponsor showcase, ale CAŁY core demo IS A2A. Risk: Ben może chciec wiecej Gensyn-specific tech mention)
 
 ### Decyzja - czy dodac Gensyn-specific moment?
-- Opcja A: Voice-over 1:55-2:05 dodaj "Multi-agent A2A architecture" jako 5-ty moat (juz jest "PoW for agents" - merge?)
+- Opcja A: Voice-over 1:55-2:05 dodaj "Multi-agent A2A architecture" jako 5-ty moat (już jest "PoW for agents" - merge?)
 - Opcja B: Sponsor segment 2:15-2:30 wymien Gensyn jako "Inspired by Gensyn A2A standards" (jezeli aplikujemy do Gensyn track)
 - Rekomendacja Eva: Opcja B + dodac "Agent-to-Agent" jako bullet w sponsor closing band (2:45-2:55)
 
@@ -184,7 +184,7 @@ linked: SCRIPT.md, STORYBOARD.md
 - **Originality** - cos czego nie widzieli w innych demo
 - **Technical depth** - production-grade, nie hello-world
 - **Demo polish** - hook quality, pacing, no jank
-- **Real on-chain action** - sedziowie sprawdza czy demo dziala live
+- **Real on-chain action** - sedziowie sprawdza czy demo działa live
 - **Documentation** - README + FEEDBACK.md + ADR demonstrate maturity
 
 ### Demo moments dla Synthesis
@@ -203,7 +203,7 @@ linked: SCRIPT.md, STORYBOARD.md
 - FEEDBACK.md ma 12 items (sponsor feedback)
 - README ma Mermaid arch diagram
 - Branch protection active on main
-- Mateusz security audit done (0 CRITICAL, 0 HIGH)
+- Mateusz security audit (0 CRITICAL, 0 HIGH per status update Matthew 2026-05-02 - sprawdz aktualnosc przed nagraniem)
 
 ### Probability: **80%** Finalist top 20% (was 80%, confirmed po Phase 1B + 2 + Moat 5)
 
@@ -228,7 +228,7 @@ Jezeli Finalist top 20% -> top 5 live presentation. **Eva przygotowuje extended 
 
 ### Konflikt 1: Czas demo vs liczba sponsorow
 - **5 sponsorow x 5s = 25s w sponsor segment** (2:05-2:30)
-- Test: czy Kenji + Nick + Luca + Hayden + Ben + Multi-chain mieszcza sie w 25s? **TAK** (5s per, 5 sponsorow + 5s na multi-chain = 30s, ale Multi-chain mozna kompresowac do 5s nakladajac na sponsor)
+- Test: czy Kenji + Nick + Luca + Hayden + Ben + Multi-chain mieszcza się w 25s? **TAK** (5s per, 5 sponsorow + 5s na multi-chain = 30s, ale Multi-chain można kompresowac do 5s nakladajac na sponsor)
 
 ### Konflikt 2: Honesty (Charter #7) vs Sponsor optimization
 - Jezeli Uniswap / KeeperHub NIE wired -> NIE klam. Pokaz "compatible with" zamiast "uses"
@@ -237,6 +237,12 @@ Jezeli Finalist top 20% -> top 5 live presentation. **Eva przygotowuje extended 
 ### Konflikt 3: 3 min hard limit vs all juror moments
 - Test: czy WSZYSCY 6 jurorzy maja moment? **TAK** (per Frame map powyzej)
 - Czas na voice-over wystarczy? Word count check w SCRIPT.md: total 290 slow / 180s = 97 wpm = komfortowe
+
+---
+
+## Probability disclaimer
+
+Probabilities = Eva subjective estimate based on per-juror demo coverage. Calibrate z panel jurors output session 2026-05-02 (gdy dostepny). Bazowe wartosci z Matthew status update v2 (Finalist 80%, ENS Track 70%, 0G 50%).
 
 ---
 
@@ -249,7 +255,7 @@ Jezeli Finalist top 20% -> top 5 live presentation. **Eva przygotowuje extended 
 | Nick | ENS | $5k+ | 85% | 0:35-1:00 subnames, 1:25-1:30 ENS card WOW, 1:46-1:50, 2:15-2:20 dedicated | "ENS identity per agent", "subnames przez NameStone" |
 | Luca | KeeperHub | $5k | 40% | 1:15-1:20 execute, 1:20-1:25 Basescan from-address, 2:20-2:25 dedicated | "KeeperHub", "automated execution" |
 | Ben | Gensyn | A2A $5k | 35% | 0:35-1:00 entire debate IS A2A | "5 agentow", "on-chain reputation" |
-| Synthesis | ETHGlobal | Finalist $5k | 80% | Caly demo: typewriter + Basescan + research + docs | "akademicki research", "open source", "pilot ready" |
+| Synthesis | ETHGlobal | Finalist $5k | 80% | Cały demo: typewriter + Basescan + research + docs | "akademicki research", "open source", "pilot ready" |
 
 **Total EV update z lensami:**
 - 0G $1.5k x 70% = $1,050

@@ -28,7 +28,7 @@ linked: SCRIPT.md, STORYBOARD.md
 
 ### Apka stan
 
-- [ ] **Local dev server lub Vercel preview** dziala bez bledow (smoke test pelnego flow przed recording)
+- [ ] **Local dev server lub Vercel preview** działa bez błędów (smoke test pełnego flow przed recording)
 - [ ] **Test wallet** ma mUSDC funds (~100k) + Base Sepolia ETH (~0.01)
 - [ ] Wallet podlaczony, network = Base Sepolia (Chain 84532)
 - [ ] **Mock data realistic:** PROP-042 jako ID (nie "lorem ipsum"), real ENS subnames z aicouncil.eth, real Basescan tx hash (z Phase 1A deploy)
@@ -70,7 +70,14 @@ linked: SCRIPT.md, STORYBOARD.md
 - [ ] **SCRIPT.md** otwarty na drugim monitorze (nie w nagrywanym oknie)
 - [ ] **STORYBOARD.md** otwarty obok scriptu
 - [ ] Voice-over wybrany (Wariant A vs B per segment) i highlighted
-- [ ] Timing reference: telefon z stoperka widoczny w polu widzenia
+- [ ] Timing reference: telefon z stoperem widoczny w polu widzenia
+
+### Maja T1 review voice-over (PRZED nagraniem)
+
+- [ ] **Maja T1 read** voice-over PL+EN final (anti-AI guard, naturalnosc, ton)
+- [ ] Sprawdz polskie znaki kazdej linii voice-over PL (regula #69)
+- [ ] Sprawdz EN warianty z native speaker perspective (jezeli Matthew nagrywa EN)
+- [ ] Jezeli Wariant B narracyjny EN - sprawdz czy fluency native (inaczej defaultuj do Wariant A)
 
 ---
 
@@ -126,7 +133,7 @@ Per segment z SCRIPT.md (Hook, Demo A, B, C, D, Tech trust, Tech moats, Close):
 
 ### Cuts + transitions
 
-- [ ] Trim do **3:00 max hard limit** (ETHGlobal rule)
+- [ ] Trim do **2:50 target** (10s buffer pod 3:00 hard limit ETHGlobal - chroni przed editing overshoot)
 - [ ] Cuts smooth: cross-fade 0.3s typowe, hard cut OK na wow moments
 - [ ] Static shots max 8s (Eva rule)
 - [ ] Total cuts: 24-30 typowe
@@ -172,7 +179,7 @@ Per segment z SCRIPT.md (Hook, Demo A, B, C, D, Tech trust, Tech moats, Close):
 
 - [ ] Fix findings z review
 - [ ] Re-render export
-- [ ] Final smoke test playback (oglodaj caly 3 min raz)
+- [ ] Final smoke test playback (oglodaj cały 3 min raz)
 
 ### Upload + backup
 
@@ -193,10 +200,10 @@ Per segment z SCRIPT.md (Hook, Demo A, B, C, D, Tech trust, Tech moats, Close):
 ## Ostateczny smoke test (17:00 - 1h przed deadline)
 
 - [ ] Otworz video w incognito browser tab (czysty cache)
-- [ ] Audio dziala?
+- [ ] Audio działa?
 - [ ] Captions widoczne?
 - [ ] Pierwsze 5s lapie uwage?
-- [ ] Czy 3:00 mieci sie w hard limit? (sprawdz exact duration)
+- [ ] Czy 3:00 mieci się w hard limit? (sprawdz exact duration)
 - [ ] Czy wszystkie 5 trust mech widoczne?
 - [ ] Czy wszystkie sponsorzy maja moment?
 - [ ] Czy CTA + GitHub na koncu czytelne?
@@ -205,14 +212,14 @@ Per segment z SCRIPT.md (Hook, Demo A, B, C, D, Tech trust, Tech moats, Close):
 
 ---
 
-## Backup plan (jezeli nagranie sie nie uda)
+## Backup plan (jezeli nagranie się nie uda)
 
 ### Plan B: minimal viable demo (1 godzina)
 
 Jezeli nagranie main 3 min nie wyjdzie:
 - 60s teaser version (Hook 15s + Demo highlights 30s + Close 15s)
 - Acceptable jezeli main 3 min absolutnie nieudane
-- Jurorzy preferuja krotsze + dobre niz dluzsze + slabe
+- Jurorzy preferuja krotsze + dobre niz dluzsze + słabe
 
 ### Plan C: voice-over re-record only (30 min)
 
@@ -230,4 +237,4 @@ Jezeli wizualy OK ale audio zle:
   - Alternatywa: Matthew nagrywa obie wersje (1 person consistency)
 - [ ] **Aiko:** czy Phase 1B wagmi UI gotowy do recording w niedziele 12:00? (wymagane dla Frame 7 i 8)
 - [ ] **Sol + Aiko:** czy Phase 2 ENS subnames live (NameStone)? Jezeli NIE - Frame 10 swap na mock + voice-over note
-- [ ] **Lumen:** czy data freshness (RSS + CoinGecko) dziala live w niedziele 12:00? (Trust mech #1 wymaga real data)
+- [ ] **Lumen:** czy data freshness (RSS + CoinGecko) działa live w niedziele 12:00? (Trust mech #1 wymaga real data)

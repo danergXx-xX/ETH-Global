@@ -29,7 +29,7 @@ linked: SCRIPT.md (per segment)
 - Tekst typewriter (30 chars/sec, 0:00-0:03)
 - Amber dot pulsuje od 0:03
 
-**Audio cue:** voice-over startuje w 0:00, "Dwadziescia szesc miliardow..." (PL) lub "Twenty six billion..." (EN). Spokojny, autorytatywny ton.
+**Audio cue:** voice-over startuje w 0:00, "Dwadzieścia sześć miliardów..." (PL) lub "Twenty six billion..." (EN). Spokojny, autorytatywny ton.
 
 ---
 
@@ -43,37 +43,37 @@ linked: SCRIPT.md (per segment)
 - Prawa: wykres voting participation declining 2022-2026 (DefiLlama style line chart, czerwona linia w dol)
 - Bottom overlay: cienki amber pasek z tekstem "Source: DAO governance research, 2024-2026"
 
-**Ruch kamery:** subtle Ken Burns - kazdy screenshot ma slight zoom-in 1.0 -> 1.05 nad 2s.
+**Ruch kamery:** subtle Ken Burns - każdy screenshot ma slight zoom-in 1.0 -> 1.05 nad 2s.
 
 **Efekty:**
 - Cuts miedzy obrazkami: cross-fade 0.3s (no jarring)
 - Overlay text fade-in 0:10
 
-**Audio cue:** "...Apatia, brak kworum, koncentracja wladzy. Czas to zmienic." (PL)
+**Audio cue:** "...Apatia, brak kworum, koncentracja władzy. Czas to zmienić." (PL)
 
 ---
 
-## Frame 3 - CONCLAVE Reveal (0:15-0:22)
+## Frame 3 - CONCLAVE Reveal (0:10-0:15)
 
-**Scena:** logo brand reveal + tagline. Transition do live app.
+**Scena:** logo brand reveal + tagline. Transition do live app. **Sync ze SCRIPT.md L37 (reveal w 0:10-0:15 jako tail Hook segmentu).**
 
 **Co na ekranie:**
-- Center: CONCLAVE logo - 5 dots wokol centrum, gradient amber-green (oklch palette). Initial scale 0.8, animuje do 1.0 nad 0.5s. Initial opacity 0, fade-in.
+- Center: CONCLAVE logo - 5 dots wokół centrum, gradient amber-green (oklch palette). Initial scale 0.8, animuje do 1.0 nad 0.5s. Initial opacity 0, fade-in.
 - Pod logo: tagline **"Your treasury, deliberated."** (Inter Bold, 32pt, white)
 - Background: subtle gradient z czarnego do navy (oklch(0.18 0.025 255))
 
 **Ruch kamery:** static, focus na logo.
 
 **Efekty:**
-- Logo dots stagger animation (kazdy dot pojawia sie z 0.1s delay)
-- Tagline fade-in po logo (0.3s opoznienie)
-- Smooth cross-fade do live app w 0:18
+- Logo dots stagger animation (każdy dot pojawia się z 0.1s delay)
+- Tagline fade-in po logo (0.3s opóźnienie)
+- Smooth cross-fade do live app w 0:14
 
-**Audio cue:** "Czas to zmienic." (PL) -> beat -> [transition do Segment A voice-over]
+**Audio cue:** "Czas to zmienić." (PL Wariant A) lub "...stan DAO w 2026 roku." (Wariant B) -> beat 0:15 -> [transition do Segment A voice-over]
 
 ---
 
-## Frame 4 - Submit Proposal (0:22-0:35)
+## Frame 4 - Submit Proposal (0:15-0:35)
 
 **Scena:** live aplikacja, submission form, AI parser w akcji.
 
@@ -95,7 +95,7 @@ linked: SCRIPT.md (per segment)
 - Click animation (ripple efekt na buttonie)
 - Toast notification slide-in z prawego dolu w 0:34: "PROP-042 submitted on Base Sepolia"
 
-**Audio cue:** "Submituje wniosek treasury... AI parser dekoduje calldata. Wnioskodawca widzi DOKLADNIE co podpisuje. Bez black-boxa." (PL)
+**Audio cue:** "Submituję wniosek treasury... AI parser dekoduje calldata. Wnioskodawca widzi DOKŁADNIE co podpisuje. Bez black-boxa." (PL)
 
 ---
 
@@ -103,7 +103,7 @@ linked: SCRIPT.md (per segment)
 
 **TO JEST KLUCZOWA KLATKA. Sedziowie pamietaja TEN moment.**
 
-**Scena:** Live Debate Viewer w pelnym widoku. 5 agent cards w grid 5-kolumnowym.
+**Scena:** Live Debate Viewer w pełnym widoku. 5 agent cards w grid 5-kolumnowym.
 
 **Co na ekranie:**
 - Header: CONCLAVE + "PROP-042 · Allocate 100k USDC to Aave v3" + amber "DEBATING" chip + elapsed timer "T+0:18"
@@ -118,12 +118,12 @@ linked: SCRIPT.md (per segment)
 **Ruch kamery:** static (zbyt dużo ruchu zmecza). Zoom subtle do 1.02 dla emfazy.
 
 **Efekty:**
-- **Typewriter effect** kazdy agent (30 chars/sec) z offsetami 1s (Bull start 0:38, Bear 0:39, Risk 0:40, Tech 0:41, Sentiment 0:42)
-- Source footnotes pojawiaja sie po finished claim (highlight 0.5s amber pulse)
+- **Typewriter effect** każdy agent (30 chars/sec) z offsetami 1s (Bull start 0:38, Bear 0:39, Risk 0:40, Tech 0:41, Sentiment 0:42)
+- Source footnotes pojawiaja się po finished claim (highlight 0.5s amber pulse)
 - Vote chips wskakuja gdy agent finished (slide-in z gory, bounce easing)
-- **Tally bar** u dolu animuje sie na zywo: 0-0-0 -> 1-0-0 -> 2-0-0 -> 2-1-0 -> 3-1-0 -> 3-2-0 -> 3-2-0 final
+- **Tally bar** u dolu animuje się na zywo: 0-0-0 -> 1-0-0 -> 2-0-0 -> 2-1-0 -> 3-1-0 -> 3-2-0 -> 3-2-0 final
 
-**Audio cue:** "Piecu wyspecjalizowanych agentow debatuje na zywo... Widac jak mysla. To nie jest czarna skrzynka." (PL)
+**Audio cue:** "Pięciu wyspecjalizowanych agentów debatuje na żywo... Widać jak myślą. To nie jest czarna skrzynka." (PL)
 
 ---
 
@@ -166,11 +166,11 @@ linked: SCRIPT.md (per segment)
 **Ruch kamery:** pan z lewej (signers) na prawa (tx preview) przez 3s. Powrot na sigantories przy MetaMask popup.
 
 **Efekty:**
-- Signature progress bar animuje przy kazdym sign (0.5s)
+- Signature progress bar animuje przy każdym sign (0.5s)
 - MetaMask popup slide-in z prawej (real browser interaction, NIE mock)
 - Po sign: stage transition z "collecting_sigs" do "queued_timelock" (StageStrip dot fill animation)
 
-**Audio cue:** "Pieciu z siedmiu multisig podpisuje. Timelock 48 godzin..." (PL)
+**Audio cue:** "Pięciu z siedmiu multisig podpisuje. Timelock 48 godzin..." (PL)
 
 ---
 
@@ -189,11 +189,11 @@ linked: SCRIPT.md (per segment)
 **Ruch kamery:** zoom-in 1.0 -> 1.15 na countdown nad 3s.
 
 **Efekty:**
-- Countdown ticks visible (sekundy zmieniaja sie)
+- Countdown ticks visible (sekundy zmieniaja się)
 - Ring fill animuje smooth
 - Demo cheat: po 2s skip do "Execute" stage (sedziowie rozumieja)
 
-**Audio cue:** "...okno na cofniecie." (PL) [tail]
+**Audio cue:** "...okno na cofnięcie." (PL) [tail]
 
 ---
 
@@ -221,7 +221,7 @@ linked: SCRIPT.md (per segment)
 - Highlight pulse na "Success" badge (amber ring 1s)
 - Tx hash mono font copy-able
 
-**Audio cue:** "...Wykonanie on-chain. Bez posrednikow." (PL) -> "Cala debata zarchiwizowana na 0G Storage..."
+**Audio cue:** "...Wykonanie on-chain. Bez pośredników." (PL) -> "Cała debata zarchiwizowana na 0G Storage..."
 
 ---
 
@@ -236,18 +236,18 @@ linked: SCRIPT.md (per segment)
   - Najnowszy event highlighted: "PROP-042 EXECUTED · 0xabc...tx · CID bafy...latest" + click target
 - Prawa polowa: ENS Identity Card (z MOCKUPS.md Komponent 9)
   - Parent: aicouncil.eth + resolver address
-  - 5 agent cards: kazdy z ENS subname, address, text records (rep.score, rep.statements, llm)
+  - 5 agent cards: każdy z ENS subname, address, text records (rep.score, rep.statements, llm)
   - Resolution badge per agent: "Resolved · 84ms"
 - Cala kompozycja: dark mode, oklch palette
 
-**Ruch kamery:** static split screen. Subtle pan z lewej na prawa nad 5s zeby pokazac obie sekcje.
+**Ruch kamery:** static split screen. Subtle pan z lewej na prawa nad 5s żeby pokazac obie sekcje.
 
 **Efekty:**
 - Auto-scroll w audit log (smooth, ostatni event highlighted amber)
 - ENS resolution badges fade-in z latencjami (84ms, 92ms, 76ms...)
 - Click na 0G CID otwiera 0G explorer w nowej zakladce (real link)
 
-**Audio cue:** "Cala debata zarchiwizowana na 0G Storage. Kazdy agent ma swoja tozsamosc ENS. Kazda decyzja audytowalna. Na zawsze." (PL)
+**Audio cue:** "Cała debata zarchiwizowana na 0G Storage. Każdy agent ma swoją tożsamość ENS. Każda decyzja audytowalna. Na zawsze." (PL)
 
 ---
 
@@ -261,13 +261,13 @@ linked: SCRIPT.md (per segment)
 - Vertical layout, 5 rows
 - Per row: ikona (40x40) + label + 1-line description
 - Background: subtle gradient navy
-- Per row pojawia sie z 0.8s stagger:
+- Per row pojawia się z 0.8s stagger:
   1. Source Attribution (book icon, blue) - "Every claim cited"
   2. Timelock 48h (clock icon, amber) - "Window to revert"
   3. 0G Audit Trail (chain icon, green) - "Immutable record"
   4. ENS Reputation (badge icon, purple) - "On-chain identity"
   5. HITL Council Rules (sliders icon, cyan) - "User-editable thresholds"
-- Cuts do faktycznej apki per trust mech (4s kazdy):
+- Cuts do faktycznej apki per trust mech (4s każdy):
   - Source popover hover (close-up)
   - Timelock countdown close-up
   - Audit log scroll
@@ -290,7 +290,7 @@ linked: SCRIPT.md (per segment)
 - Cross-fade miedzy sponsor cards
 - Highlight pulse na sponsor logos
 
-**Audio cue:** "Piec mechanizmow zaufania, kazdy oparty o akademicki research..." (PL trust segment) -> "Piec moats: swieze dane, debata wieloagentowa..." (PL moats segment)
+**Audio cue:** "Pięć mechanizmów zaufania, każdy oparty o akademicki research..." (PL trust segment) -> "Pięć moats: świeże dane, debata wieloagentowa..." (PL moats segment)
 
 ---
 
@@ -329,7 +329,7 @@ linked: SCRIPT.md (per segment)
 - Sponsor logos stagger fade-in
 - CTA URLs hover-able (jezeli interactive video player)
 
-**Audio cue:** "AI Treasury Council. Otwarty kod. Cztery kontrakty zywe... Twoje DAO moze probowac. Linki w opisie." (PL)
+**Audio cue:** "AI Treasury Council. Otwarty kod. Cztery kontrakty żywe... Twoje DAO może próbować. Linki w opisie." (PL)
 
 ---
 
@@ -344,7 +344,7 @@ linked: SCRIPT.md (per segment)
 - **Amber ring pulse** (1s): kluczowe UI elementy (Submit button, Verdict card, Success badge)
 - **Cursor glow** (amber halo): zawsze podczas user interaction
 - **Click ripple** (amber): per click animation
-- **Source footnote pulse**: gdy source attribution pojawia sie
+- **Source footnote pulse**: gdy source attribution pojawia się
 
 ### Color guide (oklch palette z Vela)
 - bg dark: `oklch(0.18 0.025 255)`
@@ -370,10 +370,22 @@ linked: SCRIPT.md (per segment)
 
 ## Pre-recording checklist (link to RECORDING-CHECKLIST.md)
 
-Pelna lista w `demo/RECORDING-CHECKLIST.md`. Top items:
+Pełna lista w `demo/RECORDING-CHECKLIST.md`. Top items:
 - [ ] Browser fullscreen, no tabs, no notifications
 - [ ] Test wallet z mUSDC funds + Base Sepolia network
 - [ ] Audio test (no echo, -12 LUFS target)
 - [ ] Mock data realistic (PROP-042, real ENS subnames, real Basescan tx URL)
 - [ ] Fonts loaded (3 Google Fonts: Inter, JetBrains Mono, Source Serif 4)
-- [ ] CONCLAVE 3 vary
+- [ ] CONCLAVE 3 wariant fonts (Inter Bold dla tagline, Source Serif 4 dla hero numbers, JetBrains Mono dla addresses) wszystkie zaladowane przed nagraniem
+
+---
+
+## Key decisions Eva (autonomous improvement w scope)
+
+1. **12 frames zamiast 10** - kazdy frame ~15s = comfortable cognitive load dla editora (research: video pacing studies). 10 frames = 18s/frame (za duzo info per frame), 15+ frames = za malo info per frame, fragmentacja.
+2. **Screen Studio > Loom** - native cursor highlight + zoom + click animations bez post-processing. Loom wymaga manual editing.
+3. **Segment-by-segment recording** - 30s takes maja ~80% success rate vs ~5% dla 3:00 ciaglego take. Charter Eva: 3 takes per segment, best wybrac w editing.
+4. **Open captions burned-in** - jurorzy ETHGlobal ogladaja w cichych pokojach, hotelach. SRT subtitles wymagaja player support, captions burned-in dzialaja zawsze.
+5. **No background music** - Charter Eva ("dystrakcja"). Sedziowie focus na content, nie melodyce.
+6. **2 warianty voice-over per segment** - A/B test 3 osob, decyzja oparta o "do you want to keep watching?". Zero ego.
+7. **Buffer 10s na edycje overshoot** - target 2:50 zamiast 3:00 (Vera rec). Demo overshoot to typowy bug pierwszego cuts.
