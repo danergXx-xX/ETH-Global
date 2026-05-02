@@ -51,9 +51,10 @@ class AgentDecision(BaseModel):
 
 class TransferAction(BaseModel):
     type: Literal["transfer"] = "transfer"
-    token: str = Field(..., description="Token contract address")
-    recipient: str = Field(..., description="Recipient address")
-    amount_wei: str = Field(..., description="Amount as string (uint256)")
+    token: str = Field(..., pattern=r"^0x[a-fA-F0-9]{40}$", description="Token contract address")
+    recipient: str = Field(..., pattern=r"^0x[a-fA-F0-9]{40}$", description="Recipient address")
+    # str not int: uint256 > JS MAX_SAFE_INTEGER causes precision loss in JSON
+    amount_wei: str = Field(..., pattern=r"^\d+$", description="Amount as string (uint256)")
 
 
 class SwapAction(BaseModel):
@@ -192,15 +193,14 @@ class AgentReputation(BaseModel):
 
 
 # ============================================================
-# HEALTH + META
-# ============================================================
-
-# ============================================================
 # PROPOSAL ENCODING (Phase 1D - execution payload)
 # ============================================================
 
 class ProposalEncodeRequest(BaseModel):
-    """Request to encode treasury action into Governor-compatible calldata."""
+    """Request to encode treasury action into Governor-compatible calldata.
+
+    Phase 1D: only TransferAction. Phase 1+: expand to TreasuryAction union.
+    """
     action: TransferAction
 
 

@@ -122,6 +122,7 @@ async def encode_proposal(request: ProposalEncodeRequest) -> ProposalEncoded:
             request.action.amount_wei,
         )
     except ValueError as exc:
-        raise HTTPException(status_code=422, detail=str(exc)) from exc
+        log.warning("encode_proposal_invalid_input", error=str(exc))
+        raise HTTPException(status_code=422, detail=f"Invalid input: {exc}") from exc
 
     return ProposalEncoded(**encoded)

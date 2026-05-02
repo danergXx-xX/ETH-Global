@@ -8,7 +8,7 @@ from __future__ import annotations
 import pytest
 from fastapi.testclient import TestClient
 
-from governance.calldata import MAX_UINT256, validate_uint256
+from governance.calldata import MAX_UINT256, encode_function_call, validate_uint256
 from governance.proposals import (
     MOCK_USDC_ADDRESS,
     SAMPLE_RECIPIENTS,
@@ -135,6 +135,27 @@ class TestValidateUint256:
             validate_uint256(MAX_UINT256 + 1)
 
 
+class TestEncodeFunctionCall:
+    """Unit tests for generic ABI encoder."""
+
+    def test_transfer_selector(self) -> None:
+        result = encode_function_call(
+            "transfer(address,uint256)",
+            ["address", "uint256"],
+            ["0x1111111111111111111111111111111111111111", 100],
+        )
+        assert result[:4].hex() == "a9059cbb"
+        assert len(result) == 4 + 32 + 32
+
+    def test_approve_selector(self) -> None:
+        result = encode_function_call(
+            "approve(address,uint256)",
+            ["address", "uint256"],
+            ["0x1111111111111111111111111111111111111111", 0],
+        )
+        assert result[:4].hex() == "095ea7b3"
+
+
 class TestEncodeProposalEndpoint:
     """Integration tests for POST /api/proposals/encode."""
 
@@ -184,7 +205,34 @@ class TestEncodeProposalEndpoint:
             },
         )
         assert resp.status_code == 422
-        assert "negative" in resp.json()["detail"]
+
+    def test_encode_overflow_amount_returns_422(self, client: TestClient) -> None:
+        resp = client.post(
+            "/api/proposals/encode",
+            json={
+                "action": {
+                    "type": "transfer",
+                    "token": MOCK_USDC_ADDRESS,
+                    "recipient": SAMPLE_RECIPIENTS["aave_vault"]["address"],
+                    "amount_wei": str(MAX_UINT256 + 1),
+                },
+            },
+        )
+        assert resp.status_code == 422
+
+    def test_encode_zero_amount_success(self, client: TestClient) -> None:
+        resp = client.post(
+            "/api/proposals/encode",
+            json={
+                "action": {
+                    "type": "transfer",
+                    "token": MOCK_USDC_ADDRESS,
+                    "recipient": SAMPLE_RECIPIENTS["aave_vault"]["address"],
+                    "amount_wei": "0",
+                },
+            },
+        )
+        assert resp.status_code == 200
 
     def test_missing_action_returns_422(self, client: TestClient) -> None:
         resp = client.post("/api/proposals/encode", json={})
