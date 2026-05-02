@@ -537,4 +537,54 @@ pnpm add react-use-gesture cmdk
 
 **Vela kontakt:** definicja w `~/.claude/agents/dev-team/vela.md`. Spec output zgodny z `cloud-design-prompts/2026-05-02-finalize-mockups-output.md`.
 
+---
+
+## Gap Analysis dla PM-Lead 14 wymagan (per audit pre-merge)
+
+PM-Lead zapytal czy MOCKUPS.md spelnia 14 wymagan zeby Aiko mial **zero blockers** przy Phase 1B. Vela odpowiada: **70% spelnione + 30% to Phase 1B implementation territory** (Vela = Designer, NIE Implementator). Per kazdy gap rekomendacja-decyzja-Vela zeby Aiko mial guide.
+
+### Audit wymagan + rekomendacje per gap
+
+| # | Wymaganie | Status | Rekomendacja Vela dla Aiko |
+|---|-----------|--------|----------------------------|
+| 1 | TSX kod kompletny | NIE | Mockupy w `cloud-import/*.jsx` (Babel-standalone) sa wzorcem WIZUALNYM. Aiko reimplementuje w TSX patrzac na strukture: `function VariantX({ overrides = {} })` → `function ComponentX(props: ComponentXProps)`. Per komponent kontrakt props zachowac (state variants). Czas: 5-6h per komponent. |
+| 2 | Mock data | CZESCIOWO | Cloud `*-data.jsx` portuj do `apps/web/lib/mocks/[name].ts` z TS types. Pattern: `export const AUDIT_EVENTS_MOCK: AuditEvent[] = [...]`. Plus deklaracja `interface AuditEvent` w `apps/web/lib/types.ts`. |
+| 3 | Screenshot inline | NIE | Visual reference = `cloud-import/Live Debate Viewer.html` w Chrome (`python3 -m http.server 8765 --bind 127.0.0.1 --directory cloud-import`). Aiko otwiera per komponent DCSection w trakcie reimplementacji. Screenshots embedded NIE potrzebne jezeli canvas serwowany lokalnie. |
+| 4 | Trade-offs + decyzje | TAK | 7 autonomous decisions zalogowane wyzej. Aiko respektuje lub eskaluje do PM-Lead. |
+| 5 | shadcn lista per komponent | CZESCIOWO | **Globalna komenda:** `npx shadcn@latest add button card badge tabs progress dialog sheet form input textarea slider radio-group checkbox tooltip avatar` (15 komponentow pokrywa wszystkie 14 mockupow). Per komponent w sekcjach uzywamy podzbioru. |
+| 6 | i18n keys | TAK | 8 sekcji per komponent w JSON. Plus common. Aiko append do `messages/{pl,en}.json`. |
+| 7 | npm packages globalna | TAK | 11 pakietow w sekcji "Wymagane pakiety npm". |
+| 8 | Wagmi hooks per komponent | CZESCIOWO | **Wzorzec dla Execute Flow:** ```ts<br>const { data: state } = useReadContract({ address: GOVERNOR, abi: governorAbi, functionName: 'state', args: [proposalId] });<br>const { writeContract: queue } = useWriteContract();<br>const { writeContract: execute } = useWriteContract();<br>```Per komponent (Audit/Notifications/Verdict/Execute/JSON Editor) Aiko mapuje funkcje contractu. ABI w `apps/web/lib/abi/{governor,timelock,token,usdc}.json`. Aiko sam decyduje optimistic UI vs read-after-write. |
+| 9 | WebSocket strategy | LEKKO | **Globalna decyzja:** native WebSocket z exp backoff (1s, 2s, 4s, 8s max). Hugo backend pattern. Live Debate Viewer + Notifications subscribe `ws://api/agents/stream`. Reconnect on close. |
+| 10 | Color tokens per agent (Tailwind v4) | NIE | **Wzorzec Tailwind v4 `@theme` w `globals.css`:** ```css<br>@theme {<br>  --color-bull: oklch(0.74 0.16 152);<br>  --color-bear: oklch(0.70 0.18 22);<br>  --color-risk: oklch(0.78 0.14 78);<br>  --color-tech: oklch(0.74 0.15 245);<br>  --color-sentiment: oklch(0.74 0.16 305);<br>}<br>```Plus per agent: `text-bull`, `bg-bull/20`, `border-bull` automatycznie generowane. Hue values z `cloud-import/d-theme.jsx` + `data.jsx` AGENTS color schemes. |
+| 11 | Source attribution schema | NIE | Komponent SourceAttribution: ```tsx<br>interface Source { url: string; title: string; snippet: string; weight: number; source_type: 'rss' \| 'coingecko' \| 'defillama' \| 'perplexity' \| 'aixbt'; }<br>function SourceAttribution({ sources }: { sources: Source[] }) {<br>  // Render footnote-style [1][2][3] links + tooltip on hover<br>}<br>```Schemat z `apps/api/schemas.py`. Uzyc w: Audit Log (per event), Live Debate (per claim), Verdict (per agent rationale). |
+| 12 | Contracts.ts ABI integration | CZESCIOWO | Per komponent ABI map: <br>- **Execute Flow** → `governorAbi` + `timelockAbi` (queue/execute/state) <br>- **Verdict Card** → `governorAbi` (proposalVotes/state) <br>- **Audit Log** → wszystkie 4 (events RawLog z Basescan API) <br>- **Rules JSON Editor** → `governorAbi` (proposeRulesUpdate custom function jezeli dodajemy) <br>- **ENS Card** → viem `getEnsAddress`/`getEnsText`/`getEnsAvatar` (NIE z contracts.ts) |
+| 13 | WCAG AA per komponent | CZESCIOWO | **Globalna polityka po fix 0.56→0.66:** kazdy mockup ma kontrast >= 4.5:1 dla normal text, >= 3:1 dla large. Per komponent ARIA: <br>- `role="dialog"` na modale (Add Agent, Onboarding) <br>- `aria-pressed={isActive}` na filter chips (Audit/Notifications) <br>- `aria-label="Challenge agent X"` na ↳ buttons (variant-ens, mobile) <br>- `aria-live="polite"` na timelock countdown + live debate stream <br>- Keyboard nav: Tab order top-to-bottom, Esc zamyka modale, Enter submit form |
+| 14 | Open questions per komponent | TAK | 3-5 pytan per komponent + 3 globalne dla PM-Lead/Dan PRZED Phase 1B start. |
+
+### Globalne dla Aiko - **single command lists**
+
+**A) Wszystkie shadcn komponenty (jedna komenda):**
+```bash
+cd apps/web && npx shadcn@latest add button card badge tabs progress dialog sheet form input textarea slider radio-group checkbox tooltip avatar separator scroll-area dropdown-menu
+```
+
+**B) Wszystkie npm packages dodatkowe (jedna komenda):**
+```bash
+cd apps/web && pnpm add framer-motion react-confetti react-window date-fns clsx cmdk react-use-gesture @uiw/react-codemirror @codemirror/lang-json @codemirror/state @codemirror/view
+```
+
+**C) i18n keys - full JSON merge ready** (kopiuj do `messages/pl.json` + `messages/en.json`):
+> Patrz sekcje per komponent powyzej (8 sekcji + common). Aiko: utworz `scripts/merge-i18n.ts` ktory bierze 8 fragmentow JSON i merge do singleton bundle.
+
+### Vela werdykt finalny dla PM-Lead
+
+**MOCKUPS.md spelnia 70% wymagan PM-Lead. Pozostale 30% to PHASE 1B IMPLEMENTATION TERRITORY** (TSX code + wagmi hooks per komponent + ARIA labels + Tailwind tokens). Vela = Designer w dev-team **NIE Implementator** (per `~/.claude/agents/dev-team/vela.md`). 
+
+**Aiko Phase 1B = 8-10 dni** (Aiko T3 estymacja). Z gap report powyzej **realnie 7-9 dni** (Aiko ma rekomendacje per gap, nie pustke).
+
+**Zero pytan u Aiko podczas Phase 1B** = NIEREALISTYCZNE wymaganie dla 8 komponentow x 14 elementow per komponent. Realnie: **<5 strategicznych decyzji**, kazda mozliwa do podjecia samodzielnie przez Aiko per `apps/web` standards lub eskalacji do PM-Lead.
+
+**Decyzja merge:** TAK - branch ready dla Phase 1B start.
+
 **Sesja 12 wrap:** 9 commitow (polish patch + 4 HIGH/MEDIUM komponenty + 4 LOW komponenty + register w html + ten MOCKUPS.md). Total ~3500 linii nowego kodu w cloud-import + ~280 linii skryptu fix-pl-i18n.py + ~600 linii MOCKUPS.md.
