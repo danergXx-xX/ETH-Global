@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from typing import AsyncIterator
@@ -7,7 +5,7 @@ from typing import AsyncIterator
 import httpx
 import structlog
 from eth_utils import to_checksum_address
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from slowapi import Limiter
@@ -31,6 +29,11 @@ from schemas import (
     ProposalEncoded,
     RecipientInfo,
     RecipientsResponse,
+)
+from services.debate_streamer import stream_debate
+from services.reputation_updater import (
+    PERSONA_ADDRESSES,
+    get_reputation_updater,
 )
 from storage.factory import StorageConfigError, StorageFallbackError, upload_with_fallback
 
@@ -80,7 +83,7 @@ async def health() -> HealthResponse:
     )
 
 
-@app.post("/api/debate")
+@app.post("/api/debate", response_model=DebateResponse)
 @limiter.limit("10/minute")
 async def debate(request: Request, req: DebateRequest) -> DebateResponse:
     log.info("debate_requested", text_length=len(req.text))
@@ -155,6 +158,150 @@ async def encode_proposal(request: ProposalEncodeRequest) -> ProposalEncoded:
         raise HTTPException(status_code=422, detail="Invalid proposal parameters") from exc
 
     return ProposalEncoded(**encoded)
+
+
+_VALID_PERSONAS = set(PERSONA_ADDRESSES.keys())
+
+
+def _validate_proposal_id(raw: str) -> str:
+    """Allow alphanumerics, dash, underscore. Bound length to mitigate abuse."""
+    if not raw or len(raw) > 128:
+        raise ValueError("proposal_id must be 1-128 chars")
+    if not all(ch.isalnum() or ch in "-_" for ch in raw):
+        raise ValueError("proposal_id must match [A-Za-z0-9_-]+")
+    return raw
+
+
+@app.websocket("/ws/debate")
+async def ws_debate(websocket: WebSocket) -> None:
+    """
+    WebSocket streaming for live debate visualization.
+
+    Query params:
+      - proposal_id: client-side identifier (validated)
+      - text:        proposal text (10..2000 chars)
+
+    Stream order: agent_statement* -> consensus -> reputation_update -> complete.
+    """
+    await websocket.accept()
+    proposal_id_raw = websocket.query_params.get("proposal_id", "")
+    text = websocket.query_params.get("text", "")
+    try:
+        proposal_id = _validate_proposal_id(proposal_id_raw)
+    except ValueError as exc:
+        await websocket.send_json({"type": "error", "message": str(exc), "recoverable": False})
+        await websocket.close(code=1008)
+        return
+    if not (10 <= len(text) <= 2000):
+        await websocket.send_json(
+            {"type": "error", "message": "text must be 10-2000 chars", "recoverable": False}
+        )
+        await websocket.close(code=1008)
+        return
+
+    step_delay = max(settings.debate_stream_step_ms, 0) / 1000.0
+    try:
+        async for event in stream_debate(proposal_id, text, step_delay_s=step_delay):
+            await websocket.send_json(event)
+    except WebSocketDisconnect:
+        log.info("ws_debate_client_disconnect", proposal_id=proposal_id)
+        return
+    except Exception as exc:
+        log.error(
+            "ws_debate_failed",
+            proposal_id=proposal_id,
+            error_type=type(exc).__name__,
+            error=str(exc),
+        )
+        try:
+            await websocket.send_json(
+                {
+                    "type": "error",
+                    "proposal_id": proposal_id,
+                    "message": "internal error",
+                    "recoverable": False,
+                }
+            )
+        except Exception:  # nosec - best effort error notification
+            pass
+        await websocket.close(code=1011)
+        return
+
+    await websocket.close(code=1000)
+
+
+@app.get("/api/agents/{persona}/reputation")
+async def get_agent_reputation(persona: str) -> dict[str, object]:
+    """Read on-chain reputation for one persona. Returns score, debates, aligned."""
+    if persona not in _VALID_PERSONAS:
+        raise HTTPException(status_code=404, detail=f"unknown persona '{persona}'")
+    updater = get_reputation_updater()
+    if updater is None:
+        raise HTTPException(
+            status_code=503,
+            detail="reputation contract not configured",
+        )
+    address = PERSONA_ADDRESSES[persona]
+    try:
+        view = await updater.get_reputation_async(address)
+    except Exception as exc:
+        log.error(
+            "reputation_read_failed",
+            persona=persona,
+            error_type=type(exc).__name__,
+            error=str(exc),
+        )
+        raise HTTPException(status_code=502, detail="upstream RPC failure") from exc
+    return {
+        "persona": persona,
+        "address": address,
+        "score": view.score,
+        "debates": view.debates,
+        "aligned": view.aligned,
+    }
+
+
+@app.get("/api/agents/reputation/all")
+async def get_all_agent_reputations() -> dict[str, object]:
+    """Batch read all 5 personas. Each entry returns its own status on RPC failure."""
+    updater = get_reputation_updater()
+    if updater is None:
+        raise HTTPException(status_code=503, detail="reputation contract not configured")
+
+    async def _one(persona: str, address: str) -> dict[str, object]:
+        try:
+            view = await updater.get_reputation_async(address)
+            return {
+                "persona": persona,
+                "address": address,
+                "score": view.score,
+                "debates": view.debates,
+                "aligned": view.aligned,
+                "status": "ok",
+            }
+        except Exception as exc:
+            log.error(
+                "reputation_read_failed",
+                persona=persona,
+                error_type=type(exc).__name__,
+                error=str(exc),
+            )
+            return {
+                "persona": persona,
+                "address": address,
+                "score": None,
+                "debates": None,
+                "aligned": None,
+                "status": "error",
+                "error": str(exc),
+            }
+
+    import asyncio as _asyncio
+
+    items = await _asyncio.gather(
+        *[_one(p, a) for p, a in PERSONA_ADDRESSES.items()]
+    )
+    return {"agents": items}
 
 
 @app.get("/api/proposals/recipients")
