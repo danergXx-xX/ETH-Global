@@ -1,0 +1,53 @@
+{
+  "header": {
+    "title": "AI Treasury Council",
+    "subtitle": "Wieloagentowa rada zarządzająca skarbcem DAO",
+    "connectWallet": "Połącz portfel"
+  },
+  "proposal": {
+    "cardTitle": "Nowa propozycja",
+    "placeholder": "Opisz propozycję treasury...",
+    "submit": "Zwołaj Radę",
+    "debating": "Debata w toku..."
+  },
+  "agents": {
+    "bull": {
+      "label": "Optymista"
+    },
+    "bear": {
+      "label": "Sceptyk"
+    },
+    "risk": {
+      "label": "Ryzyko"
+    },
+    "tech": {
+      "label": "Technologia"
+    },
+    "sentiment": {
+      "label": "Sentyment"
+    }
+  },
+  "agentCard": {
+    "analyzing": "Analizuję propozycję...",
+    "awaiting": "Oczekuje na propozycję",
+    "mockReasoning": "Analiza propozycji z perspektywy {label}. To jest placeholder - w Phase 1 zostanie zastąpiony prawdziwą odpowiedzią agenta AI."
+  },
+  "tally": {
+    "cardTitle": "Wyniki głosowania",
+    "for": "Za",
+    "against": "Przeciw",
+    "abstain": "Wstrzymani"
+  },
+  "decision": {
+    "FOR": "Za",
+    "AGAINST": "Przeciw",
+    "ABSTAIN": "Wstrzymany"
+  },
+  "verdict": {
+    "empty": "Złóż propozycję, aby rozpocząć debatę",
+    "FOR": "Rada rekomenduje: PRZYJĄĆ",
+    "AGAINST": "Rada rekomenduje: ODRZUCIĆ",
+    "ABSTAIN": "Rada nie osiągnęła konsensusu",
+    "SPLIT": "Rada podzielona - brak konsensusu"
+  }
+}

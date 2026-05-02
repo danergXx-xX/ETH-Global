@@ -10,6 +10,9 @@
     "dev:contracts": "cd contracts && anvil",
     "build": "pnpm --filter web build",
     "test": "pnpm --filter web test",
+    "test:e2e": "cd tests && npx playwright test --project=e2e",
+    "test:integration": "cd tests && npx playwright test --project=integration",
+    "test:smoke": "./tests/smoke/post-deploy.sh",
     "test:api": "cd apps/api && pytest",
     "test:contracts": "cd contracts && forge test -vvv",
     "lint": "pnpm --filter web lint",
@@ -22,5 +25,8 @@
   "packageManager": "pnpm@9.0.0",
   "workspaces": [
     "apps/*"
-  ]
+  ],
+  "devDependencies": {
+    "@playwright/test": "^1.59.1"
+  }
 }

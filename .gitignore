@@ -82,6 +82,11 @@ agent_outputs/
 tmp/
 temp/
 *.tmp
+<<<<<<< HEAD
 
 # Claude Code per-repo dir (Critic reports, pending alerts)
 .claude/
+=======
+apps/api/.venv/
+test-results/
+>>>>>>> feat/qa-tests
