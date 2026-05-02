@@ -44,11 +44,24 @@
 |-------|-----------|------|--------|
 | Orchestrator imports real Bull (CRITICAL-01) | integration | `integration/test_cross_modules.py` | DONE |
 | Full /api/debate with mocked Anthropic | integration | `integration/test_cross_modules.py` | DONE |
+| Debate: storage failure graceful | integration | `integration/test_cross_modules.py` | DONE |
+| Debate: orchestrator crash -> 500 | integration | `integration/test_cross_modules.py` | DONE |
 | /api/proposals/encode with real addresses | integration | `integration/test_cross_modules.py` | DONE |
+| /api/proposals/encode invalid -> 422 | integration | `integration/test_cross_modules.py` | DONE |
+| /api/proposals/recipients demo entries | integration | `integration/test_cross_modules.py` | DONE |
 | DataAggregator persona priority order | integration | `integration/test_cross_modules.py` | DONE |
-| ABI files + EIP-55 checksums | integration | `integration/test_cross_modules.py` | DONE |
+| DataAggregator missing source skipped | integration | `integration/test_cross_modules.py` | DONE |
+| DataAggregator source failure continues | integration | `integration/test_cross_modules.py` | DONE |
+| ABI files exist + valid JSON | integration | `integration/test_cross_modules.py` | DONE |
+| ABI EIP-55 checksums | integration | `integration/test_cross_modules.py` | XFAIL (bug) |
+| ABI address format valid | integration | `integration/test_cross_modules.py` | DONE |
 | .env.example completeness | integration | `integration/test_cross_modules.py` | DONE |
-| CLAUDE.md sanity check | integration | `integration/test_cross_modules.py` | DONE |
+| CLAUDE.md sanity check (3 tests) | integration | `integration/test_cross_modules.py` | DONE |
+
+**Discovered bugs (Sesja 15):**
+- **HIGH:** `contracts.ts` has wrong EIP-55 checksums on all 4 addresses (xfail test)
+- **MEDIUM:** `/api/debate` lacks try/except around `run_debate()` - unhandled orchestrator error crashes with 500 (no graceful error response)
+- **LOW:** `apps/web/package.json` missing `"typecheck"` script
 
 ### Phase 1 - On-chain (planowane)
 

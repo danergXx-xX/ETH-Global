@@ -184,6 +184,25 @@ class TestDebateEndpointIntegration:
             assert len(body["decisions"]) == 5
             assert body["audit_trail_cid"] is None
 
+    @pytest.mark.asyncio
+    async def test_debate_propagates_error_when_orchestrator_crashes(self) -> None:
+        """Orchestrator crash yields 500 (no try/except around run_debate in main.py:72)."""
+        with (
+            patch("main.run_debate", new_callable=AsyncMock) as mock_debate,
+            patch("main.upload_with_fallback", new_callable=AsyncMock),
+        ):
+            mock_debate.side_effect = RuntimeError("Anthropic API unavailable")
+
+            from main import app
+            transport = ASGITransport(app=app, raise_app_exceptions=False)
+            async with AsyncClient(transport=transport, base_url="http://test") as ac:
+                resp = await ac.post(
+                    "/api/debate",
+                    json={"text": "Allocate 50000 USDC to Aave yield vault"},
+                )
+
+            assert resp.status_code == 500
+
 
 # ============================================================
 # TEST 3: Proposals encode with real addresses
@@ -463,7 +482,7 @@ class TestCLAUDEMD:
     def test_claude_md_has_reasonable_size(self) -> None:
         path = Path(__file__).resolve().parents[2] / "CLAUDE.md"
         lines = path.read_text().splitlines()
-        assert len(lines) >= 50, f"CLAUDE.md too short ({len(lines)} lines) - possibly truncated"
+        assert len(lines) >= 100, f"CLAUDE.md too short ({len(lines)} lines) - possibly truncated"
 
     def test_claude_md_references_key_modules(self) -> None:
         path = Path(__file__).resolve().parents[2] / "CLAUDE.md"
