@@ -55,6 +55,20 @@
         "purpose": "treasury asset for proposals"
       },
       "basescan": "https://sepolia.basescan.org/address/0x606ede7755131e6206a29b67d88761eebb3bb59d"
+    },
+    "AgentReputation": {
+      "address": "0xf3BAb9A2761131f4A9e5BA2d9e6395bea2186f44",
+      "type": "Moat 5 PoW - on-chain reputation tracker",
+      "deployedAt": "2026-05-02",
+      "params": {
+        "agents": ["0x1", "0x2", "0x3", "0x4", "0x5"],
+        "agentNames": ["bull", "bear", "risk", "tech", "sentiment"],
+        "initialReputation": 100,
+        "authorizedUpdater": "deployer (transfer to Hugo backend post-deploy)",
+        "owner": "deployer"
+      },
+      "basescan": "https://sepolia.basescan.org/address/0xf3BAb9A2761131f4A9e5BA2d9e6395bea2186f44",
+      "adr": "ADR-004 (Moat 5 exception to ADR-003)"
     }
   },
   "deployment": {
