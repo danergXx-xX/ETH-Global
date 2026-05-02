@@ -23,8 +23,8 @@ const REASONING_THREADS = {
         { kind: 'check',  text: 'Koncentracja per-protokol: cel 4.7% skarbca. Poniżej soft cap (5%) i hard cap (15%).', sources: [5, 7] },
         { kind: 'check',  text: 'Aave v3 ma 3 audyty bez krytycznych. Spearbit, Certora, ToB.', sources: [8] },
         { kind: 'check',  text: 'VaR(95) backtest 90d: max drawdown 0.34% w oknie 30d. Akceptowalne dla stabli.', sources: [6] },
-        { kind: 'risk',   text: 'Incydent depeg GHO z listopada 2025 byl izolowany do GHO-collateral, nie obejmowal puli. Nie blokuje.', sources: [4] },
-        { kind: 'verdict',text: 'W ramach regul. Risk-adjusted return akceptowalny. Glos ZA.', sources: [] },
+        { kind: 'risk',   text: 'Incydent depeg GHO z listopada 2025 był izolowany do GHO-collateral, nie obejmowal puli. Nie blokuje.', sources: [4] },
+        { kind: 'verdict',text: 'W ramach regul. Risk-adjusted return akceptowalny. Głos ZA.', sources: [] },
       ],
     },
     suggestedQuestions: {
@@ -34,7 +34,7 @@ const REASONING_THREADS = {
         'Show the VaR(95) calculation step by step.',
       ],
       pl: [
-        'Co jezeli mUSDC depegnie do 0.95 podczas 30-dniowego terminu?',
+        'Co jeżeli mUSDC depegnie do 0.95 podczas 30-dniowego terminu?',
         'Dlaczego ignorujesz incydent GHO? Ta sama governance.',
         'Pokaz wyliczenie VaR(95) krok po kroku.',
       ],
@@ -50,12 +50,12 @@ const REASONING_THREADS = {
           'Inputs: 30d log returns of aUSDC (Base) over rolling 90d windows, n=63. Compute σ daily, scale to 30d horizon: σ_30 = σ_1 * √30. VaR(95) = -1.645 * σ_30. Result: 0.34%, meaning 95% confidence the position loses no more than $170 over 30 days. Source 6 has the raw notebook on 0G storage (CID bafy...risk-q1-2026). I can pull the spreadsheet view if you want.',
       },
       pl: {
-        'Co jezeli mUSDC depegnie do 0.95 podczas 30-dniowego terminu?':
-          'Stress-test wykonany. mUSDC to 1:1 LayerZero-bridged USDC z proof-of-reserves. Najgorszy obserwowany depeg 30-dniowy dla wariantow USDC bridge przez ostatnie 18 mies.: 0.7% (Wormhole, marzec 2025), powrot w 4h. Depeg 5% bylby bezprecedensowy i implikowalby zdarzenie wyplacalnosci Coinbase lub Circle — wowczas roznica mUSDC vs USDC vs aUSDC jest nieistotna. Pozycja przezylaby w aUSDC; mozemy wycofac po cenie nominalnej w momencie odbudowy USDC. Glos podtrzymany.',
+        'Co jeżeli mUSDC depegnie do 0.95 podczas 30-dniowego terminu?':
+          'Stress-test wykonany. mUSDC to 1:1 LayerZero-bridged USDC z proof-of-reserves. Najgorszy obserwowany depeg 30-dniowy dla wariantow USDC bridge przez ostatnie 18 mies.: 0.7% (Wormhole, marzec 2025), powrót w 4h. Depeg 5% byłby bezprecedensowy i implikowalby zdarzenie wyplacalnosci Coinbase lub Circle — wówczas roznica mUSDC vs USDC vs aUSDC jest nieistotna. Pozycja przeżyłaby w aUSDC; możemy wycofać po cenie nominalnej w momencie odbudowy USDC. Głos podtrzymany.',
         'Dlaczego ignorujesz incydent GHO? Ta sama governance.':
-          'Nie ignoruje — kategoryzuje. Pauza collateral GHO byla zmiana config w module GHO, nie podatnoscia w puli pozyczkowej. Kontrole pool-level Aave (rate limits, freeze, pause) sa adekwatnym odpowiednikiem i nigdy nie zostaly aktywowane przeciwko pozycji supply USDC. Inna powierzchnia ataku. Cross-link to predkosc governance, ktora odnotowalem jako soft factor; nie zmienia glosu.',
+          'Nie ignoruję — kategoryzuję. Pauza collateral GHO była zmiana config w module GHO, nie podatnością w puli pozyczkowej. Kontrole pool-level Aave (rate limits, freeze, pause) sa adekwatnym odpowiednikiem i nigdy nie zostaly aktywowane przeciwko pozycji supply USDC. Inna powierzchnia ataku. Cross-link to prędkość governance, ktora odnotowałem jako soft factor; nie zmienia głosu.',
         'Pokaz wyliczenie VaR(95) krok po kroku.':
-          'Inputs: 30d log returns aUSDC (Base) w oknach rolling 90d, n=63. Sigma dzienna, skalowanie do 30d: σ_30 = σ_1 * √30. VaR(95) = -1.645 * σ_30. Wynik: 0.34%, czyli 95% pewnosci ze pozycja traci max $170 w 30 dni. Źródło 6 ma surowy notebook na 0G storage (CID bafy...risk-q1-2026). Moge pokazac widok arkusza jezeli chcesz.',
+          'Inputs: 30d log returns aUSDC (Base) w oknach rolling 90d, n=63. Sigma dzienna, skalowanie do 30d: σ_30 = σ_1 * √30. VaR(95) = -1.645 * σ_30. Wynik: 0.34%, czyli 95% pewności ze pozycja traci max $170 w 30 dni. Źródło 6 ma surowy notebook na 0G storage (CID bafy...risk-q1-2026). Mogę pokazać widok arkusza jeżeli chcesz.',
       },
     },
   },
@@ -73,11 +73,11 @@ const REASONING_THREADS = {
         { kind: 'verdict',text: '$45/mo expected income on idle capital. Trivial size, clear win. FOR.', sources: [] },
       ],
       pl: [
-        { kind: 'premise', text: '50k mUSDC bezczynnie ma 0% rentownosci. Benchmark T-bills: 3.31%.', sources: [3] },
+        { kind: 'premise', text: '50k mUSDC bezczynnie ma 0% rentowności. Benchmark T-bills: 3.31%.', sources: [3] },
         { kind: 'check',  text: 'Aave v3 USDC pool 30d rolling APY: 4.21%. Spread nad T-bills: +0.90%.', sources: [1] },
-        { kind: 'check',  text: 'TVL puli 184M. Nasza wplata = 0.027% puli. Zero wplywu na stope.', sources: [1] },
+        { kind: 'check',  text: 'TVL puli 184M. Nasza wpłata = 0.027% puli. Zero wpływu na stopę.', sources: [1] },
         { kind: 'opportunity',text: 'aixbt sentyment +0.31, wolumen +18% wow. Kompozycja idzie w stabilne.', sources: [10] },
-        { kind: 'verdict',text: '$45/mc oczekiwany przychod z bezczynnego kapitalu. Trywialny rozmiar, jasna wygrana. ZA.', sources: [] },
+        { kind: 'verdict',text: '$45/mc oczekiwany przychód z bezczynnego kapitału. Trywialny rozmiar, jasna wygrana. ZA.', sources: [] },
       ],
     },
     suggestedQuestions: {
@@ -87,9 +87,9 @@ const REASONING_THREADS = {
         'What if rates drop mid-term?',
       ],
       pl: [
-        'Czy gdzie indziej dostalibysmy wyższe APY?',
+        'Czy gdzie indziej dostalibyśmy wyższe APY?',
         'Czy 4.21% jest po slippage przy wyplacie?',
-        'Co jezeli stopy spadna w polowie terminu?',
+        'Co jeżeli stopy spadną w połowie terminu?',
       ],
     },
     cannedAnswers: {
@@ -102,12 +102,12 @@ const REASONING_THREADS = {
           'They will fluctuate. Aave is variable rate. The 4.21% is 30d rolling so you can read it as expected mean. Range over last 7d: 4.4-4.9%. If the pool rate drops below 3.31% T-bill benchmark for more than 7 days I trigger an exit signal — that\'s a config in Settings, not a manual decision.',
       },
       pl: {
-        'Czy gdzie indziej dostalibysmy wyższe APY?':
-          'Tak. Pendle PT-aUSDC: 9.2% fixed na 30d, Morpho Blue curated: 5.4-6.1%. Oba nie sa jeszcze whitelisted — Pendle w ocenie, Morpho wymaga zatwierdzenia kuratora. Aave to najwyzsze APY które moge rekomendowac w obecnych regulach. Jezeli chcesz push Pendle do fast-track review, to osobna propozycja.',
+        'Czy gdzie indziej dostalibyśmy wyższe APY?':
+          'Tak. Pendle PT-aUSDC: 9.2% fixed na 30d, Morpho Blue curated: 5.4-6.1%. Oba nie sa jeszcze whitelisted — Pendle w ocenie, Morpho wymaga zatwierdzenia kuratora. Aave to najwyzsze APY które mogę rekomendowac w obecnych regulach. Jeżeli chcesz push Pendle do fast-track review, to osobna propozycja.',
         'Czy 4.21% jest po slippage przy wyplacie?':
-          'Aave nie ma slippage przy wyplatach USDC w naszej skali — jestesmy 0.027% puli, daleko poniżej kinka stopy zwiazanego z utylizacja. 4.21% to brutto APY; netto po gazie (~$2 round trip na Base) efektywna rentownosc na 50k w 30 dni to 4.20%. Praktycznie ta sama liczba.',
-        'Co jezeli stopy spadna w polowie terminu?':
-          'Beda fluktuowac. Aave to zmienna stopa. 4.21% to rolling 30d wiec można czytac jako oczekiwana średnia. Range w 7d: 4.4-4.9%. Jezeli stopa puli spadnie poniżej 3.31% T-bill benchmark na wiecej niz 7 dni, triggeruje sygnal exit — to config w Settings, nie manualna decyzja.',
+          'Aave nie ma slippage przy wyplatach USDC w naszej skali — jestesmy 0.027% puli, daleko poniżej kinka stopy zwiazanego z utylizacja. 4.21% to brutto APY; netto po gazie (~$2 round trip na Base) efektywna rentowność na 50k w 30 dni to 4.20%. Praktycznie ta sama liczba.',
+        'Co jeżeli stopy spadną w połowie terminu?':
+          'Beda fluktuowac. Aave to zmienna stopa. 4.21% to rolling 30d wiec można czytac jako oczekiwana średnia. Range w 7d: 4.4-4.9%. Jeżeli stopa puli spadnie poniżej 3.31% T-bill benchmark na wiecej niz 7 dni, triggeruje sygnal exit — to config w Settings, nie manualna decyzja.',
       },
     },
   },
@@ -125,9 +125,9 @@ const REASONING_THREADS = {
         { kind: 'verdict', text: 'Concerns are real but small. Not enough to vote against. ABSTAIN.', sources: [] },
       ],
       pl: [
-        { kind: 'premise', text: 'Moja rola: pokazac co może pojsc nie tak. Nie blokowac — upewnic się ze wiemy.', sources: [] },
-        { kind: 'concern', text: 'Predkosc governance Aave: mediana propozycja-do-egzekucji 7 dni. Mamy 30-dniowe okno ekspozycji.', sources: [4] },
-        { kind: 'concern', text: 'Zaleznosc bridge mUSDC: LayerZero relayers. Jezeli LZ ma incydent, kolejka redempcji formuje się.', sources: [] },
+        { kind: 'premise', text: 'Moja rola: pokazać co może pojsc nie tak. Nie blokowac — upewnic się ze wiemy.', sources: [] },
+        { kind: 'concern', text: 'Prędkość governance Aave: mediana propozycja-do-egzekucji 7 dni. Mamy 30-dniowe okno ekspozycji.', sources: [4] },
+        { kind: 'concern', text: 'Zaleznosc bridge mUSDC: LayerZero relayers. Jeżeli LZ ma incydent, kolejka redempcji formuje się.', sources: [] },
         { kind: 'concern', text: 'Ryzyko zmiennej stopy: APY może spasc. Spread nad T-bills już waski (0.90%).', sources: [1, 3] },
         { kind: 'verdict', text: 'Obawy realne ale male. Nie wystarczy aby glosowac przeciw. WSTRZ.', sources: [] },
       ],
@@ -139,8 +139,8 @@ const REASONING_THREADS = {
         'Quantify the LayerZero risk.',
       ],
       pl: [
-        'Jezeli masz obawy, dlaczego nie glosujesz przeciw?',
-        'Co zmieniloby Twój glos na PRZECIW?',
+        'Jeżeli masz obawy, dlaczego nie glosujesz przeciw?',
+        'Co zmieniloby Twój głos na PRZECIW?',
         'Skwantyfikuj ryzyko LayerZero.',
       ],
     },
@@ -154,9 +154,9 @@ const REASONING_THREADS = {
           'LayerZero v2 has had two minor incidents in 2025 (March, August) — both relayer outages, no fund loss, redemption queues lasting 6-18h. P(major incident in any 30d window) ≈ 1.5% based on 24mo rolling base rate. Expected loss conditional on incident: ~0.2% (queue-time funding cost). Unconditional expected loss: 3 bps. Trivial.',
       },
       pl: {
-        'Jezeli masz obawy, dlaczego nie glosujesz przeciw?':
-          'Obawy ≠ odrzucenie. Pozycja jest mala (4.7%), odwracalna (Aave pozwala wycofac w każdej chwili modulo utylizacja), a upside realny ($45/mc). Glos przeciw bylby ideologiczny — nie robie ideologii. Wstrzymuję się żeby zaznaczyc ze obserwuje, ale nie blokuje.',
-        'Co zmieniloby Twój glos na PRZECIW?':
+        'Jeżeli masz obawy, dlaczego nie glosujesz przeciw?':
+          'Obawy ≠ odrzucenie. Pozycja jest mala (4.7%), odwracalna (Aave pozwala wycofać w każdej chwili modulo utylizacja), a upside realny ($45/mc). Głos przeciw byłby ideologiczny — nie robie ideologii. Wstrzymuję się żeby zaznaczyc ze obserwuje, ale nie blokuje.',
+        'Co zmieniloby Twój głos na PRZECIW?':
           'Trzy rzeczy, każdą osobno: (1) pozycja > 10% skarbca — koncentracja się liczy; (2) aktywna propozycja governance Aave ktora mogla zmienić params puli w naszym oknie 30d; (3) ujawnione CVE LayerZero w ciagu ostatnich 30d. Zadna z tych dzis nie zachodzi.',
         'Skwantyfikuj ryzyko LayerZero.':
           'LayerZero v2 mial dwa drobne incydenty w 2025 (marzec, sierpien) — obie awarie relayerow, brak straty środków, kolejki redempcji 6-18h. P(powazny incydent w 30d oknie) ≈ 1.5% na bazie 24mc rolling. Oczekiwana strata warunkowa: ~0.2% (koszt funding czasu kolejki). Bezwarunkowa: 3 bps. Trywialne.',
@@ -186,7 +186,7 @@ const REASONING_THREADS = {
     },
     suggestedQuestions: {
       en: ['Show me the calldata.', 'What if the proxy gets upgraded mid-position?', 'Any reentrancy concerns?'],
-      pl: ['Pokaz calldata.', 'Co jezeli proxy zostanie upgradeowane w trakcie pozycji?', 'Czy sa obawy o reentrancy?'],
+      pl: ['Pokaz calldata.', 'Co jeżeli proxy zostanie upgradeowane w trakcie pozycji?', 'Czy sa obawy o reentrancy?'],
     },
     cannedAnswers: {
       en: {
@@ -199,9 +199,9 @@ const REASONING_THREADS = {
       },
       pl: {
         'Pokaz calldata.':
-          'Tx 1 (approve): USDC.approve(Pool, 50000_000000). Calldata: 0x095ea7b3...000bebc200. Tx 2 (supply): Pool.supply(USDC, 50000_000000, treasury, 0). Calldata: 0x617ba037...0000000000. Moge wyrenderowac symulacje w Tenderly jezeli chcesz zweryfikowac state diff przed podpisem.',
-        'Co jezeli proxy zostanie upgradeowane w trakcie pozycji?':
-          'Upgrade proxy Aave v3 idzie przez Aave Governance — 7d timelock. Monitorujemy governance.aave.com pod katem aktywnych propozycji wplywajacych na Base USDC reserve. Jezeli upgrade jest w kolejce, moja regula Settings auto-flaguje pozycje do rewizji i pauzuje auto-renew. Obecnie zero kolejkowanych upgradeow naszej rezerwy.',
+          'Tx 1 (approve): USDC.approve(Pool, 50000_000000). Calldata: 0x095ea7b3...000bebc200. Tx 2 (supply): Pool.supply(USDC, 50000_000000, treasury, 0). Calldata: 0x617ba037...0000000000. Mogę wyrenderowac symulacje w Tenderly jeżeli chcesz zweryfikowac state diff przed podpisem.',
+        'Co jeżeli proxy zostanie upgradeowane w trakcie pozycji?':
+          'Upgrade proxy Aave v3 idzie przez Aave Governance — 7d timelock. Monitorujemy governance.aave.com pod katem aktywnych propozycji wplywajacych na Base USDC reserve. Jeżeli upgrade jest w kolejce, moja regula Settings auto-flaguje pozycje do rewizji i pauzuje auto-renew. Obecnie zero kolejkowanych upgradeow naszej rezerwy.',
         'Czy sa obawy o reentrancy?':
           'Pool.supply ma modifier nonReentrant. Transfery aToken ida przez Pool. 3 znalezienia medium z audytu nie dotycza reentrancy (jedno: edge-case rate calc, dwa: nieuzywane sloty storage). Brak aktywnych CVE na tej wersji.',
       },
@@ -243,9 +243,9 @@ const REASONING_THREADS = {
         'Jak wiarygodny jest aixbt?':
           'aixbt ma 73% trafnosc kierunkowa na 7d-forward sentyment-vs-cena dla top-50 protokolow (ich opublikowana metodologia). Wage ich composite na 0.6 względem mojego scrape X/Discord. Traktuj jako jeden sygnal posrod kilku.',
         'Czy bot traffic skrzywia sentyment?':
-          'Detekcja botow działa upstream — aixbt odrzuca konta < 60d i high-frequency posting. Moj scrape stosuje podobny filtr. Liczba +0.31 jest po filtrze. Surowa byla by +0.41 (bardziej pozytywna ale bot-inflated).',
+          'Detekcja botow działa upstream — aixbt odrzuca konta < 60d i high-frequency posting. Moj scrape stosuje podobny filtr. Liczba +0.31 jest po filtrze. Surowa była by +0.41 (bardziej pozytywna ale bot-inflated).',
         'Co z narracjami influencerow CT?':
-          'Top 5 glosow CT na Aave w tym tygodniu: 4 neutralne (product updates, dyskusja oplat), 1 lekko pozytywne (porównanie yield). Brak wiekszej kontrowersji. Jezeli chcesz sledzic konkretne konto, dodaj do mojej watchlisty w Settings.',
+          'Top 5 glosow CT na Aave w tym tygodniu: 4 neutralne (product updates, dyskusja oplat), 1 lekko pozytywne (porównanie yield). Brak wiekszej kontrowersji. Jeżeli chcesz sledzic konkretne konto, dodaj do mojej watchlisty w Settings.',
       },
     },
   },
@@ -277,11 +277,11 @@ const RC_I18N = {
     askPlaceholder: 'Pytaj, kontruj, podwaz…',
     askLabel: 'Wykaz',
     standFirm: 'Stoi przy swoim',
-    concede: 'Przyznal racje — zmiana glosu',
+    concede: 'Przyznal racje — zmiana głosu',
     typing: 'mysli',
     sourceLabel: 'Źródła',
     closeLabel: 'Zamknij',
-    voteLabel: 'Glos',
+    voteLabel: 'Głos',
     onProp: 'na PROP-042',
     kindLabels: { premise: 'przeslanka', check: 'kontrola', risk: 'ryzyko', concern: 'obawa', opportunity: 'szansa', verdict: 'werdykt' },
     youLabel: 'Ty',

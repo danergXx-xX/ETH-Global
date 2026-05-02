@@ -380,7 +380,7 @@ function ReasoningChat() {
     // canned response if matches suggested
     const canned = data.cannedAnswers[state.lang]?.[text];
     const reply = canned || (state.lang === 'pl'
-      ? 'Dobry punkt. Pozwol mi przemyslec to ponownie z Twoja perspektywa.\n\n…Po analizie podtrzymuje stanowisko. Klucz jest w skali pozycji (4.7%) i odwracalnosci. Twoja troska jest ważna ale nie zmienia kalkulacji w tej skali. Jezeli pozycja byla by 5x większa — zgodzilbym się z Toba.'
+      ? 'Dobry punkt. Pozwol mi przemyslec to ponownie z Twoja perspektywa.\n\n…Po analizie podtrzymuje stanowisko. Klucz jest w skali pozycji (4.7%) i odwracalnosci. Twoja troska jest ważna ale nie zmienia kalkulacji w tej skali. Jeżeli pozycja była by 5x większa — zgodzilbym się z Toba.'
       : 'Good point. Let me reconsider with your framing.\n\n…After review, I stand by my position. The key is position size (4.7%) and reversibility. Your concern is valid but doesn\'t change the calculus at this scale. If the position were 5x larger — I\'d agree with you.'
     );
     setTimeout(() => {

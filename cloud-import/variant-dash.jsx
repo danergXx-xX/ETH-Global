@@ -72,7 +72,7 @@ function VariantDash({ overrides = {} }) {
       return [
         { ts: 'T-2s',  type: 'exec',     actor: 'treasury.aicouncil.eth', en: 'executing PROP-042',  pl: 'wykonuje PROP-042', detail: { en: '100k USDC → aUSDC',     pl: '100k USDC → aUSDC' } },
         { ts: 'T-3s',  type: 'archive',  actor: '0g.storage',             en: 'archiving PROP-042',  pl: 'archiwizuje PROP-042', detail: { en: 'CID pending',          pl: 'CID w toku' } },
-        { ts: 'T-3s',  type: 'vote',     actor: 'bear.aicouncil.eth',     en: 'voted ABSTAIN',       pl: 'glos WSTRZ.', detail: { en: 'PROP-042',                pl: 'PROP-042' } },
+        { ts: 'T-3s',  type: 'vote',     actor: 'bear.aicouncil.eth',     en: 'voted ABSTAIN',       pl: 'głos WSTRZ.', detail: { en: 'PROP-042',                pl: 'PROP-042' } },
         ...DASH_ACTIVITY,
       ];
     }

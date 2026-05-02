@@ -1,6 +1,6 @@
 // Audit Log / Activity Trail (Component 7) — mock events for 0G-archived audit trail.
 // Each event is verifiable on-chain and/or in 0G Storage. Sora trust mech #3:
-// "kazda decyzja Council jest weryfikowalna na zewnatrz".
+// "każdą decyzja Council jest weryfikowalna na zewnatrz".
 //
 // Event types: ProposalCreated | AgentVoted | VerdictReached | MultisigSigned |
 //              OnchainExecuted | RulesUpdated | AgentAdded | AgentReputationChanged |

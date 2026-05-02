@@ -127,7 +127,7 @@ const PROTOCOLS = [
     risks: ['fixed-yield-tokens-illiquid', 'maturity-risk', 'newer-on-base'],
     oracleProvider: 'Chainlink + custom',
     sources: ['defillama', 'pendle-api', 'spearbit'],
-    description: { en: 'Yield tokenization. Splits assets into PT (principal) and YT (yield). High APY, more complex.', pl: 'Tokenizacja yieldu. Dzieli aktywa na PT (kapital) i YT (zysk). Wyższe APY, większa zlozonosc.' },
+    description: { en: 'Yield tokenization. Splits assets into PT (principal) and YT (yield). High APY, more complex.', pl: 'Tokenizacja yieldu. Dzieli aktywa na PT (kapitał) i YT (zysk). Wyższe APY, większa zlozonosc.' },
     riskScore: { value: 64, tier: 'B' },
   },
   {

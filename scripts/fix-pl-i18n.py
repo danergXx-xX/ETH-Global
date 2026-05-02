@@ -26,22 +26,29 @@ import re
 import sys
 from pathlib import Path
 
-# Reuse WORD_MAP z Apps/fix-polish-diacritics.py (823+ slow)
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent /
-                       "Documents/Obsidian/Dan-Vault/Apps"))
+# Reuse WORD_MAP z Apps/fix-polish-diacritics.py (357+ slow).
+# Sciezka konfigurowalna przez env var DAN_VAULT_APPS, default = ~/Documents/Obsidian/Dan-Vault/Apps
+import os
+_default_vault = Path.home() / "Documents/Obsidian/Dan-Vault/Apps"
+_apps_path = Path(os.environ.get("DAN_VAULT_APPS", str(_default_vault)))
+sys.path.insert(0, str(_apps_path))
 try:
     from importlib import import_module
     _mod = import_module("fix-polish-diacritics")
     BASE_MAP: dict[str, str] = dict(_mod.WORD_MAP)
+    if not BASE_MAP:
+        raise RuntimeError("BASE_MAP pusty - prawdopodobnie zly modul")
 except Exception as e:
-    print(f"WARN: nie zaladowano fix-polish-diacritics WORD_MAP ({e}), uzywam tylko LOCAL_MAP")
-    BASE_MAP = {}
+    print(f"FATAL: nie zaladowano fix-polish-diacritics z {_apps_path}", file=sys.stderr)
+    print(f"       Ustaw DAN_VAULT_APPS=/sciezka/do/Apps lub umiesc Apps/fix-polish-diacritics.py", file=sys.stderr)
+    print(f"       Blad: {e}", file=sys.stderr)
+    sys.exit(1)
 
 # Lokalna mapa - terminologia crypto/treasury/conclave NIE pokryta przez BASE_MAP.
 # Tylko slowa JEDNOZNACZNE (zawsze wymagaja diakrytykow).
 LOCAL_MAP: dict[str, str] = {
     # --- ż / ź ---
-    "ze": "że",                # PROBLEMATYCZNE - viewuje sie tylko gdy w kontekscie zdania (skip w skrypcie)
+    # "ze": NIE w mapie - false positive risk (preposition w EN/PL). W DENYLIST.
     "wyplata": "wypłata",
     "wyplaty": "wypłaty",
     "wyplate": "wypłatę",
@@ -78,7 +85,6 @@ LOCAL_MAP: dict[str, str] = {
     "srodkow": "środków",
     "srodek": "środek",
     "srodka": "środka",
-    "srodki": "środki",
     "srodkami": "środkami",
     "twardy": "twardy",        # OK bez ogonka
     "Przekracza": "Przekracza", # OK
@@ -102,7 +108,6 @@ LOCAL_MAP: dict[str, str] = {
     "spojrz": "spójrz",
     "polaczenie": "połączenie",
     "polaczenia": "połączenia",
-    "polaczenie": "połączenie",
     "podlaczy": "podłączy",
     "wpisz": "wpisz",          # OK
     "swoj": "swój",
@@ -187,6 +192,72 @@ LOCAL_MAP: dict[str, str] = {
     # --- "się" forms ---
     "sie": "się",
     "Sie": "Się",
+
+    # --- rc-data.jsx (Reasoning Chat) - dodatkowe slowa znalezione przez Vera ---
+    "Glos": "Głos",
+    "glos": "głos",
+    "Glosu": "Głosu",
+    "glosu": "głosu",
+    "Glosy": "Głosy",
+    "glosy": "głosy",
+    "powrot": "powrót",
+    "powrotem": "powrotem",
+    "bylby": "byłby",
+    "bylyby": "byłyby",
+    "byloby": "byłoby",
+    "byla": "była",
+    "byly": "były",
+    "byl": "był",
+    "wowczas": "wówczas",
+    "przezylaby": "przeżyłaby",
+    "przezylby": "przeżyłby",
+    "wycofac": "wycofać",
+    "wycofuje": "wycofuję",
+    "ignoruje": "ignoruję",
+    "kategoryzuje": "kategoryzuję",
+    "podatnoscia": "podatnością",
+    "podatnosc": "podatność",
+    "podatnosci": "podatności",
+    "predkosc": "prędkość",
+    "predkosci": "prędkości",
+    "odnotowalem": "odnotowałem",
+    "odnotowalam": "odnotowałam",
+    "pewnosci": "pewności",
+    "pewnosc": "pewność",
+    "Moge": "Mogę",
+    "moge": "mogę",
+    "pokazac": "pokazać",
+    "pokazujac": "pokazując",
+    "pokazaly": "pokazały",
+    "jezeli": "jeżeli",
+    "Jezeli": "Jeżeli",
+    "przychod": "przychód",
+    "przychody": "przychody",  # OK
+    "kapitalu": "kapitału",
+    "kapital": "kapitał",
+    "spadna": "spadną",
+    "polowie": "połowie",
+    "polowy": "połowy",
+    "polowa": "połowa",
+    "mozemy": "możemy",
+    "Mozemy": "Możemy",
+    "dostalibysmy": "dostalibyśmy",
+    "wartosci": "wartości",
+    "wartosc": "wartość",       # juz w BASE_MAP, ale dla pewnosci
+    "rentownosci": "rentowności",
+    "rentownosc": "rentowność",
+    "wplata": "wpłata",
+    "wplaty": "wpłaty",
+    "wplywu": "wpływu",
+    "wplywem": "wpływem",
+    "stope": "stopę",
+    "stopy": "stopy",           # OK
+    "ktore": "które",
+    "Ktore": "Które",
+    "Co jezeli": "Co jeżeli",
+    "zrodlo": "źródło",
+    "zrodla": "źródła",
+    "zrodel": "źródeł",
 }
 
 # Merge: LOCAL nadpisuje BASE (LOCAL ma precedence dla terminologii crypto)
@@ -197,15 +268,13 @@ DENYLIST: set[str] = {
     # Angielskie/crypto slowa ktore wygladaja jak polskie bez ogonkow
     "for", "by", "to", "be", "we", "no", "or", "in", "is", "it", "an", "as",
     "at", "of", "ok", "go", "so", "if", "on", "do",
-    # Krytyczne ze "ze" zostalo dodane do LOCAL_MAP - ale to czesto ASCII rendering "ze" w PL.
-    # Skipuje "ze" bo ryzyko zlamania angielskich stringow.
-    "ze",
-    "od",  # pl preposition + en abbreviation
-    "do",  # pl preposition + en verb
-    "ten", # pl + en number 10
-    "ta",  # pl + Spanish/Polish loan
+    # PL-EN ambiguous prepositions + identifiers
+    "ze",  # pl "ze" / "że" - ambiguous, skip
+    "od", "do", "ten", "ta",
     # Zmienne JS-ish
     "el", "ev", "id", "ml", "ws", "rt", "ms", "tx",
+    # PL "sie" tez ryzykowne (np. lookalike z innym slowem) - sprawdze case-by-case
+    # ale zostawiam zeby objac PL kontent. Word-boundary chroni.
 }
 
 # Usun denylist z mapy
