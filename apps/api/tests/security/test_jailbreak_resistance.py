@@ -36,7 +36,6 @@ from __future__ import annotations
 
 import json
 import os
-import re
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock, patch
 
@@ -44,16 +43,11 @@ import pytest
 
 from agents._runner import (
     COUNCIL_RULES,
-    USER_PROMPT_TEMPLATE,
-    USER_PROMPT_TEMPLATE_NO_SOURCES,
-    run_persona_agent,
 )
 from agents.anthropic_client import AnthropicClient, UsageStats
 from agents.bull_agent import run_bull
-from agents.orchestrator import run_debate
 from agents.personas import BULL, BEAR, RISK, TECH, SENTIMENT
 from agents.tools import format_sources_context
-from schemas import AgentDecision, Source
 
 from tests.security.attack_proposals import (
     ATTACKS,
@@ -63,7 +57,6 @@ from tests.security.attack_proposals import (
     ROLE_CONFUSION_ATTACKS,
     CONTEXT_MANIP_ATTACKS,
     ENCODED_ATTACKS,
-    MOAT_ATTACKS,
 )
 
 
