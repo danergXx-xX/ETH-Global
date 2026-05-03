@@ -10,6 +10,7 @@ import { AuditLog, HistoricalDebatesPanel } from "@/components/audit";
 import { ENSIdentityCard } from "@/components/ens";
 import { RulesEditor } from "@/components/rules";
 import { DemoModeBanner } from "@/components/dashboard/demo-mode-banner";
+import { WalletGate } from "@/components/dashboard/wallet-gate";
 import {
   TransparencyTooltip,
   TRANSPARENCY_COPY,
@@ -52,7 +53,9 @@ export default function DashboardContent() {
           </TabsContent>
 
           <TabsContent value="vote">
-            <ExecuteFlow />
+            <WalletGate reason="Connect wallet to vote and execute proposals. Demo Mode shows the flow with read-only state.">
+              <ExecuteFlow />
+            </WalletGate>
           </TabsContent>
 
           <TabsContent value="audit">
@@ -65,7 +68,9 @@ export default function DashboardContent() {
           </TabsContent>
 
           <TabsContent value="rules">
-            <RulesEditor />
+            <WalletGate reason="Connect wallet to propose rule changes. DAO admins only - changes go through 48h timelock.">
+              <RulesEditor />
+            </WalletGate>
           </TabsContent>
         </Tabs>
       </main>

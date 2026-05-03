@@ -13,6 +13,7 @@ import {
 import { useTranslations } from "@/lib/i18n";
 import { useAgentENS } from "@/lib/hooks";
 import { AGENTS, type AgentPersona } from "@/lib/types";
+import { DiscoverabilityPulse } from "@/components/dashboard/discoverability-pulse";
 
 function truncateAddress(addr: string): string {
   return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
@@ -128,7 +129,8 @@ function AgentENSCard({ persona }: { persona: AgentPersona }) {
   const contractHref = r["ai.contract"] ? basescanLink(r["ai.contract"]) : undefined;
 
   return (
-    <Card className="border-border">
+    <Card className="border-border relative">
+      <DiscoverabilityPulse hint="ens-subname" className="top-1.5 right-1.5" />
       <CardContent className="py-3 px-4 space-y-3">
         <AgentDetailModal
           agent={agent}

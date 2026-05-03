@@ -9,6 +9,7 @@ import {
   RedTeamAuditBadge,
 } from "@/components/landing/powered-by-badges";
 import { VerifiedContractsSummary } from "@/components/landing/verified-contracts-badge";
+import { DiscoverabilityPulse } from "@/components/dashboard/discoverability-pulse";
 
 export const metadata: Metadata = {
   title: "AI Treasury Council - Multi-agent governance for DAOs",
@@ -296,8 +297,14 @@ export default function LandingPage() {
               <Link
                 key={sp.name}
                 href={sp.href}
-                className="rounded-lg border border-border bg-card/50 p-5 hover:bg-secondary/30 transition-colors block"
+                className="rounded-lg border border-border bg-card/50 p-5 hover:bg-secondary/30 transition-colors block relative"
               >
+                {sp.name === "0G Labs" ? (
+                  <DiscoverabilityPulse
+                    hint="architecture-link"
+                    className="top-2 right-2"
+                  />
+                ) : null}
                 <h3 className="text-sm font-semibold">{sp.name}</h3>
                 <p className="mt-2 text-xs text-muted-foreground">{sp.tagline}</p>
                 <span className="mt-3 inline-block text-[11px] text-primary">

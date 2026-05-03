@@ -15,6 +15,7 @@ import {
 import { useI18n, useTranslations } from "@/lib/i18n";
 import type { AgentMeta, Claim, Decision } from "@/lib/types";
 import { MOCK_SOURCES } from "@/lib/mocks/debate";
+import { DiscoverabilityPulse } from "@/components/dashboard/discoverability-pulse";
 
 interface AgentCardProps {
   agent: AgentMeta;
@@ -44,9 +45,10 @@ export function AgentDebateCard({
 
   return (
     <Card
-      className="overflow-hidden border-border"
+      className="overflow-hidden border-border relative"
       style={{ borderTopColor: agent.color.accent, borderTopWidth: 2 }}
     >
+      <DiscoverabilityPulse hint="agent-card" className="top-1.5 right-1.5" />
       <AgentDetailModal
         agent={agent}
         trigger={
