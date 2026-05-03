@@ -96,6 +96,50 @@ Fix: tlumaczenie ADR na EN (RUNBOOK moze zostac PL - operator note). ETA: 1h. Es
 
 ---
 
+## HIGH-7 (Sesja 31 Critic + Mateusz): React 19 / react-hooks rules downgraded to warn
+
+**Source:** Sesja 31 CI unblock (`chore/ci-unblock`, PR #14).
+
+**What:** `apps/web/eslint.config.mjs` ma 3 rules zdowngrade'owane z error -> warn:
+- `react-hooks/exhaustive-deps`
+- `react-hooks/set-state-in-effect`
+- `react-hooks/purity`
+
+**Why downgrade:** React 19 / react-hooks v6 promoted te rules na error. CI fail na 4 errors (cascade renders w `lib/i18n.tsx`, `lib/providers.tsx`, etc.). Refactor pre-submission = scope blast.
+
+**Why tech-debt (NIE permanent):**
+- Reguly nadal wykonuja sie i pokazuja warningi w log -> visibility zachowana
+- React-compiler nie jest enabled (memoization nie polamana)
+- Cascading renders to perf issue, nie correctness
+
+**Fix post-submission:**
+1. Przepisac `setMounted(true)` patterny na inicjalizacje stanu z `useState(() => detectLocale())` zamiast efektu
+2. Audytowac `lib/i18n.tsx:64`, `lib/providers.tsx:17`, oraz pozostale 4 lokalizacje (`pnpm --filter web lint` po toggle warn->error)
+3. Po naprawie: usunac override block z `eslint.config.mjs` (linie 17-25)
+
+**ETA:** 1-2h. **Owner:** Aiko (frontend) + Critic review.
+
+## HIGH-8 (Sesja 31 Critic): pytest-asyncio bump 0.24.0 -> 1.3.0
+
+**Source:** Sesja 31 CI unblock (`chore/ci-unblock`, PR #14).
+
+**What:** `apps/api/requirements.txt` bumpniety do `pytest-asyncio==1.3.0` (z 0.24.0) zeby wesprzec `pytest==9.0.3`.
+
+**Why concern:** Przeskok przez 0.25.x i 1.0/1.1/1.2 = potencjalne breaking changes (default `asyncio_mode` semantics zmienione w 0.23+, fixture loop scope deprecations w 1.x).
+
+**Why hackathon-acceptable:**
+- `pyproject.toml` ma juz `asyncio_mode = "auto"` explicitly (linia 30) - immune na default change
+- CI green (cala test suite passes)
+
+**Fix post-submission:**
+1. Audyt CHANGELOG pytest-asyncio 0.25.x -> 1.0 -> 1.3 (breaking changes liste)
+2. Sprawdz fixture scopes (`@pytest_asyncio.fixture` zamiast `@pytest.fixture` z deprecation w 1.x)
+3. Pin do najnowszego patch w 1.3.x z explicit changelog acknowledgement
+
+**ETA:** 30 min. **Owner:** Hugo (backend).
+
+---
+
 **Operator pre-demo checklist (NIE tech-debt, ale priorytet):**
 
 - [ ] Uruchom `pnpm mint-ens-subnames -- --broadcast` (P1+P2 unblocked)
