@@ -1,7 +1,7 @@
 # Production Deploy Runbook - AI Treasury Council
 
 **Owner:** Rio (DevOps), wykonawca: Dan
-**Status:** Phase 4 production deploy (sedziowie ETHGlobal)
+**Status:** Phase 4 production deploy (sędziowie ETHGlobal)
 **Cel:** Frontend na Vercel + Backend na Railway, oba live na publicznych URL
 
 ---
@@ -333,4 +333,4 @@ PRZED `vercel --prod` / `railway up` - zweryfikuj:
 
 ## Status: ready
 
-Po wykonaniu CZESC 0 (jednorazowo) -> CZESC A + B (deploy) -> CZESC C (smoke) - sedziowie ETHGlobal moga przeklikac.
+Po wykonaniu CZESC 0 (jednorazowo) -> CZESC A + B (deploy) -> CZESC C (smoke) - sędziowie ETHGlobal moga przeklikac.

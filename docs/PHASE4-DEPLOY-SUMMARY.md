@@ -1,7 +1,7 @@
 # Phase 4 Production Deploy - Summary
 
 **Sprint:** ETHGlobal Open Agents 2026
-**Phase:** 4 (production deploy + sedziowski demo)
+**Phase:** 4 (production deploy + sędziowski demo)
 **Owner:** Rio (DevOps)
 **Status:** infrastructure ready, awaiting Dan CLI auth + first deploy
 
@@ -89,7 +89,7 @@ graph TB
 - **Build:** pnpm + Turbopack
 - **Web3:** wagmi 2.19 + viem 2.48 + RainbowKit 2.2
 - **UI:** Tailwind v4 + shadcn/ui (radix-ui)
-- **Region:** fra1 (Frankfurt - bliskie sedziowie EU)
+- **Region:** fra1 (Frankfurt - bliscy sędziowie EU)
 - **Headers:** X-Frame-Options DENY, X-Content-Type nosniff, Referrer strict-origin
 - **Free tier:** unlimited deployments, 100 GB bandwidth/mo
 
@@ -99,7 +99,7 @@ graph TB
 - **Image size:** ~180 MB runtime (lxml + cryptography slim)
 - **Healthcheck:** `/health` (Docker HEALTHCHECK + Railway native)
 - **Restart policy:** ON_FAILURE max 3 retries
-- **Free tier:** $5 credit/mo (sufficient dla sprintu + sedziowski demo)
+- **Free tier:** $5 credit/mo (sufficient dla sprintu + sędziowski demo)
 - **User:** non-root `app` (security baseline)
 
 ### Smart contracts (Base Sepolia)

@@ -32,6 +32,8 @@ conftest.py
 .git/
 .gitignore
 
-# Docs/CI (nie potrzebne w runtime)
+# Docs/CI (nie potrzebne w runtime - explicit zamiast *.md zeby
+# nie wykluczac przypadkiem agent prompt templates jesli kiedys dojda)
 README.md
-*.md
+CHANGELOG.md
+docs/
