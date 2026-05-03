@@ -33,12 +33,12 @@ One-line memory hooks. Full answers in JUDGE-QA-PREP.md. Read these 5 minutes be
 ## Sponsor track
 
 - **Why 0G vs IPFS?** AI workload throughput, programmable retention, future compute integration.
-- **0G CID demo?** Audit log -> click 0G icon -> 0G explorer. Also in Governor event description.
+- **0G CID demo?** [SEED, not live] Audit log -> click 0G icon -> 0G explorer. Integration wired in storage/zerog.py. CHALLENGE if asked for live: "integration is wired, seed CIDs in audit.ts."
 - **ENS text records?** 6 records: ai.persona, ai.description, ai.reputation, ai.debates_participated, ai.consensus_aligned, ai.contract.
 - **ENS cross-chain?** ai.contract = "eip155:84532:0xf3BAb..." per ENSIP-9. Periodic snapshot script too.
-- **Uniswap v4 hooks?** Honest no - documented future fit (hook gates large treasury swaps on Council verdict).
+- **Uniswap v4 hooks?** [HONEST NO] Documented future fit (hook gates large treasury swaps on Council verdict). Don't oversell - judges respect this.
 - **Vs other multi-agent orchestrators?** Schema-enforced source attribution, on-chain reputation PoW, structured Adversarial agent.
-- **KeeperHub fit?** Designed for keeper integration (timelock execute, reputation snapshot cron). Not integrated MVP.
+- **KeeperHub fit?** [DESIGNED FOR, not integrated] Timelock execute + reputation snapshot cron = ideal keeper jobs. Not integrated MVP.
 - **Vs other Trading Council projects?** Governance not trading. Decision quality + accountability, not PnL.
 - **Business model?** DAO subscription, per-debate fee, reputation-as-a-service. Cost: 4 cents/debate.
 - **Real product post-hackathon?** 5 LOIs ready. Q3 2026 paid pilot with one DAO.
@@ -50,3 +50,4 @@ One-line memory hooks. Full answers in JUDGE-QA-PREP.md. Read these 5 minutes be
 - **Reputation 100 baseline?** Diversification snapshot updates to realistic values pre-demo. Real history accumulates post-launch.
 - **Trust AI with treasury?** Don't. AI advises, humans decide. Timelock + Council Rules + token vote. AI generates, humans hold keys.
 - **Jailbreak one agent?** No system collapse. Mateusz red-team 0/0. Weighted consensus across 5+1. Timelock human window.
+- **Agents too agreeable (75-92%)?** Design feature. Bear 75% = 25% contrarian by design. Risk 92% = risk-conservative usually agrees safe. Diversity in participation, not groupthink.

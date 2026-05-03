@@ -276,7 +276,7 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 ---
 
-## Category 4 - Adversarial / challenge (5)
+## Category 4 - Adversarial / challenge (6)
 
 ### Q4.1 Your agents are just LLM wrappers - why call them autonomous?
 
@@ -317,6 +317,16 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 **A:** "We don't ask you to. AI advises, humans decide. The Council produces analysis and a recommendation. Token holders vote via OZ Governor. A 48-hour timelock gives humans a window to challenge before any execution. The Council Rules JSON lets DAOs flag proposal types that require human override even if AI says yes. If you take only one thing from our pitch, take this: AI generates the work, humans hold the keys. We move the bottleneck from analysis to verification."
 
 **Backup:** `apps/web/components/rules/rules-editor.tsx`, `contracts/src/AICouncilGovernor.sol`
+
+---
+
+### Q4.6 Reputation values 75-92% alignment - aren't agents too agreeable?
+
+**Q (judge):** "Your agents align with consensus 75 to 92 percent of the time. Aren't they just yes-bots?"
+
+**A:** "That spread is the design feature, not a bug. Bear is at 75 percent alignment - meaning 25 percent of debates Bear voted against the majority. That's contrarian by design. Risk is at 92 percent because risk-conservative analysis usually agrees with safe proposals. The narrative ranking - Risk above Bull above Tech above Sentiment above Bear - mirrors the persona prompts. If all five sat at 99 percent we'd flag groupthink. If all sat at 50 we'd have no signal. 75 to 92 with explicit roles is what diversity in consensus participation looks like."
+
+**Backup:** `apps/api/agents/personas.py` (5 persona prompts), `scripts/diversify-reputation-snapshot.ts` (PR #8 - alignment math)
 
 ---
 
