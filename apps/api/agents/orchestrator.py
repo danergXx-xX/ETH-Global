@@ -22,14 +22,8 @@ from uuid import uuid4
 
 import structlog
 
-from agents.adversarial_agent import run_adversarial
 from agents.anthropic_client import AnthropicClient
-from agents.bear_agent import run_bear
-from agents.bull_agent import run_bull
-from agents.personas import ADVERSARIAL, ALL_PERSONAS, PersonaSpec
-from agents.risk_agent import run_risk
-from agents.sentiment_agent import run_sentiment
-from agents.tech_agent import run_tech
+from agents.personas import ADVERSARIAL, ALL_PERSONAS, PersonaSpec, get_runner
 from agents.tools import compute_consensus
 
 from config import get_settings
@@ -47,20 +41,6 @@ FAILURE_MARKER = "[orchestrator-failure]"
 # TODO(Phase 1): use asyncio.Lock or FastAPI Depends for thread-safe singleton
 _client: AnthropicClient | None = None
 _aggregator: DataAggregator | None = None
-
-
-# persona_id -> async runner. Keep in sync with ALL_PERSONAS in personas.py.
-# Adversarial is intentionally registered here so the runner is callable when
-# include_adversarial=True is passed to run_debate, but ADVERSARIAL is not
-# part of ALL_PERSONAS (Phase 3 STRETCH, opt-in only).
-PERSONA_RUNNERS = {
-    "bull": run_bull,
-    "bear": run_bear,
-    "risk": run_risk,
-    "tech": run_tech,
-    "sentiment": run_sentiment,
-    "adversarial": run_adversarial,
-}
 
 
 def get_client() -> AnthropicClient:
@@ -173,10 +153,11 @@ async def _run_persona_safe(
     sources: list[Source],
 ) -> AgentDecision:
     """Run one persona, catch any exception, return failure decision instead."""
-    runner = PERSONA_RUNNERS.get(persona.persona_id)
-    if runner is None:
-        log.error("no_runner_for_persona", persona=persona.persona_id)
-        return _failure_decision(persona.persona_id, "no runner registered")
+    try:
+        runner = get_runner(persona.persona_id)
+    except (ValueError, ImportError, AttributeError) as exc:
+        log.error("no_runner_for_persona", persona=persona.persona_id, error=str(exc))
+        return _failure_decision(persona.persona_id, f"no runner registered: {exc}")
 
     try:
         return await runner(proposal_text, client, pre_fetched_sources=sources)
