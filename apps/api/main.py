@@ -24,6 +24,18 @@ from governance import (
     encode_mock_usdc_transfer,
 )
 from logging_config import RequestIDMiddleware, setup_logging
+from middleware import get_budget_tracker, get_ws_tracker
+from services.cache import cache_connect, cache_disconnect, cache_get, cache_set
+from db import (
+    db_connect,
+    db_disconnect,
+    is_connected as db_is_connected,
+    mark_schema_ready,
+    session_scope,
+)
+from db.migrations import run_alembic_upgrade
+from db.repositories import DebateRepo
+from db.seed import seed_historical_debates_if_empty
 from agents.orchestrator import run_debate
 from data.seed_historical_debates import (
     get_debate_by_id,
@@ -73,8 +85,38 @@ def _rate_limit_handler(request: Request, exc: RateLimitExceeded) -> JSONRespons
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    log.info("api_ready", env=settings.env, version="0.1.0")
+    # Initialize singletons so they're warm at first request.
+    ws_tracker = get_ws_tracker()
+    budget = get_budget_tracker()
+    cache_ready = await cache_connect()
+
+    db_ready = await db_connect()
+    seeded = 0
+    migration_ok = False
+    if db_ready:
+        migration_ok = await run_alembic_upgrade()
+        if migration_ok:
+            mark_schema_ready(True)
+            try:
+                seeded = await seed_historical_debates_if_empty()
+            except Exception as exc:
+                log.warning("seed_failed", error=str(exc))
+
+    log.info(
+        "api_ready",
+        env=settings.env,
+        version="0.1.0",
+        ws_cap=ws_tracker.max_concurrent,
+        budget_usd_daily=budget.cap_usd,
+        budget_halt_pct=budget.halt_fraction,
+        cache_ready=cache_ready,
+        db_ready=db_ready,
+        migration_ok=migration_ok,
+        seeded_debates=seeded,
+    )
     yield
+    await cache_disconnect()
+    await db_disconnect()
     log.info("api_shutdown")
 
 
@@ -115,10 +157,51 @@ async def health() -> HealthResponse:
     )
 
 
+@app.get("/api/budget")
+async def get_budget_status() -> dict[str, object]:
+    """
+    Current Anthropic spend snapshot for today (UTC).
+
+    Returned fields:
+      date_utc, spent_usd, cap_usd, pct_used, halt_threshold_usd,
+      debates_count, halted, ws_open, ws_cap.
+    """
+    snap = await get_budget_tracker().snapshot()
+    ws_tracker = get_ws_tracker()
+    return {
+        "date_utc": snap.date_utc,
+        "spent_usd": snap.spent_usd,
+        "cap_usd": snap.cap_usd,
+        "pct_used": snap.pct_used,
+        "halt_threshold_usd": snap.halt_threshold_usd,
+        "debates_count": snap.debates_count,
+        "halted": snap.halted,
+        "ws_open": await ws_tracker.open_count(),
+        "ws_cap": ws_tracker.max_concurrent,
+    }
+
+
 @app.post("/api/debate", response_model=DebateResponse)
 @limiter.limit("10/minute")
 async def debate(request: Request, req: DebateRequest) -> DebateResponse:
     log.info("debate_requested", text_length=len(req.text))
+    budget = get_budget_tracker()
+    if await budget.is_halted():
+        snap = await budget.snapshot()
+        log.warning(
+            "debate_halted_budget",
+            spent_usd=snap.spent_usd,
+            cap_usd=snap.cap_usd,
+            pct=snap.pct_used,
+        )
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                f"Daily Anthropic budget at {snap.pct_used}% "
+                f"(${snap.spent_usd}/${snap.cap_usd}). "
+                "New debates halted until UTC midnight reset."
+            ),
+        )
     try:
         result = await run_debate(req.text)
     except Exception as exc:
@@ -128,6 +211,21 @@ async def debate(request: Request, req: DebateRequest) -> DebateResponse:
             detail="Debate orchestration unavailable. Try again or contact support.",
         ) from exc
     log.info("debate_complete", consensus=result["consensus"])
+
+    # Record Anthropic spend from per-decision cost_usd / token usage.
+    try:
+        debate_cost = sum(
+            float(getattr(d, "cost_usd", 0.0) or 0.0) for d in result["decisions"]
+        )
+        if debate_cost <= 0.0:
+            in_tok = sum(
+                int(getattr(d, "tokens_used", 0) or 0) for d in result["decisions"]
+            )
+            await budget.record_debate(input_tokens=in_tok, output_tokens=0)
+        else:
+            await budget.record_debate(cost_usd=debate_cost)
+    except Exception as track_err:
+        log.warning("budget_track_failed", error=str(track_err))
 
     audit_cid: str | None = None
     audit_gateway: str | None = None
@@ -226,51 +324,72 @@ async def ws_debate(websocket: WebSocket) -> None:
         await websocket.close(code=1008)
         return
 
-    await websocket.accept()
-    proposal_id_raw = websocket.query_params.get("proposal_id", "")
-    text = websocket.query_params.get("text", "")
-    try:
-        proposal_id = _validate_proposal_id(proposal_id_raw)
-    except ValueError as exc:
-        await websocket.send_json({"type": "error", "message": str(exc), "recoverable": False})
-        await websocket.close(code=1008)
-        return
-    if not (10 <= len(text) <= 2000):
+    ws_tracker = get_ws_tracker()
+    conn_id = await ws_tracker.try_acquire()
+    if conn_id is None:
+        await websocket.accept()
+        cap = ws_tracker.max_concurrent
         await websocket.send_json(
-            {"type": "error", "message": "text must be 10-2000 chars", "recoverable": False}
+            {
+                "type": "error",
+                "message": f"server at capacity ({cap} concurrent WS). Retry shortly.",
+                "recoverable": True,
+                "retry_after_seconds": 5,
+            }
         )
-        await websocket.close(code=1008)
+        await websocket.close(code=1013)  # Try Again Later
         return
 
-    step_delay = max(settings.debate_stream_step_ms, 0) / 1000.0
+    await websocket.accept()
     try:
-        async for event in stream_debate(proposal_id, text, step_delay_s=step_delay):
-            await websocket.send_json(event)
-    except WebSocketDisconnect:
-        log.info("ws_debate_client_disconnect", proposal_id=proposal_id)
-        return
-    except Exception as exc:
-        log.error(
-            "ws_debate_failed",
-            proposal_id=proposal_id,
-            error_type=type(exc).__name__,
-            error=str(exc),
-        )
+        proposal_id_raw = websocket.query_params.get("proposal_id", "")
+        text = websocket.query_params.get("text", "")
         try:
+            proposal_id = _validate_proposal_id(proposal_id_raw)
+        except ValueError as exc:
             await websocket.send_json(
-                {
-                    "type": "error",
-                    "proposal_id": proposal_id,
-                    "message": "internal error",
-                    "recoverable": False,
-                }
+                {"type": "error", "message": str(exc), "recoverable": False}
             )
-        except Exception:  # nosec - best effort error notification
-            pass
-        await websocket.close(code=1011)
-        return
+            await websocket.close(code=1008)
+            return
+        if not (10 <= len(text) <= 2000):
+            await websocket.send_json(
+                {"type": "error", "message": "text must be 10-2000 chars", "recoverable": False}
+            )
+            await websocket.close(code=1008)
+            return
 
-    await websocket.close(code=1000)
+        step_delay = max(settings.debate_stream_step_ms, 0) / 1000.0
+        try:
+            async for event in stream_debate(proposal_id, text, step_delay_s=step_delay):
+                await websocket.send_json(event)
+        except WebSocketDisconnect:
+            log.info("ws_debate_client_disconnect", proposal_id=proposal_id)
+            return
+        except Exception as exc:
+            log.error(
+                "ws_debate_failed",
+                proposal_id=proposal_id,
+                error_type=type(exc).__name__,
+                error=str(exc),
+            )
+            try:
+                await websocket.send_json(
+                    {
+                        "type": "error",
+                        "proposal_id": proposal_id,
+                        "message": "internal error",
+                        "recoverable": False,
+                    }
+                )
+            except Exception:  # nosec - best effort error notification
+                pass
+            await websocket.close(code=1011)
+            return
+
+        await websocket.close(code=1000)
+    finally:
+        await ws_tracker.release(conn_id)
 
 
 @app.get("/api/agents/{persona}/reputation")
@@ -306,7 +425,17 @@ async def get_agent_reputation(persona: str) -> dict[str, object]:
 
 @app.get("/api/agents/reputation/all")
 async def get_all_agent_reputations() -> dict[str, object]:
-    """Batch read all 5 personas. Each entry returns its own status on RPC failure."""
+    """Batch read all 5 personas. Each entry returns its own status on RPC failure.
+
+    Cached in Redis for 30 seconds (5 RPC calls -> 1 cached read). Cache miss
+    or Redis unavailable falls back to live RPC for all 5 personas.
+    """
+    cache_key = "agents:reputation:all:v1"
+    cached = await cache_get(cache_key)
+    if cached is not None and isinstance(cached, dict) and "agents" in cached:
+        log.debug("reputation_cache_hit", key=cache_key)
+        return cached
+
     updater = get_reputation_updater()
     if updater is None:
         raise HTTPException(status_code=503, detail="reputation contract not configured")
@@ -342,7 +471,11 @@ async def get_all_agent_reputations() -> dict[str, object]:
     items = await asyncio.gather(
         *[_one(p, a) for p, a in PERSONA_ADDRESSES.items()]
     )
-    return {"agents": items}
+    payload = {"agents": items}
+    # Only cache when no error entries (avoid pinning transient RPC failures).
+    if all(item.get("status") == "ok" for item in items):
+        await cache_set(cache_key, payload, ttl_seconds=30)
+    return payload
 
 
 @app.get("/api/proposals/recipients")
@@ -372,8 +505,16 @@ async def list_suggested_proposals() -> dict[str, list[dict]]:
     Used by frontend submission form: judge picks one to pre-fill the textarea
     with full_context, demonstrating council across geopolitics, crypto-native,
     time-sensitive, and meta-DAO scenarios.
+
+    Cached for 300s (static seed data, refreshes when seed_proposals.py changes).
     """
-    return {"proposals": get_suggested_proposals()}
+    cache_key = "proposals:suggested:v1"
+    cached = await cache_get(cache_key)
+    if cached is not None and isinstance(cached, dict) and "proposals" in cached:
+        return cached
+    payload = {"proposals": get_suggested_proposals()}
+    await cache_set(cache_key, payload, ttl_seconds=300)
+    return payload
 
 
 @app.get("/api/proposals/suggested/{proposal_id}")
@@ -387,13 +528,46 @@ async def get_suggested_proposal(proposal_id: str) -> dict:
 
 @app.get("/api/debates/history")
 async def list_debate_history() -> dict[str, list[dict]]:
-    """Return 3 mock historical debates for audit trail tab.
+    """Return historical debates for audit trail tab.
 
-    Each debate has: proposal meta, 5 agent statements with primary source
-    attribution, consensus verdict, 0G Storage CID, optional tx hash, and
-    per-agent reputation deltas. Used to populate audit trail before live
-    debates accumulate during demo.
+    Postgres-first: reads from `debates` table (with statements). Falls back
+    to static seed data when DB is unavailable or empty so local dev / fresh
+    deploys still render the audit trail.
     """
+    if db_is_connected():
+        try:
+            async with session_scope() as session:
+                repo = DebateRepo(session)
+                rows = await repo.list_recent(limit=20)
+                if rows:
+                    debates = [
+                        {
+                            "id": d.id,
+                            "proposal_id": d.proposal_id,
+                            "proposal_text": d.proposal_text,
+                            "consensus": d.consensus,
+                            "confidence": d.confidence,
+                            "cost_usd": d.cost_usd,
+                            "audit_trail_cid": d.audit_trail_cid,
+                            "storage_provider": d.storage_provider,
+                            "started_at": d.started_at.isoformat() if d.started_at else None,
+                            "completed_at": d.completed_at.isoformat() if d.completed_at else None,
+                            "agent_statements": [
+                                {
+                                    "persona": s.persona,
+                                    "decision": s.decision,
+                                    "text": s.text,
+                                    "confidence": s.confidence,
+                                    "sources": s.sources_json,
+                                }
+                                for s in d.statements
+                            ],
+                        }
+                        for d in rows
+                    ]
+                    return {"debates": debates}
+        except Exception as exc:
+            log.warning("debate_history_db_fallback", error=str(exc))
     return {"debates": get_historical_debates()}
 
 
