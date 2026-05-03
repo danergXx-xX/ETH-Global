@@ -217,7 +217,7 @@ export function useDebateStream(proposalText: string | null) {
             ? [{ text, sourceId: null }]
             : [],
         timestamp: (event.timestamp as string) ?? new Date().toISOString(),
-        sources: sources as AgentDecision["sources"],
+        sources,
       } as unknown as AgentDecision;
       setState((prev) => {
         const next = new Map(prev.agentStates);

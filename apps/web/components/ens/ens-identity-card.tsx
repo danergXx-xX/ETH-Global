@@ -3,9 +3,17 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AgentPortrait } from "@/components/shared/agent-portrait";
+import { AgentDetailModal } from "@/components/agent/agent-detail-modal";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useTranslations } from "@/lib/i18n";
 import { useAgentENS } from "@/lib/hooks";
 import { AGENTS, type AgentPersona } from "@/lib/types";
+import { DiscoverabilityPulse } from "@/components/dashboard/discoverability-pulse";
 
 function truncateAddress(addr: string): string {
   return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
@@ -121,27 +129,51 @@ function AgentENSCard({ persona }: { persona: AgentPersona }) {
   const contractHref = r["ai.contract"] ? basescanLink(r["ai.contract"]) : undefined;
 
   return (
-    <Card className="border-border">
+    <Card className="border-border relative">
+      <DiscoverabilityPulse hint="ens-subname" className="top-1.5 right-1.5" />
       <CardContent className="py-3 px-4 space-y-3">
-        <div className="flex items-center gap-3">
-          <AgentPortrait persona={persona} size={40} />
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-foreground truncate">
-                {ens.name}
-              </span>
-              <ResolutionBadge resolved={ens.resolved} latencyMs={ens.latencyMs} />
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-mono text-muted-foreground">
-                {truncateAddress(ens.address)}
-              </span>
-              <span className="text-[10px] text-muted-foreground/70">
-                {recordCount} records
-              </span>
-            </div>
-          </div>
-        </div>
+        <AgentDetailModal
+          agent={agent}
+          trigger={
+            <button
+              type="button"
+              className="flex items-center gap-3 w-full text-left rounded -mx-1 px-1 py-1 hover:bg-secondary/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label={`Open ${agent.label.en} agent profile`}
+            >
+              <AgentPortrait persona={persona} size={40} />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-foreground truncate">
+                    {ens.name}
+                  </span>
+                  <ResolutionBadge
+                    resolved={ens.resolved}
+                    latencyMs={ens.latencyMs}
+                  />
+                </div>
+                <TooltipProvider delayDuration={200}>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono text-muted-foreground">
+                      {truncateAddress(ens.address)}
+                    </span>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="text-[10px] text-muted-foreground/70 cursor-help">
+                          {recordCount} records
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="text-xs">
+                          Number of ENS text records resolved for this subname.
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                </TooltipProvider>
+              </div>
+            </button>
+          }
+        />
 
         {/* Identity */}
         <Section title="Identity" count={5}>

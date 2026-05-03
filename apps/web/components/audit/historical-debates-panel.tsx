@@ -8,6 +8,7 @@ import {
   HISTORICAL_DEBATES,
   type HistoricalDebate,
 } from "@/lib/mocks/historical_debates";
+import { DiscoverabilityPulse } from "@/components/dashboard/discoverability-pulse";
 
 const VERDICT_COLORS: Record<HistoricalDebate["verdict"], string> = {
   APPROVED: "bg-vote-for/15 text-vote-for border-vote-for/30",
@@ -138,7 +139,8 @@ export function HistoricalDebatesPanel() {
   const open = HISTORICAL_DEBATES.find((d) => d.id === openId) ?? null;
 
   return (
-    <Card className="border-border mb-4">
+    <Card className="border-border mb-4 relative">
+      <DiscoverabilityPulse hint="audit-entry" className="top-2 right-2" />
       <CardHeader className="pb-2">
         <CardTitle className="text-sm">
           {locale === "pl"

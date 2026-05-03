@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useTranslations } from "@/lib/i18n";
 import type { Consensus, Decision } from "@/lib/types";
 import { getBasescanTxUrl } from "@/lib/contracts";
+import { DiscoverabilityPulse } from "@/components/dashboard/discoverability-pulse";
 
 type VerdictState = "pending" | "reveal" | "executed";
 
@@ -62,7 +63,8 @@ export function VerdictCard({
   const cfg = consensus ? VERDICT_CONFIG[consensus] : VERDICT_CONFIG.ABSTAIN;
 
   return (
-    <Card className={`border-2 ${cfg.border}`}>
+    <Card className={`border-2 ${cfg.border} relative`}>
+      <DiscoverabilityPulse hint="verdict-number" className="top-2 right-2" />
       <CardContent className="py-6 space-y-4">
         {/* Pending state */}
         {state === "pending" && (
