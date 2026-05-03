@@ -9,6 +9,14 @@ import { ExecuteFlow } from "@/components/vote";
 import { AuditLog, HistoricalDebatesPanel } from "@/components/audit";
 import { ENSIdentityCard } from "@/components/ens";
 import { RulesEditor } from "@/components/rules";
+import { DemoModeBanner } from "@/components/dashboard/demo-mode-banner";
+import {
+  TransparencyTooltip,
+  TRANSPARENCY_COPY,
+} from "@/components/shared/transparency-tooltip";
+import {
+  PoweredByBadges,
+} from "@/components/landing/powered-by-badges";
 
 export default function DashboardContent() {
   const t = useTranslations();
@@ -16,6 +24,7 @@ export default function DashboardContent() {
 
   return (
     <>
+      <DemoModeBanner />
       <main className="mx-auto max-w-6xl px-4 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <div className="mb-6 -mx-4 px-4 overflow-x-auto sm:mx-0 sm:px-0">
@@ -61,7 +70,10 @@ export default function DashboardContent() {
         </Tabs>
       </main>
 
-      <footer className="border-t border-border py-4 mt-8">
+      <footer className="border-t border-border py-4 mt-8 space-y-3">
+        <div className="mx-auto max-w-6xl px-4">
+          <PoweredByBadges />
+        </div>
         <div className="mx-auto max-w-6xl px-4 flex items-center justify-between text-[10px] text-muted-foreground font-mono">
           <span>CONCLAVE v0.1 - Base Sepolia - ETHGlobal Open Agents 2026</span>
           <div className="flex items-center gap-4">
@@ -71,7 +83,13 @@ export default function DashboardContent() {
             >
               Docs
             </Link>
-            <span>0G Storage - Audit Trail Archived</span>
+            <span className="inline-flex items-center gap-1.5">
+              0G Storage - Audit Trail Archived
+              <TransparencyTooltip
+                ariaLabel="Audit storage details"
+                content={TRANSPARENCY_COPY.auditStorage}
+              />
+            </span>
           </div>
         </div>
       </footer>

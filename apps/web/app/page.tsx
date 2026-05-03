@@ -4,6 +4,11 @@ import { SiteHeader } from "@/components/shared/site-header";
 import { ClientOnly } from "@/components/shared/client-only";
 import { LiveStats } from "@/components/landing/live-stats";
 import { LiveDebateWidget } from "@/components/landing/live-debate-widget";
+import {
+  PoweredByBadges,
+  RedTeamAuditBadge,
+} from "@/components/landing/powered-by-badges";
+import { VerifiedContractsSummary } from "@/components/landing/verified-contracts-badge";
 
 export const metadata: Metadata = {
   title: "AI Treasury Council - Multi-agent governance for DAOs",
@@ -128,6 +133,12 @@ export default function LandingPage() {
             >
               View on GitHub
             </a>
+          </div>
+
+          {/* Trust badges (LUKA 1 + LUKA 4) */}
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+            <RedTeamAuditBadge />
+            <VerifiedContractsSummary />
           </div>
 
           {/* Static SVG: 5 agents debating */}
@@ -315,7 +326,12 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border py-6 mt-4">
+      <footer className="border-t border-border py-6 mt-4 space-y-4">
+        {/* Powered by + verified contracts row (LUKA 1 + LUKA 4) */}
+        <div className="mx-auto max-w-6xl px-4 flex flex-col items-center gap-3">
+          <PoweredByBadges />
+          <VerifiedContractsSummary />
+        </div>
         <div className="mx-auto max-w-6xl px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-[10px] text-muted-foreground font-mono">
           <span>CONCLAVE v0.1 - Base Sepolia - ETHGlobal Open Agents 2026</span>
           <div className="flex flex-wrap items-center gap-3 sm:gap-4">

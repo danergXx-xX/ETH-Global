@@ -22,6 +22,10 @@ import { AGENTS, type AgentPersona, type AgentMeta } from "@/lib/types";
 import { useAgentENS } from "@/lib/hooks";
 import { useI18n } from "@/lib/i18n";
 import { PERSONA_DISPLAY } from "@/lib/agent-personas-content";
+import {
+  TransparencyTooltip,
+  TRANSPARENCY_COPY,
+} from "@/components/shared/transparency-tooltip";
 
 const PROMPT_PREVIEW_CHARS = 500;
 
@@ -97,9 +101,18 @@ export function AgentDetailModal({ agent, trigger }: AgentDetailModalProps) {
         <div className="space-y-5 mt-2">
           {/* Role + description */}
           <div>
-            <h3 className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">
-              Role
-            </h3>
+            <div className="flex items-center justify-between mb-1.5">
+              <h3 className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                Role
+              </h3>
+              <span className="inline-flex items-center gap-1.5 text-[10px] font-mono text-muted-foreground">
+                AI stack
+                <TransparencyTooltip
+                  ariaLabel="AI model stack details"
+                  content={TRANSPARENCY_COPY.agentStack}
+                />
+              </span>
+            </div>
             <p className="text-sm font-medium">{persona.role}</p>
             <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
               {persona.description}
