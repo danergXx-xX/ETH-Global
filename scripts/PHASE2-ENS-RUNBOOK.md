@@ -125,3 +125,43 @@ Test: `pnpm dev` -> otworz ENS Identity Card -> sprawdz ze renderuje real text r
 ## 9. Rollback
 
 ENS subnames sa odwracalne (parent owner może przepisac owner subnode na 0x0 lub wyczyscic resolver). Skrypt rollback nie jest wbudowany - manualnie przez ENS Manager UI lub `setSubnodeRecord(parentNode, label, 0x0, 0x0, 0)`.
+
+---
+
+## 10. Pre-demo: diversify reputation snapshot (Sesja 32, 2026-05-03)
+
+Sesja 25 zostawila wszystkie 5 agentow na baseline reputation=100 (deploy state). Pre-demo PM-Lead decyzja: zroznicowane wartosci ktore wygladaja realistycznie dla sedziow ("system juz dziala"). Bazuje na symulacji 12 debat per agent.
+
+**Skrypt:** `scripts/diversify-reputation-snapshot.ts`
+
+**Wartosci (PM-Lead lock 2026-05-03):**
+
+| Agent | reputation | debates_participated | consensus_aligned | aligned_pct |
+|---|---|---|---|---|
+| bull | 108 | 12 | 10 | 87% |
+| bear | 95 | 12 | 9 | 76% |
+| risk | 112 | 12 | 11 | 92% |
+| tech | 105 | 12 | 10 | 84% |
+| sentiment | 102 | 12 | 10 | 80% |
+
+**Dry-run (default):**
+
+```bash
+tsx scripts/diversify-reputation-snapshot.ts
+```
+
+Output: planowane wartosci, zero tx, gas estimate.
+
+**Broadcast (live):**
+
+```bash
+ENS_OWNER_PRIVATE_KEY=0x... tsx scripts/diversify-reputation-snapshot.ts --broadcast
+```
+
+Wykona 15 setText tx (5 agentow x 3 fields: ai.reputation, ai.debates_participated, ai.consensus_aligned). Gas: ~750k total (~0.005 ETH Sepolia).
+
+**Kiedy uruchomic:** raz, po Phase 2 mint subnames (krok 5 powyzej), PRZED Sesja 33 nagraniem demo. Zalezne zeby ENS Identity Card w demo pokazal zroznicowane reputation.
+
+**Verify:** `https://app.ens.domains/aicouncil-danergy.eth` (Sepolia network) -> rozwiniec subname -> sprawdzenie text records.
+
+**Backup:** symetryczny ownership check jak `update-reputation-snapshot.ts` (Mateusz audit LOW-2). Wallet musi byc owner parent domeny inaczej tx revert pre-broadcast.
