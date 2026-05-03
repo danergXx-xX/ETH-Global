@@ -10,6 +10,15 @@
     "healthcheckTimeout": 30,
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 3,
-    "numReplicas": 1
+    "numReplicas": 1,
+    "envHints": {
+      "REDIS_URL": "Auto-injected by Railway Redis plugin (Hobby tier).",
+      "DATABASE_URL": "Auto-injected by Railway Postgres plugin (Hobby tier). Normalized to postgresql+asyncpg://... by db/__init__.py.",
+      "WS_MAX_CONCURRENT": "Override default 30 concurrent WS limit. Single-replica in-memory tracker.",
+      "BUDGET_USD_DAILY": "Anthropic spend cap (default 50). Halts new debates at 80% utilization.",
+      "BUDGET_HALT_FRACTION": "Fraction of cap that triggers halt (default 0.80).",
+      "ANTHROPIC_INPUT_USD_PER_MTOK": "Override input pricing (default 15 for Opus 4.7).",
+      "ANTHROPIC_OUTPUT_USD_PER_MTOK": "Override output pricing (default 75 for Opus 4.7)."
+    }
   }
 }

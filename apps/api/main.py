@@ -26,6 +26,10 @@ from governance import (
 from logging_config import RequestIDMiddleware, setup_logging
 from middleware import get_budget_tracker, get_ws_tracker
 from services.cache import cache_connect, cache_disconnect, cache_get, cache_set
+from db import db_connect, db_disconnect, is_connected as db_is_connected, session_scope
+from db.migrations import run_alembic_upgrade
+from db.repositories import DebateRepo
+from db.seed import seed_historical_debates_if_empty
 from agents.orchestrator import run_debate
 from data.seed_historical_debates import (
     get_debate_by_id,
@@ -79,6 +83,18 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     ws_tracker = get_ws_tracker()
     budget = get_budget_tracker()
     cache_ready = await cache_connect()
+
+    db_ready = await db_connect()
+    seeded = 0
+    migration_ok = False
+    if db_ready:
+        migration_ok = run_alembic_upgrade()
+        if migration_ok:
+            try:
+                seeded = await seed_historical_debates_if_empty()
+            except Exception as exc:
+                log.warning("seed_failed", error=str(exc))
+
     log.info(
         "api_ready",
         env=settings.env,
@@ -87,9 +103,13 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         budget_usd_daily=budget.cap_usd,
         budget_halt_pct=budget.halt_fraction,
         cache_ready=cache_ready,
+        db_ready=db_ready,
+        migration_ok=migration_ok,
+        seeded_debates=seeded,
     )
     yield
     await cache_disconnect()
+    await db_disconnect()
     log.info("api_shutdown")
 
 
@@ -501,13 +521,46 @@ async def get_suggested_proposal(proposal_id: str) -> dict:
 
 @app.get("/api/debates/history")
 async def list_debate_history() -> dict[str, list[dict]]:
-    """Return 3 mock historical debates for audit trail tab.
+    """Return historical debates for audit trail tab.
 
-    Each debate has: proposal meta, 5 agent statements with primary source
-    attribution, consensus verdict, 0G Storage CID, optional tx hash, and
-    per-agent reputation deltas. Used to populate audit trail before live
-    debates accumulate during demo.
+    Postgres-first: reads from `debates` table (with statements). Falls back
+    to static seed data when DB is unavailable or empty so local dev / fresh
+    deploys still render the audit trail.
     """
+    if db_is_connected():
+        try:
+            async with session_scope() as session:
+                repo = DebateRepo(session)
+                rows = await repo.list_recent(limit=20)
+                if rows:
+                    debates = [
+                        {
+                            "id": d.id,
+                            "proposal_id": d.proposal_id,
+                            "proposal_text": d.proposal_text,
+                            "consensus": d.consensus,
+                            "confidence": d.confidence,
+                            "cost_usd": d.cost_usd,
+                            "audit_trail_cid": d.audit_trail_cid,
+                            "storage_provider": d.storage_provider,
+                            "started_at": d.started_at.isoformat() if d.started_at else None,
+                            "completed_at": d.completed_at.isoformat() if d.completed_at else None,
+                            "agent_statements": [
+                                {
+                                    "persona": s.persona,
+                                    "decision": s.decision,
+                                    "text": s.text,
+                                    "confidence": s.confidence,
+                                    "sources": s.sources_json,
+                                }
+                                for s in d.statements
+                            ],
+                        }
+                        for d in rows
+                    ]
+                    return {"debates": debates}
+        except Exception as exc:
+            log.warning("debate_history_db_fallback", error=str(exc))
     return {"debates": get_historical_debates()}
 
 
