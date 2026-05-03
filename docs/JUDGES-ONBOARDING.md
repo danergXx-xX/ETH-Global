@@ -63,6 +63,37 @@ Sourced from independent research on AI agent trust gaps. Every mechanism is wir
 
 Bilingual UI (Polish + English) via custom i18n provider (next-intl was incompatible with Turbopack + pnpm + Next 16; documented in ADR-002).
 
+## Competitive landscape (we did our homework)
+
+We searched the ETHGlobal showcase database (17,180+ projects via ethglobal-skills) for adjacent work. Closest neighbors and how we differ:
+
+- **Goldman Stacked** (ETHGlobal Prague) - AI council vets cross-chain DAO proposals with quadratic voting. We add source attribution per claim, ENS-anchored agent reputation, 0G immutable audit trail, and native OpenZeppelin Governor + Timelock 48h.
+- **Agentropolis** (HackMoney 2026) - gamified city where agents debate DeFi strategies on Uniswap v4 hooks. Personal trading, not DAO treasury. We are production governance, not a game.
+- **Alpha Dawg** (ETHGlobal Cannes 2026, 0G Best DeFi 2nd) - 10-agent swarm + Alpha vs Risk vs Executor debate inside TEE + on-chain proof for personal trading. Closest pattern, different audience: they hunt alpha for one user, we vet treasury proposals for a DAO.
+- **Ghost in the Machine** (ETHGlobal Cannes 2026, ENS Best Integration for AI Agents 1st) - 30+ ENS text records per autonomous agent. Brilliant work; complementary scope: their agents live and trade alone, ours have roles inside a council that controls a DAO treasury.
+
+Three differentiators verified against the database (zero direct matches in 17,180+ projects):
+
+1. **Source attribution per agent claim** with URLs and confidence weights 0.0-1.0.
+2. **Five trust mechanisms structured** (source attribution + timelock countdown + 0G audit + ENS reputation + human-in-loop config) as a layered answer to "why trust an AI with treasury".
+3. **Native DAO Governance integration** (OpenZeppelin Governor v5 + ERC20Votes + TimelockController 48h). Production-grade stack a DAO contributor can adopt tomorrow.
+
+Full breakdown: [docs/COMPETITIVE-ANALYSIS.md](COMPETITIVE-ANALYSIS.md).
+
+## Sponsor compliance snapshot
+
+Cross-checked against live sponsor docs (ethglobal-skills `/api/prizes?event=Open+Agents`):
+
+| Track | Compliance | Notes |
+|-------|-----------|-------|
+| **0G Best Autonomous Agents, Swarms & iNFT** | mostly OK | Need: explicit "agent communication & coordination" section in architecture.md, demo video under 180s, Telegram + X handles for team |
+| **ENS Best Integration for AI Agents** | partial | Frontend renders Phase 2 stub for NameStone integration. Live subnames + text records are minted manually before demo recording for the functional-demo requirement (see "What is NOT" below) |
+| **Uniswap Foundation FEEDBACK.md** | location pending decision | `docs/FEEDBACK.md` exists; sponsor wants `/FEEDBACK.md` at repo root if claiming this track |
+| **Gensyn AXL** | not claimed | No AXL integration |
+| **KeeperHub** | not claimed | No KeeperHub MCP/CLI integration |
+
+Submission checklist: [docs/SUBMISSION-CHECKLIST.md](SUBMISSION-CHECKLIST.md).
+
 ## What is NOT in the demo (honest scope)
 
 - ENS subname minting via NameStone is Phase 2; signup pending. Frontend stub renders mock data so the UX is reviewable.
