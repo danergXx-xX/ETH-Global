@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   frontend:
     runs-on: ubuntu-latest
@@ -42,7 +46,12 @@ jobs:
         with:
           submodules: recursive
       - uses: foundry-rs/foundry-toolchain@v1
-      - run: cd contracts && forge install OpenZeppelin/openzeppelin-contracts@v5.0.2 --no-commit
+        with:
+          version: stable
+      # OpenZeppelin + forge-std already pinned via git submodule (contracts/lib/),
+      # restored by `submodules: recursive` above. No forge install needed.
+      # Foundry version pinned to "stable" channel to prevent future flag breaks
+      # (Sesja 31 incident: nightly dropped --no-commit flag without notice).
       - run: cd contracts && forge build --sizes
       - run: cd contracts && forge test -vvv
 
@@ -53,3 +62,5 @@ jobs:
         with:
           fetch-depth: 0
       - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
