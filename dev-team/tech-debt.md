@@ -114,22 +114,17 @@ adversarial) to the correct module functions.
 
 ## Open / new debt observed during Sesja 30
 
-### TD-008 - requirements.txt pytest/pytest-asyncio version conflict OPEN
+### TD-008 - requirements.txt pytest/pytest-asyncio version conflict RESOLVED
 
-**Observed:** Sesja 30 venv setup. `requirements.txt` pins `pytest==9.0.3`
+**Observed:** Sesja 30 venv setup. `requirements.txt` pinned `pytest==9.0.3`
 and `pytest-asyncio==0.24.0`, but `pytest-asyncio 0.24` requires `pytest<9`.
-Fresh `pip install -r requirements.txt` fails with `ResolutionImpossible`.
+Fresh `pip install -r requirements.txt` failed with `ResolutionImpossible`.
 
-**Workaround used in Sesja 30:** install pytest 8.x manually + skip pytest
-line during `pip install`. Functional but fragile - new contributors will
-hit the same wall.
+**Resolution (Sesja 30):** loosened `pytest-asyncio` pin to
+`>=1.0,<2.0` (1.x supports pytest 9). 191 tests still pass with
+pytest-asyncio 1.3.0.
 
-**Fix options:**
-- Bump `pytest-asyncio` to 0.25+ (supports pytest 9). Cheapest.
-- Pin `pytest==8.4.x`. Loses any pytest 9 features.
-
-**Owner:** unassigned. **Priority:** P2 - blocks fresh setup but no impact
-on CI (Hugo's pre-existing local venv presumably sidesteps it).
+**Status:** RESOLVED.
 
 ### TD-009 - mypy unused module overrides in pyproject.toml LOW
 
@@ -144,5 +139,9 @@ selectively).
 
 ## History
 
-- 2026-05-03 (Sesja 30, Atlas) - register created. TD-001/002/004/005/006
-  resolved. TD-003 deferred POST-HACKATHON. TD-008/009 logged.
+- 2026-05-03 (Sesja 30, Atlas) - register created. TD-001/002/004/005/006/008
+  resolved. TD-003 deferred POST-HACKATHON. TD-009 logged. Critic + Vera T3
+  review applied: tests/test_persona_agents.py PERSONA_RUNNERS now derived
+  via get_runner (regression-proof), new tests/test_personas_registry.py
+  covers lazy-import path (8 new tests, 191 total / 5 skipped / 0 failed),
+  defillama assert replaced with explicit raise.
