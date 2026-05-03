@@ -141,22 +141,18 @@ export function AddCustomAgentModal({
     }
   };
 
-  const handleSubmitMultisig = async () => {
+  const handleSubmitMultisig = () => {
     if (!submittedAgent || readOnly) return;
-    setPhase("submitting");
-    setServerError(null);
-    try {
-      const finalAgent = await submitMutation.mutateAsync(buildSpec(false));
-      setSubmittedAgent({
-        ...finalAgent,
-        test_arena_result: submittedAgent.test_arena_result,
-      });
-      setPhase("registered");
-      onAgentRegistered?.(finalAgent);
-    } catch (err) {
-      setServerError(err instanceof Error ? err.message : "Multisig submit failed");
-      setPhase("testing");
-    }
+    // Server already created the agent record during the sandbox POST. Multisig
+    // is a UI-mocked transition (5-of-7 demo); a second POST would create a
+    // duplicate CustomAgent row server-side.
+    const promoted: typeof submittedAgent = {
+      ...submittedAgent,
+      status: "approved",
+    };
+    setSubmittedAgent(promoted);
+    setPhase("registered");
+    onAgentRegistered?.(promoted);
   };
 
   const handleTryDifferent = () => {

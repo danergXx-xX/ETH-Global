@@ -120,20 +120,20 @@ export function useNotifications(address: string | undefined) {
     ws.onerror = () => setWsConnected(false);
     ws.onmessage = (evt) => {
       try {
-        const payload = JSON.parse(evt.data) as
-          | { type: "notification" } & Notification
-          | { type: string };
-        if ((payload as { type: string }).type === "notification") {
-          const note = payload as { type: "notification" } & Notification;
-          queryClient.setQueryData<NotificationListResponse>(queryKey, (prev) => {
-            const list = prev?.notifications ?? [];
-            const next = [{ ...note, type: undefined } as Notification, ...list];
-            return {
-              notifications: next,
-              unread_count: next.filter((n) => !n.read).length,
-            };
-          });
-        }
+        const payload = JSON.parse(evt.data) as { type?: string } & Partial<Notification>;
+        if (payload.type !== "notification") return;
+        // Strip the envelope's `type` field so we keep only Notification keys.
+        const { type: _envelope, ...note } = payload;
+        if (!note.id || !note.category || !note.title) return;
+        const incoming = note as Notification;
+        queryClient.setQueryData<NotificationListResponse>(queryKey, (prev) => {
+          const list = prev?.notifications ?? [];
+          const next = [incoming, ...list];
+          return {
+            notifications: next,
+            unread_count: next.filter((n) => !n.read).length,
+          };
+        });
       } catch {
         // ignore malformed frames
       }
