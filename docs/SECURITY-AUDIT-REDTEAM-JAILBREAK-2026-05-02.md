@@ -122,6 +122,19 @@ przed deploy mainnet, **MEDIUM** = fix po hackathonie, **LOW** = nice-to-have.
 
 ### F-01 [HIGH] Indirect injection przez Source.snippet - END SOURCES marker passthrough
 
+**Status:** RESOLVED 2026-05-03 (Sesja 33). Patch w `apps/api/agents/tools.py`
+dodaje `sanitize_source_marker()` aplikowane do title/url/snippet w
+`format_sources_context()`. Test `TestSourceContextSentinelInjection.*`
+flipped - assertions teraz weryfikuja ze patch trzyma. Dodano 25 nowych
+test cases w `apps/api/tests/security/test_source_sanitization.py`
+(100% PASS). Re-run pelnego suite: 56 passed, 4 skipped (live), 0 failed.
+
+**Defense-in-depth:** Layer 1 = COUNCIL_RULES (Sesja 29, system prompt
+SECURITY paragraph). Layer 2 = sanitize layer (Sesja 33, deterministic
+ingestion-time strip + truncate + escape). Razem lapia 100% indirect_source
+attacks (A04, A05, A06) plus odpornosc na unicode obfuscation (A15) i
+code-fence injection (nowy wektor).
+
 **Plik:** `apps/api/agents/tools.py:91` (`format_sources_context`)
 **Test:** `TestSourceContextSentinelInjection.test_unescaped_end_marker_passes_through`
 **Atak:** A04_indirect_snippet_directive
@@ -231,6 +244,11 @@ się wykona.
 ---
 
 ### F-04 [MEDIUM] Source.title field unsanitized
+
+**Status:** RESOLVED 2026-05-03 (Sesja 33). Sanitize aplikowany do
+title z budgetem 200 chars, strip directive tags
+(`<critic_agent_directive>...`), strip bracketed markers, escape backticks.
+Patch wspolny z F-01.
 
 **Plik:** `apps/api/agents/tools.py:104` (`format_sources_context`)
 **Test:** `TestSourceContextSentinelInjection.test_title_field_unsanitized`
