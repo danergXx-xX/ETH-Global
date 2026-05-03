@@ -22,13 +22,14 @@ type AgentId = AgentPersona | "treasury" | "parent";
 const ENS_DOMAIN =
   process.env.NEXT_PUBLIC_ENS_DOMAIN || "aicouncil-danergy.eth";
 // Multi-RPC fallback chain dla Sepolia. Pierwszenstwo: env override, potem publicnode
-// (sporadyczny 503 rate-limit), Tenderly gateway, oficjalny rpc.sepolia.org, 1rpc.io.
+// (sporadyczny 503 rate-limit), Tenderly gateway, RockX, 1rpc.io. Drop rpc.sepolia.org
+// (Mateusz audit: niestabilny od 2026, sporadyczne stale state).
 // viem `fallback` transport automatycznie przelacza po retry/timeout (bez manual circuit).
 const SEPOLIA_RPC_URLS: string[] = [
   process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL,
   "https://ethereum-sepolia-rpc.publicnode.com",
   "https://sepolia.gateway.tenderly.co",
-  "https://rpc.sepolia.org",
+  "https://rpc-sepolia.rockx.com",
   "https://1rpc.io/sepolia",
 ].filter((url): url is string => Boolean(url));
 
