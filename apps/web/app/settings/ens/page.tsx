@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { DemoBanner } from "@/components/settings";
 
 const PREVIEW_RECORDS: { key: string; value: string }[] = [
-  { key: "name", value: "Conclave Voter" },
+  { key: "name", value: "AI Treasury Council Voter" },
   { key: "ai.role", value: "DAO contributor" },
   { key: "ai.contract", value: "base-sepolia:0xf3BAb9...6f44" },
   { key: "url", value: "https://aicouncil-danergy.eth.link" },

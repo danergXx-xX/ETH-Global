@@ -8,7 +8,7 @@ import { InboxBell } from "@/components/notifications";
 
 function ConclaveLogo() {
   return (
-    <svg width={28} height={28} viewBox="0 0 28 28" aria-label="Conclave">
+    <svg width={28} height={28} viewBox="0 0 28 28" aria-label="AI Treasury Council logo">
       <circle cx={14} cy={6} r={3} fill="oklch(0.82 0.14 75)" />
       <circle cx={21.5} cy={11} r={3} fill="oklch(0.74 0.16 152)" />
       <circle cx={19} cy={20} r={3} fill="oklch(0.70 0.18 22)" />

@@ -11,7 +11,7 @@ import { useUserSettings, type ThemeChoice } from "@/lib/hooks/useUserSettings";
 const THEME_OPTIONS: { value: ThemeChoice; label: string; description: string }[] = [
   { value: "dark", label: "Dark", description: "Default high-contrast dark mode." },
   { value: "light", label: "Light", description: "Soft light mode for daytime use." },
-  { value: "conclave", label: "Conclave", description: "Navy + amber tuned for the dashboard." },
+  { value: "conclave", label: "Council", description: "Navy + amber tuned for the dashboard." },
 ];
 
 export default function ThemeSettingsPage() {
