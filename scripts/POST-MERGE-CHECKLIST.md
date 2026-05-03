@@ -34,6 +34,19 @@ python3 scripts/verify-hash-cross-language.py
 Oczekiwany output: `PASS: wszystkie 5 hashy byte-perfect match cross-language.`
 Jesli FAIL -> NIE broadcastuj. Zglos do Sol/Nova.
 
+### SECURITY tip dla krokow 4-6: zaladuj PK bez bash history leak
+
+```bash
+# NIE rob: `ENS_OWNER_PRIVATE_KEY=0x... npx tsx ...` (PK trafia do .bash_history)
+# Zamiast tego:
+read -s ENS_OWNER_PRIVATE_KEY
+export ENS_OWNER_PRIVATE_KEY
+# wpisz PK na ekranie (niewidoczny), enter
+# nastepnie uruchamiaj skrypty bez PK w command line
+```
+
+Po sesji: `unset ENS_OWNER_PRIVATE_KEY` (i zamknij terminal dla pewnosci).
+
 ### Krok 4: (Jesli ENS subnames jeszcze nie zminted) Mint subnames
 
 ```bash
