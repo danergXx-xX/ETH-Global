@@ -126,16 +126,27 @@ pytest-asyncio 1.3.0.
 
 **Status:** RESOLVED.
 
-### TD-009 - mypy unused module overrides in pyproject.toml LOW
+### TD-009 - mypy unused module overrides in pyproject.toml DEFERRED
 
 **Observed:** Sesja 30 mypy run reports `pyproject.toml: note: unused
-section(s): module = ['agents.anthropic_client', 'agents.orchestrator',
-'sentry_sdk.*', 'tests.test_bull_agent', 'uvicorn.*']`. These overrides
-were added when those modules were unchecked / had errors. Worth pruning
-once the broader mypy coverage is enabled (currently mypy is run only
-selectively).
+section(s): module = ['sentry_sdk.*', 'uvicorn.*']` when full project
+scope is checked (selective mypy on agents/personas + data shows extra
+unused: `agents.anthropic_client`, `agents.orchestrator`,
+`tests.test_bull_agent` - these ARE used in the broader scope, so
+selective-only).
 
-**Priority:** P3 - cosmetic.
+**Investigated Sesja 30 (Atlas):** `grep` confirms `sentry_sdk` and
+`uvicorn` are NOT imported in our code today. HOWEVER:
+- Sesja 26 Rio Deploy plans Sentry init for prod observability - removing
+  the override now would cause mypy regression when Rio merges.
+- Uvicorn is invoked via CLI / Procfile (not Python import) but the
+  override is stable insurance.
+
+**Decision:** keep both overrides. Risk of removal (downstream regression
+in Sesja 26 Rio merge) > value of cosmetic cleanup (1 mypy note line).
+Re-evaluate POST-HACKATHON once observability stack is final.
+
+**Status:** DEFERRED.
 
 ## History
 
