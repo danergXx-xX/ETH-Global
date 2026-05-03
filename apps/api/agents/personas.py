@@ -191,7 +191,9 @@ TECH = PersonaSpec(
         "Over-conservatism that blocks all action",
         "Tech-bro buzzwords without concrete analysis",
     ],
-    sources_priority=["rss", "defillama"],
+    # Sesja 50 (LUMEN-HUGO-RESEARCH): Perplexity 1st priority dla audit history
+    # i recent exploits research. Fallback chain: perplexity -> rss -> defillama.
+    sources_priority=["perplexity", "rss", "defillama"],
 )
 
 # ============================================================
@@ -229,11 +231,10 @@ SENTIMENT = PersonaSpec(
         "Capitulation trades during panic",
         "Ignoring fundamentals because of vibes",
     ],
-    # MVP: aixbt adapter not yet registered in data.aggregator (Phase 4 work).
-    # Listing it would silently produce empty fetches; we keep RSS + CoinGecko
-    # which the Sentiment persona can use to triangulate news cycle tone and
-    # volume divergence against price. Re-add "aixbt" once the adapter ships.
-    sources_priority=["rss", "coingecko"],
+    # Sesja 50 (LUMEN-HUGO-RESEARCH): Perplexity 2nd priority (po RSS) dla news
+    # beyond cached. RSS = primary fast cache, Perplexity = beyond cache breadth.
+    # aixbt adapter not yet registered (Phase 4 work) - re-add once adapter ships.
+    sources_priority=["rss", "perplexity", "coingecko"],
 )
 
 # ============================================================
