@@ -40,6 +40,8 @@ export function loadPersonaPrompts(): PersonaPromptMap {
   const stdout = execFileSync("python3", [DUMP_SCRIPT], {
     encoding: "utf-8",
     maxBuffer: 1024 * 1024,
+    timeout: 10_000,
+    stdio: ["ignore", "pipe", "pipe"],
   });
   const parsed = JSON.parse(stdout) as PersonaPromptMap;
   for (const id of [

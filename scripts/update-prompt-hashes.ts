@@ -9,11 +9,11 @@
  *   gdzie systemPrompt = build_system_prompt(persona) z apps/api/agents/personas.py.
  *   Pelne 32 bajty (0x + 64 hex) zeby juror mogl zweryfikowac BYTE-PERFECT.
  *
- * Multicall pattern:
- *   PublicResolver.multicall(bytes[]) - 5 setText calls atomicznie, 1 transakcja.
- *   Per agent: 1 multicall (1 setText). Lacznie 5 transakcji (po 1 per agent).
- *   Mozna by jedno multicall na cale 5 agentow ale namehash sie roznia,
- *   wiec lepiej per agent (czytelniej do debugowania, gas roznica marginalna).
+ * Pattern: per-agent setText (5 osobnych transakcji, sequential nonce).
+ *   NIE jest to multicall - kazdy setText ma osobny nonce, gas, receipt wait.
+ *   Trade-off: prostszy debug + naturalna idempotencja (re-run pomija OK)
+ *   vs ~30% wyzszy gas niz multicall(bytes[]) na 1 resolver. Dla 5 agentow x
+ *   ~127k gas to akceptowalne (~636k total, ~$0.001 na 1 gwei).
  *
  * Tryby:
  *   tsx scripts/update-prompt-hashes.ts             # dry-run, pokazuje diff
@@ -64,13 +64,6 @@ const RESOLVER_ABI = [
       { name: "key", type: "string" },
     ],
     outputs: [{ name: "", type: "string" }],
-  },
-  {
-    type: "function",
-    name: "multicall",
-    stateMutability: "nonpayable",
-    inputs: [{ name: "data", type: "bytes[]" }],
-    outputs: [{ name: "results", type: "bytes[]" }],
   },
 ] as const;
 
