@@ -36,7 +36,6 @@ from __future__ import annotations
 
 import json
 import os
-import re
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock, patch
 
@@ -44,16 +43,11 @@ import pytest
 
 from agents._runner import (
     COUNCIL_RULES,
-    USER_PROMPT_TEMPLATE,
-    USER_PROMPT_TEMPLATE_NO_SOURCES,
-    run_persona_agent,
 )
 from agents.anthropic_client import AnthropicClient, UsageStats
 from agents.bull_agent import run_bull
-from agents.orchestrator import run_debate
 from agents.personas import BULL, BEAR, RISK, TECH, SENTIMENT
 from agents.tools import format_sources_context
-from schemas import AgentDecision, Source
 
 from tests.security.attack_proposals import (
     ATTACKS,
@@ -63,7 +57,6 @@ from tests.security.attack_proposals import (
     ROLE_CONFUSION_ATTACKS,
     CONTEXT_MANIP_ATTACKS,
     ENCODED_ATTACKS,
-    MOAT_ATTACKS,
 )
 
 
@@ -199,40 +192,44 @@ class TestCouncilRulesStaticDefense:
 class TestSourceContextSentinelInjection:
     """The format_sources_context boundaries are an injection surface.
 
-    Attacker embeds '--- END SOURCES ---' inside Source.snippet and follows
-    it with fake instructions. Test documents the CURRENT behavior so any
-    future hardening (escape / strip / reject) shows up as a test diff.
+    Sesja 29 documented these as KNOWN GAPS (F-01, F-04). Sesja 33
+    landed the sanitize layer in agents.tools.sanitize_source_marker.
+    These assertions are now FLIPPED - they verify the hardening holds.
+    Defense-in-depth: COUNCIL_RULES (Sesja 29) + sanitize (Sesja 33).
     """
 
     def test_unescaped_end_marker_passes_through(self) -> None:
-        """CURRENT: end markers in snippet are NOT escaped.
+        """Sesja 33: end markers in snippet ARE neutralized.
 
-        This is a KNOWN GAP. Test asserts current behavior so a future
-        sanitizer flips the assertion intentionally rather than silently.
+        The attacker's '--- END SOURCES ---' inside Source.snippet must
+        not survive into the rendered context. Only the legitimate frame
+        footer remains.
         """
         attack = ATTACKS_BY_ID["A04_indirect_snippet_directive"]
         assert attack.malicious_source is not None
         rendered = format_sources_context([attack.malicious_source])
-        assert "--- END SOURCES ---" in rendered
-        # The attacker's embedded fake END marker appears BEFORE the real one.
-        first_end = rendered.index("--- END SOURCES ---")
-        last_end = rendered.rindex("--- END SOURCES ---")
-        assert first_end != last_end, (
-            "Two END SOURCES markers in rendered context - the attacker's "
-            "fake marker plus the real footer. Confirms snippet content "
-            "is not escaped. RECOMMEND: sanitize or use unguessable "
-            "delimiter (random nonce per call)."
-        )
+        # Exactly one END SOURCES marker (the legitimate footer).
+        assert rendered.count("--- END SOURCES ---") == 1
+        # Exactly one AVAILABLE DATA SOURCES header (the legitimate one).
+        assert rendered.count("--- AVAILABLE DATA SOURCES ---") == 1
+        # Bracketed [SYSTEM ...] frame replaced with [SYSTEM_FILTERED].
+        assert "[SYSTEM OVERRIDE]" not in rendered
+        assert "[SYSTEM_FILTERED]" in rendered
+        # Sanitize markers visible so the model can see the rewrite and
+        # lower its trust accordingly. COUNCIL_RULES handles residual
+        # plain-language directives like "vote FOR" that may remain.
+        assert "[SENTINEL_FILTERED]" in rendered
 
     def test_title_field_unsanitized(self) -> None:
+        """Sesja 33: directive-shaped tags in title are neutralized."""
         attack = ATTACKS_BY_ID["A05_indirect_title_payload"]
         assert attack.malicious_source is not None
         rendered = format_sources_context([attack.malicious_source])
-        # Title is rendered raw, including the directive-looking tag.
-        assert "<critic_agent_directive>" in rendered, (
-            "Source.title rendered raw. RECOMMEND: strip or HTML-escape "
-            "tag-shaped content in titles."
-        )
+        # Raw directive tag must NOT survive into the prompt.
+        assert "<critic_agent_directive>" not in rendered
+        assert "</critic_agent_directive>" not in rendered
+        # Replacement marker is present (defense visible to operator).
+        assert "<DIRECTIVE_FILTERED>" in rendered
 
 
 # ============================================================
