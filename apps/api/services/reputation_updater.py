@@ -36,14 +36,19 @@ log = structlog.get_logger()
 
 ABI_PATH = Path(__file__).resolve().parent.parent / "contracts" / "AgentReputation.json"
 
-# Phase 1 placeholder addresses. Phase 2 ENS will assign real per-agent wallets.
-# Kept stable so smart contract deploy script can pre-register them.
+# Sesja 37 P0-2: Real deterministic agent EOAs (Szymon escalation).
+# Generated z scripts/lib/agent-eoas.ts:
+#   privateKey = keccak256(toHex(f"aitc-{persona}-2026-v1"))
+#   address    = privateKeyToAccount(privateKey).address
+# Recovery: scripts/AGENT-EOAS.md (seed pattern jest publiczny + dokumentowany).
+# SECURITY: tylko publiczne addresses tutaj. Klucze prywatne wylacznie w env
+# vars Railway BACKEND_AGENT_<PERSONA>_PK (jesli backend kiedys bedzie podpisywal).
 PERSONA_ADDRESSES: dict[str, ChecksumAddress] = {
-    "bull": Web3.to_checksum_address("0x0000000000000000000000000000000000000001"),
-    "bear": Web3.to_checksum_address("0x0000000000000000000000000000000000000002"),
-    "risk": Web3.to_checksum_address("0x0000000000000000000000000000000000000003"),
-    "tech": Web3.to_checksum_address("0x0000000000000000000000000000000000000004"),
-    "sentiment": Web3.to_checksum_address("0x0000000000000000000000000000000000000005"),
+    "bull": Web3.to_checksum_address("0xB058a9B7Cf900640078E4259bf603d3f0918BEeC"),
+    "bear": Web3.to_checksum_address("0x9C399085A223F35fec0Dae9573D42294bf43b963"),
+    "risk": Web3.to_checksum_address("0x1679a3cf4e167EeeD15a567e5EA33871399a59bC"),
+    "tech": Web3.to_checksum_address("0x87648Ab8e343cDAC4a7439f006f85A8a8f100b3d"),
+    "sentiment": Web3.to_checksum_address("0xbD77e36F82Ad0041B021834f308065CFa5b5cB62"),
 }
 
 ALIGN_DELTA = 10
@@ -290,15 +295,17 @@ def get_reputation_updater() -> ReputationUpdater | None:
         )
         return None
 
-    # Operational guard: placeholder addresses 0x..001-005 must NEVER hit prod.
-    # Phase 2 ENS will replace these with real per-agent wallets.
+    # Operational guard: precompile / placeholder addresses (0x..001 - 0x..064)
+    # must NEVER hit prod. Sesja 37 zastapilo je realnymi deterministic EOAs
+    # (>> 100 numerically) - guard zostaje jako defense-in-depth gdyby ktos
+    # przypadkiem wrocil do precompile mappingu.
     if settings.env == "prod":
         for persona, addr in PERSONA_ADDRESSES.items():
             if 1 <= int(addr, 16) <= 100:
                 raise RuntimeError(
-                    f"placeholder PERSONA_ADDRESSES detected in production "
-                    f"(persona={persona}, address={addr}). Phase 2 ENS subnames "
-                    f"must assign real addresses before prod deploy."
+                    f"precompile PERSONA_ADDRESSES detected in production "
+                    f"(persona={persona}, address={addr}). Real deterministic EOAs "
+                    f"(scripts/AGENT-EOAS.md) must be used."
                 )
 
     _singleton = ReputationUpdater(
