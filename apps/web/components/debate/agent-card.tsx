@@ -5,6 +5,13 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { AgentPortrait } from "@/components/shared/agent-portrait";
 import { SourcePopover } from "@/components/shared/source-popover";
+import { AgentDetailModal } from "@/components/agent/agent-detail-modal";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useI18n, useTranslations } from "@/lib/i18n";
 import type { AgentMeta, Claim, Decision } from "@/lib/types";
 import { MOCK_SOURCES } from "@/lib/mocks/debate";
@@ -40,29 +47,72 @@ export function AgentDebateCard({
       className="overflow-hidden border-border"
       style={{ borderTopColor: agent.color.accent, borderTopWidth: 2 }}
     >
-      <div
-        className="flex items-center gap-3 px-4 py-3"
-        style={{ background: agent.color.headerBg, color: agent.color.headerText }}
-      >
-        <AgentPortrait persona={agent.persona} size={36} />
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="font-medium text-sm">{label}</span>
-            <Badge
-              variant="outline"
-              className="text-[10px] border-current/30 px-1.5 py-0"
-            >
-              {bias}
-            </Badge>
-          </div>
-          <div className="flex items-center gap-3 text-[10px] opacity-70 font-mono">
-            <span>Rep {agent.rep}</span>
-            <span>{agent.statements} statements</span>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
+      <AgentDetailModal
+        agent={agent}
+        trigger={
+          <button
+            type="button"
+            className="flex items-center gap-3 px-4 py-3 w-full text-left cursor-pointer hover:brightness-110 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+            style={{
+              background: agent.color.headerBg,
+              color: agent.color.headerText,
+            }}
+            aria-label={`Open ${label} agent profile`}
+          >
+            <AgentPortrait persona={agent.persona} size={36} />
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-sm">{label}</span>
+                <Badge
+                  variant="outline"
+                  className="text-[10px] border-current/30 px-1.5 py-0"
+                >
+                  {bias}
+                </Badge>
+              </div>
+              <TooltipProvider delayDuration={200}>
+                <div className="flex items-center gap-3 text-[10px] opacity-70 font-mono">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="cursor-help">Rep {agent.rep}</span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-xs">
+                        Reputation score from on-chain AgentReputation contract.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="cursor-help">
+                        {agent.statements} statements
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-xs">
+                        Total statements made across all debates.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+              </TooltipProvider>
+            </div>
+          </button>
+        }
+      />
+      {(status === "analyzing" || (status === "done" && decision)) && (
+        <div
+          className="flex items-center gap-2 px-4 py-2 border-t border-current/10"
+          style={{
+            background: agent.color.headerBg,
+            color: agent.color.headerText,
+          }}
+        >
           {status === "analyzing" && (
-            <div className="h-2 w-2 rounded-full bg-amber animate-pulse-slow" />
+            <div
+              className="h-2 w-2 rounded-full bg-amber animate-pulse-slow"
+              aria-label="Analyzing"
+            />
           )}
           {status === "done" && decision && (
             <Badge className={`text-[10px] ${DECISION_STYLES[decision]}`}>
@@ -75,7 +125,7 @@ export function AgentDebateCard({
             </span>
           )}
         </div>
-      </div>
+      )}
 
       <CardContent className="px-4 py-3 space-y-2" aria-live="polite">
         {status === "waiting" && (
