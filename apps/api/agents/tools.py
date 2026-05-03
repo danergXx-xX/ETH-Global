@@ -317,8 +317,10 @@ def compute_consensus(decisions: list[AgentDecision]) -> str:
     """
     Aggregate persona verdicts into a council consensus.
 
-    Voting rule: confidence-weighted. Each persona contributes its confidence
-    to either the FOR or AGAINST tally. ABSTAIN does not count toward either.
+    Voting rule: confidence-weighted, optionally further scaled by ENS
+    reputation `vote_weight` when set (Sesja 50.5). Each persona contributes
+    `confidence * (vote_weight or 1.0)` to either the FOR or AGAINST tally.
+    ABSTAIN does not count toward either.
     Agents that crashed mid-debate (reasoning contains FAILURE_MARKER) are
     silently ignored here - they are surfaced separately in the orchestrator
     log. An intentional confidence=0.0 ABSTAIN (e.g. Risk persona explicitly
@@ -349,10 +351,15 @@ def compute_consensus(decisions: list[AgentDecision]) -> str:
         if _FAILURE_MARKER in decision.reasoning:
             continue
         contributing += 1
+        # Sesja 50.5: reputation-scaled confidence. vote_weight None means
+        # "no reputation data" - falls back to plain confidence weighting,
+        # so behavior is identical to pre-50.5 when the weighter is offline.
+        rep_weight = decision.vote_weight if decision.vote_weight is not None else 1.0
+        scaled = decision.confidence * rep_weight
         if decision.decision == "FOR":
-            weight_for += decision.confidence
+            weight_for += scaled
         elif decision.decision == "AGAINST":
-            weight_against += decision.confidence
+            weight_against += scaled
         else:
             abstain_count += 1
 

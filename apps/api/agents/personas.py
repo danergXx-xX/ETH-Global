@@ -312,13 +312,36 @@ def get_runner(persona_id: str) -> PersonaRunner:
     return cast(PersonaRunner, getattr(module, f"run_{persona_id}"))
 
 
-def build_system_prompt(persona: PersonaSpec) -> str:
-    """Build cached system prompt dla danej persona (Anthropic prompt caching)."""
+def build_system_prompt(
+    persona: PersonaSpec,
+    past_decisions_block: str | None = None,
+) -> str:
+    """
+    Build cached system prompt dla danej persona (Anthropic prompt caching).
+
+    Sesja 50.5: optional `past_decisions_block` is injected BEFORE the proposal
+    framing so the model treats it as historical reference (services
+    .historical_context.format_history_for_prompt produces it). When None or
+    empty, behavior is identical to pre-50.5 - no section rendered. Note: the
+    block changes per debate, so it is NOT part of the cached prefix - callers
+    must pass it via the user message side, not the system prompt, when prompt
+    caching is active. This helper still returns it inline for tests and
+    non-cached call sites.
+    """
+    # KOLIZJA-NOTE (Sesja 50.5 -> LUMEN-HUGO-RESEARCH): this function is the
+    # merge boundary. Sesja 50.5 ADDED the optional past_decisions_block kwarg
+    # + PAST DECISIONS section. Lumen's upcoming change touches PersonaSpec
+    # `sources_priority` ordering. Resolve by keeping BOTH: the kwarg here, the
+    # sources_priority refresh in the dataclass instances above.
     framework_str = "\n".join(f"- {f}" for f in persona.decision_framework)
     look_for_str = "\n".join(f"- {f}" for f in persona.look_for)
     avoid_str = "\n".join(f"- {f}" for f in persona.avoid)
 
-    return f"""You are {persona.persona_id.upper()}, a {persona.role} on the AI Treasury Council.
+    history_section = (
+        f"\n{past_decisions_block}\n" if past_decisions_block else ""
+    )
+
+    return f"""You are {persona.persona_id.upper()}, a {persona.role} on the AI Treasury Council.{history_section}
 
 Background: {persona.backstory}
 

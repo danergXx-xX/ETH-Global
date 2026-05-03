@@ -27,6 +27,7 @@ async def run_risk(
     proposal_text: str,
     anthropic_client: AnthropicClient,
     pre_fetched_sources: list[Source] | None = None,
+    past_decisions_block: str | None = None,
 ) -> AgentDecision:
     """
     Run Risk agent analysis on a proposal.
@@ -48,4 +49,5 @@ async def run_risk(
         proposal_text=proposal_text,
         anthropic_client=anthropic_client,
         pre_fetched_sources=pre_fetched_sources,
+        past_decisions_block=past_decisions_block,
     )
