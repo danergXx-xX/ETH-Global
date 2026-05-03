@@ -33,19 +33,23 @@ const SEPOLIA_RPC_URLS: string[] = [
   "https://1rpc.io/sepolia",
 ].filter((url): url is string => Boolean(url));
 
-// Dla parent/treasury - placeholder addresses gdy ENS nie zwroci addr().
+// Sesja 37 P0-2: Real deterministic agent EOAs (Szymon escalation).
+// Wczesniej: precompile addresses 0x...01-05 (smell test failure).
+// Generate: scripts/lib/agent-eoas.ts (keccak256(toHex("aitc-${persona}-2026-v1"))).
+// Doc: scripts/AGENT-EOAS.md.
 const FALLBACK_ADDRESSES: Record<AgentId, string> = {
   parent: "0x14b97991f681D0b69074B5AD3CcC675765C276F4",
   treasury: "0x76a69bB6AeF69A2E76Fa6C9632FF6Ca101441b0f",
-  bull: "0x0000000000000000000000000000000000000001",
-  bear: "0x0000000000000000000000000000000000000002",
-  risk: "0x0000000000000000000000000000000000000003",
-  tech: "0x0000000000000000000000000000000000000004",
-  sentiment: "0x0000000000000000000000000000000000000005",
+  bull: "0xB058a9B7Cf900640078E4259bf603d3f0918BEeC",
+  bear: "0x9C399085A223F35fec0Dae9573D42294bf43b963",
+  risk: "0x1679a3cf4e167EeeD15a567e5EA33871399a59bC",
+  tech: "0x87648Ab8e343cDAC4a7439f006f85A8a8f100b3d",
+  sentiment: "0xbD77e36F82Ad0041B021834f308065CFa5b5cB62",
 };
 
 // Klucze text records mintowane przez scripts/mint-ens-subnames.ts (Sesja 35: deep records).
 // Ghost in the Machine pattern - 26 records per subname dla ENS partner prize.
+// Sesja 37: ai.system_prompt_hash to real keccak256(systemPrompt) z personas.py.
 const AGENT_TEXT_KEYS = [
   // Identity
   "name",
@@ -82,6 +86,7 @@ const AGENT_TEXT_KEYS = [
   "ai.last_active",
   // Backwards compat (Sesja 25)
   "ai.address",
+  "ai.system_prompt_hash",
 ] as const;
 
 const PARENT_TEXT_KEYS = ["name", "description", "avatar", "url"] as const;

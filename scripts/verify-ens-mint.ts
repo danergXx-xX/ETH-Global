@@ -4,7 +4,7 @@ const c = createPublicClient({ chain: sepolia, transport: http("https://ethereum
 const RES = "0x8FADE66B79cC9f707aB26799354482EB93a5B7dD" as const;
 const ABI = [{type:"function",name:"text",stateMutability:"view",inputs:[{name:"node",type:"bytes32"},{name:"key",type:"string"}],outputs:[{name:"",type:"string"}]}] as const;
 const personas = ["bull","bear","risk","tech","sentiment"];
-const keys = ["name","description","avatar","url","com.twitter","ai.persona","ai.reputation","ai.contract","ai.address"];
+const keys = ["name","description","avatar","url","com.twitter","ai.persona","ai.reputation","ai.contract","ai.address","ai.system_prompt_hash"];
 async function main() {
   for (const p of personas) {
     console.log(`\n=== ${p}.aicouncil-danergy.eth ===`);
