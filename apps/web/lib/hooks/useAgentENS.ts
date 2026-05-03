@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { createPublicClient, http } from "viem";
+import { createPublicClient, fallback, http } from "viem";
 import { sepolia } from "viem/chains";
 import type { AgentPersona } from "../types";
 import { AGENTS } from "../types";
@@ -21,9 +21,17 @@ type AgentId = AgentPersona | "treasury" | "parent";
 // Komponenty NIGDY nie wolaja viem ENS bezpośrednio - hook to isolation layer.
 const ENS_DOMAIN =
   process.env.NEXT_PUBLIC_ENS_DOMAIN || "aicouncil-danergy.eth";
-const SEPOLIA_RPC =
-  process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL ||
-  "https://ethereum-sepolia-rpc.publicnode.com";
+// Multi-RPC fallback chain dla Sepolia. Pierwszenstwo: env override, potem publicnode
+// (sporadyczny 503 rate-limit), Tenderly gateway, RockX, 1rpc.io. Drop rpc.sepolia.org
+// (Mateusz audit: niestabilny od 2026, sporadyczne stale state).
+// viem `fallback` transport automatycznie przelacza po retry/timeout (bez manual circuit).
+const SEPOLIA_RPC_URLS: string[] = [
+  process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL,
+  "https://ethereum-sepolia-rpc.publicnode.com",
+  "https://sepolia.gateway.tenderly.co",
+  "https://rpc-sepolia.rockx.com",
+  "https://1rpc.io/sepolia",
+].filter((url): url is string => Boolean(url));
 
 // Dla parent/treasury - placeholder addresses gdy ENS nie zwroci addr().
 const FALLBACK_ADDRESSES: Record<AgentId, string> = {
@@ -80,7 +88,16 @@ const PARENT_TEXT_KEYS = ["name", "description", "avatar", "url"] as const;
 
 const sepoliaClient = createPublicClient({
   chain: sepolia,
-  transport: http(SEPOLIA_RPC),
+  transport: fallback(
+    SEPOLIA_RPC_URLS.map((url) =>
+      http(url, {
+        timeout: 8_000,
+        retryCount: 2,
+        retryDelay: 200,
+      }),
+    ),
+    { rank: false, retryCount: 0 },
+  ),
 });
 
 function ensNameFor(agentId: AgentId): string {
