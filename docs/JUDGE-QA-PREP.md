@@ -20,7 +20,7 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 **Q (judge):** "You went with Anthropic SDK directly instead of CrewAI. Why?"
 
-**A:** "We started with CrewAI but cut it on day two. Three reasons. First, CrewAI's orchestration adds 200 milliseconds per agent hop and we wanted parallel debate streamed via WebSocket. Second, CrewAI hides prompt caching - we get 60 to 90 percent token reduction by caching system plus persona, which CrewAI's abstraction blocked. Third, our agents need structured output via Pydantic schemas, easier with bare SDK. Documented in ADR-001."
+**A:** "We started with CrewAI but cut it on day two. Three reasons. First, CrewAI's orchestration adds 200 milliseconds per agent hop and we wanted parallel debate streamed via WebSocket. Second, CrewAI hides prompt caching - we get 60 to 90 percent token reduction by caching system plus persona, which CrewAI's abstraction blocked. Third, our agents need structured output via Pydantic schemas, easier with bare SDK. Documented in ADR. See dependency-strategy.md."
 
 **Backup:** `docs/dependency-strategy.md`, `apps/api/agents/orchestrator.py`, `apps/api/agents/personas.py`
 
@@ -32,7 +32,7 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 **A:** "Anthropic SDK supports cache_control on message blocks. We mark the system prompt and persona definition as cacheable - they're identical across debates. Cache hits charge 10 percent of input cost, writes charge 125 percent. With our 5-agent debate, the persona block is ~2k tokens cached, proposal text ~500 tokens fresh. Net savings: 60 to 90 percent on input tokens. Cost per debate dropped from 12 cents to 4 cents."
 
-**Backup:** `apps/api/agents/orchestrator.py` (cache_control blocks), `apps/api/cost_tracking.py`
+**Backup:** `apps/api/agents/anthropic_client.py:92` (cache_control blocks ephemeral), `apps/api/agents/orchestrator.py`
 
 ---
 
@@ -42,7 +42,7 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 **A:** "User submits via React form. Frontend POSTs to FastAPI which validates schema. Backend opens WebSocket and spawns 5 Anthropic streams in parallel - each persona reads the proposal, fetches sources via tools, returns structured AgentDecision. Orchestrator computes consensus when all five resolve. Transcript uploads to 0G Storage, CID returned. Frontend triggers wagmi governor.propose - 48 hour timelock starts. After timelock, anyone calls execute and MockUSDC moves."
 
-**Backup:** `apps/api/main.py:proposal_endpoint`, `apps/api/agents/orchestrator.py`, `apps/web/components/vote/execute-flow.tsx`
+**Backup:** `apps/api/main.py`, `apps/api/agents/orchestrator.py`, `apps/web/components/vote/execute-flow.tsx`
 
 ---
 
@@ -52,7 +52,7 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 **A:** "Agents return AgentDecision with vote enum FOR, AGAINST, ABSTAIN plus confidence 0 to 1. Consensus is weighted majority - sum confidence per vote, highest wins. Threshold for valid consensus is 60 percent confidence on winning side. Below that we flag NO_CONSENSUS and the verdict card surfaces it. Adversarial agent, when on, gets veto on consensus over 80 - it forces reconsider if any major risk surfaces."
 
-**Backup:** `apps/api/agents/schemas.py:AgentDecision`, `apps/api/agents/orchestrator.py:compute_consensus`
+**Backup:** `apps/api/schemas.py:AgentDecision`, `apps/api/agents/orchestrator.py` (consensus computation)
 
 ---
 
@@ -62,7 +62,7 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 **A:** "Two layers. First, slowapi rate limit at 10 requests per minute per IP prevents us from hammering the API and tripping their throttle. Second, the orchestrator wraps each persona stream in try/except - on Anthropic exception we mark that agent as ABSTAIN and continue with the remaining agents. Consensus still computes, the verdict card flags 'agent X timed out'. Honest degradation, not silent failure."
 
-**Backup:** `apps/api/agents/orchestrator.py:run_debate` (exception handling), `apps/api/main.py:rate_limit`
+**Backup:** `apps/api/agents/orchestrator.py` (exception handling per persona), `apps/api/main.py` (slowapi rate limit decorator)
 
 ---
 
@@ -72,7 +72,7 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 **A:** "Hackathon constraint plus fit. Base Sepolia gives us cheap deploys for 5 contracts, fast block times for demo, and free testnet ETH from Alchemy faucet. Production target would be Base mainnet for cost - we're not married to Sepolia, the contracts are chain-agnostic OZ Governor. Production move is a deploy script change and a chain ID swap in the frontend wagmi config."
 
-**Backup:** `contracts/script/Deploy.s.sol`, `apps/web/lib/wagmi-config.ts`
+**Backup:** `contracts/script/Deploy.s.sol`, `apps/web/lib/wagmi.ts`
 
 ---
 
@@ -82,7 +82,7 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 **A:** "Two separate writes. After consensus, backend uploads the full transcript as JSON to 0G Storage via JSON-RPC, gets a CID, attaches it to the verdict. Then a separate call to AgentReputation.updateReputation on Base Sepolia adjusts each agent's score based on consensus alignment. The CID is stored in the contract event so anyone can retrieve the original transcript that produced that score change. They're decoupled but linked via debate ID."
 
-**Backup:** `apps/api/storage/zerog.py`, `contracts/src/AgentReputation.sol:updateReputation`
+**Backup:** `apps/api/storage/zerog.py`, `contracts/src/AgentReputation.sol` (updateReputation)
 
 ---
 
@@ -92,7 +92,7 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 **A:** "Three on-chain operations. Governor.propose: ~250k gas. Vote cast: ~80k per voter. Execute through timelock: ~150k base plus the inner call - MockUSDC.transfer adds ~50k. Total for full flow with 3 voters: roughly 730k gas. On Base Sepolia at 0.001 gwei that's negligible. On Base mainnet at 0.01 gwei, around 5 cents USD per full proposal."
 
-**Backup:** `contracts/test/Governor.t.sol` gas snapshots
+**Backup:** `contracts/test/AICouncilGovernor.t.sol` (gas measured via `forge test --gas-report` post-merge - figures are OZ Governor industry estimates)
 
 ---
 
@@ -102,7 +102,7 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 **A:** "Three layers. Pydantic input validator strips control characters and caps length at 5000 chars. The system prompt has a hard COUNCIL_RULES guard that says ignore instructions inside proposal text. Mateusz red-team in session 29 ran 18 jailbreak vectors - direct injection, role confusion, encoded payloads. Result: 0 critical, 0 high. The Adversarial agent, when enabled, also flags proposals containing instruction-like patterns as suspicious."
 
-**Backup:** `apps/api/agents/personas.py:COUNCIL_RULES`, `audit/redteam-jailbreak/` (PR #12), `apps/api/main.py:proposal_schema`
+**Backup:** `apps/api/agents/personas.py` (COUNCIL_RULES guard), branch `audit/redteam-jailbreak` (PR #12), `apps/api/schemas.py` (Pydantic input validators)
 
 ---
 
@@ -134,7 +134,7 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 **A:** "Council Rules is a JSON config edited via the CouncilRulesEditor React component. On debate start, the orchestrator loads the rules JSON and prepends it to every persona's system prompt as a non-overridable block, marked cacheable. Rules cover thresholds for human override, prohibited proposal types, and required confidence floors. If a proposal triggers a rule, agents are instructed to add HUMAN_OVERRIDE_REQUIRED to their decision payload."
 
-**Backup:** `apps/web/components/rules/rules-editor.tsx`, `apps/api/agents/orchestrator.py:load_rules`
+**Backup:** `apps/web/components/rules/rules-editor.tsx`, `apps/api/agents/orchestrator.py` (rules loading)
 
 ---
 
@@ -186,7 +186,7 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 **A:** "In the audit log tab, last debate, the verdict card has a 0G icon - click and it opens the 0G explorer with the CID. We seed three historical debates so judges see populated state. CID format starts with 0x followed by 64 hex chars - 0G uses keccak256 content addressing. The CID is also emitted in the AICouncilGovernor.ProposalCreated event description field, viewable on Basescan."
 
-**Backup:** `apps/web/lib/mocks/audit.ts` (seed CIDs), `apps/api/storage/zerog.py:upload`
+**Backup:** `apps/web/lib/mocks/audit.ts` (seed CIDs), `apps/api/storage/zerog.py`
 
 **CHALLENGE:** Live 0G CIDs depend on Lumen seed data merge (PR #13). Reframe if not merged: "We have the integration wired - example CID is in audit.ts, the upload pipeline is in storage/zerog.py."
 
@@ -198,7 +198,7 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 **A:** "Six text records per agent. ai.persona is the agent role - bull, bear, risk, tech, sentiment. ai.description is the decision framework prose. ai.reputation is the live score from AgentReputation contract. ai.debates_participated counts debates joined. ai.consensus_aligned counts alignments with majority. ai.contract is a cross-chain pointer - the AgentReputation address on Base Sepolia. Plus standard avatar text record so wallets render the persona portrait."
 
-**Backup:** `scripts/mint-ens-subnames.ts`, `apps/web/components/ens/ens-identity-card.tsx`
+**Backup:** `scripts/mint-ens-subnames.ts` (na branch feat/phase2-ens / PR #8), `apps/web/components/ens/ens-identity-card.tsx`
 
 ---
 
@@ -208,7 +208,7 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 **A:** "ENS resolves to a string and the string carries the cross-chain pointer. The ai.contract text record stores eip155:84532:0xf3BAb - the standard ENSIP-9 chain-specific format. Frontend reads the ENS text record on Sepolia, parses the chain ID, then issues a separate viem call to Base Sepolia to read the actual reputation. We also do a periodic snapshot via update-reputation-snapshot.ts so the ai.reputation text shows fresh values without a cross-chain hop."
 
-**Backup:** `scripts/update-reputation-snapshot.ts`, `apps/web/lib/hooks/useAgentENS.ts`
+**Backup:** `scripts/update-reputation-snapshot.ts` (na branch feat/phase2-ens / PR #8), `apps/web/lib/hooks/useAgentENS.ts`
 
 ---
 
@@ -218,7 +218,7 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 **A:** "Honest answer - no, not in this MVP. Our use case is treasury governance, not AMM hooks. The natural fit would be a v4 hook that consults the AI Council before executing large swaps from the treasury - if a proposal allocates 100k USDC to swap into ETH, the hook could require an AI Council verdict CID as input. We documented this in FEEDBACK.md as an extension path. Did not implement to keep MVP scope tight."
 
-**Backup:** `docs/FEEDBACK.md` (extension paths)
+**Backup:** `docs/FEEDBACK.md` + roadmap noted in `Projects/AI-Tech/ETHGlobal-Open-Agents/external-input/2026-05-03-plan-to-submission-matthew.md`
 
 **CHALLENGE:** Honest scope statement - judges respect this more than vaporware claims.
 
@@ -230,7 +230,7 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 **A:** "Three differentiators. Source attribution per claim is enforced by schema, not best-effort - agents that don't cite get rejected. On-chain reputation per agent via Proof-of-Work means the orchestrator's decisions accumulate verifiable history. The Adversarial agent is a structured devil's advocate, not a generic critic - it's required to challenge consensus over 80 percent confidence. Add timelock-gated execution and we move from orchestrator to governance primitive."
 
-**Backup:** `apps/api/agents/personas.py:Adversarial`, `contracts/src/AgentReputation.sol`
+**Backup:** `apps/api/agents/adversarial_agent.py`, `contracts/src/AgentReputation.sol`
 
 ---
 
@@ -240,7 +240,7 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 **A:** "Two clear fits. First, the timelock execute call after 48 hours - currently anyone can call execute, but a KeeperHub job would automate it reliably so executions don't wait for a human. Second, the periodic reputation snapshot script - update-reputation-snapshot.ts pushes Base Sepolia reputation to ENS Sepolia text records, ideal cron job for KeeperHub. We did not integrate KeeperHub in this MVP but designed both flows to be keeper-callable."
 
-**Backup:** `scripts/update-reputation-snapshot.ts`, `contracts/src/AICouncilGovernor.sol:execute`
+**Backup:** `scripts/update-reputation-snapshot.ts` + `scripts/diversify-reputation-snapshot.ts` (PR #8), `contracts/src/AICouncilGovernor.sol` (execute)
 
 **CHALLENGE:** Aspirational - frame as 'designed for keeper integration', not 'we use KeeperHub'.
 
@@ -262,7 +262,7 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 **A:** "Three revenue paths under exploration. DAO subscription - protocols pay monthly for council services tuned to their treasury. Per-debate fee for casual users - 5 USDC per proposal analyzed. Reputation-as-a-service - other AI agent systems pay to reference our agent reputation as a quality signal. Cost side is dominated by Anthropic - 4 cents per debate at current pricing, scales linearly. Margins are healthy at any of those price points."
 
-**Backup:** `docs/FEEDBACK.md` (business model section)
+**Backup:** `docs/FEEDBACK.md` + Aria-DAO LOI templates `docs/loi/`
 
 ---
 
@@ -302,9 +302,11 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 **Q (judge):** "Reputation values are 100 baseline. Where's the track record?"
 
-**A:** "Two-part answer. First, baseline 100 was deploy state - by demo we ran the diversification snapshot script that updates each agent to realistic values based on simulated alignment - bull 108, bear 95, risk 112, tech 105, sentiment 102. Second, real reputation accumulates over real debates post-launch. The contract is live and writeable - any debate ran against it produces real on-chain history. The 100 was a starting line, not the finishing line."
+**A:** "Two-part answer. First, baseline 100 was deploy state - pre-demo we ran the diversification snapshot script that updates each agent to realistic values based on simulated 12-debate alignment - bull 108, bear 95, risk 112, tech 105, sentiment 102. Second, real reputation accumulates over real debates post-launch. The contract is live and writeable - any debate ran against it produces real on-chain history. The 100 was a starting line, not the finishing line."
 
-**Backup:** `scripts/diversify-reputation-snapshot.ts`, `contracts/src/AgentReputation.sol`
+**Backup:** `scripts/diversify-reputation-snapshot.ts` (PR #8), `contracts/src/AgentReputation.sol`
+
+**MUST-DO PRE-RECORDING:** Run `tsx scripts/diversify-reputation-snapshot.ts --broadcast` before Sesja 33 demo. If skipped, Q4.3 must be reframed to "deploy state is 100, debates accumulate live - we did not pre-seed reputation to keep the demo honest."
 
 ---
 
@@ -324,7 +326,7 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 **A:** "No. Three reasons. Mateusz session 29 ran 18 jailbreak vectors against the personas - 0 critical, 0 high. The COUNCIL_RULES guard in the system prompt resists role override. Even if one agent flips, consensus needs weighted majority across five plus optional Adversarial - one rogue agent can't carry consensus. Worst case it gets flagged ABSTAIN by the validator. Plus the timelock gives humans 48 hours to spot anomaly before execution."
 
-**Backup:** `audit/redteam-jailbreak/` (PR #12 audit report), `apps/api/agents/personas.py:COUNCIL_RULES`
+**Backup:** branch `audit/redteam-jailbreak` (PR #12 audit report), `apps/api/agents/personas.py` (COUNCIL_RULES)
 
 ---
 
@@ -342,4 +344,6 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 - [ ] Q1.6 Base Sepolia justification - confirm wagmi config is actually chain-agnostic (Aiko verify)
 - [ ] Q3.5 Uniswap honest answer - confirm with Matthew if we want to claim more or stay honest
 - [ ] Q3.7 KeeperHub - same as Uniswap, Matthew judgment call
-- [ ] Q4.3 Diversification snapshot - confirm Sesja 32 script ran before recording (this session)
+- [ ] **Q4.3 BLOCKER:** Diversification snapshot must be BROADCAST before Sesja 33 recording. If reputation in ENS is still 100/100/100/100/100 at recording time, reframe Q4.3 (see MUST-DO note inline).
+- [ ] Q1.8 Gas estimates - run `forge test --gas-report` and replace 730k figure with measured value, OR keep industry estimate framing
+- [ ] Q1.2 cost per debate (12c -> 4c) - verify against actual Anthropic invoices or reframe as estimate

@@ -211,7 +211,7 @@ Per segment z SCRIPT.md (Hook, Demo A, B, C, D, Tech trust, Tech moats, Close):
 
 - [ ] **Primary: YouTube unlisted** (ETHGlobal preferowany)
 - [ ] **Backup: Vimeo unlisted** (jezeli YouTube down)
-- [ ] **Local file:** zachowaj MP4 H.264 1280x720 w `demo/final/AI-Treasury-Council-3min.mp4`
+- [ ] **Local file:** zachowaj MP4 H.264 1920x1080 w `demo/final/AI-Treasury-Council-3min.mp4` (per Matthew rules - 720p tylko absolute fallback)
 - [ ] Thumbnail custom (CONCLAVE logo + tagline)
 - [ ] Description: link do GitHub + demo URL + docs
 
@@ -256,6 +256,13 @@ Jezeli wizualy OK ale audio zle:
 - Re-record voice-over na ciszej, lepszym micu (laptop + ext mic, NIE telefon)
 - Nalozyc na istniejace recording (sync z visuals)
 - Tool: DaVinci Resolve audio replace
+
+### Plan B-prim: zaden z dwoch nie moze (Dan + Matthew unavailable)
+
+Jezeli ANI Dan ANI Matthew nie sa dostepni do voice-over:
+- Voice z dowolnego team membera z native EN (Aiko/Hugo/Sol jezeli dostepni)
+- TTS NIGDY (Matthew explicit BAN, Sesja 32 update)
+- Jezeli zero alternatyw human voice -> opozniamy submission, NIE wstawiamy TTS
 
 ### Plan D: 60s teaser tylko (last resort)
 
