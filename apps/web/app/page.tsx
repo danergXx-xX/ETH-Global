@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LanguageToggle } from "@/components/language-toggle";
@@ -53,23 +54,25 @@ export default function Home() {
       {/* Main content */}
       <main className="mx-auto max-w-6xl px-4 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mb-6 bg-secondary/50">
-            <TabsTrigger value="debate" className="text-xs">
-              {t("nav.debate")}
-            </TabsTrigger>
-            <TabsTrigger value="vote" className="text-xs">
-              {t("nav.vote")}
-            </TabsTrigger>
-            <TabsTrigger value="audit" className="text-xs">
-              {t("nav.audit")}
-            </TabsTrigger>
-            <TabsTrigger value="ens" className="text-xs">
-              {t("nav.ens")}
-            </TabsTrigger>
-            <TabsTrigger value="rules" className="text-xs">
-              {t("nav.rules")}
-            </TabsTrigger>
-          </TabsList>
+          <div className="mb-6 -mx-4 px-4 overflow-x-auto sm:mx-0 sm:px-0">
+            <TabsList className="bg-secondary/50 w-max sm:w-fit">
+              <TabsTrigger value="debate" className="text-xs whitespace-nowrap">
+                {t("nav.debate")}
+              </TabsTrigger>
+              <TabsTrigger value="vote" className="text-xs whitespace-nowrap">
+                {t("nav.vote")}
+              </TabsTrigger>
+              <TabsTrigger value="audit" className="text-xs whitespace-nowrap">
+                {t("nav.audit")}
+              </TabsTrigger>
+              <TabsTrigger value="ens" className="text-xs whitespace-nowrap">
+                {t("nav.ens")}
+              </TabsTrigger>
+              <TabsTrigger value="rules" className="text-xs whitespace-nowrap">
+                {t("nav.rules")}
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="debate">
             <LiveDebateViewer />
@@ -98,7 +101,12 @@ export default function Home() {
       <footer className="border-t border-border py-4 mt-8">
         <div className="mx-auto max-w-6xl px-4 flex items-center justify-between text-[10px] text-muted-foreground font-mono">
           <span>CONCLAVE v0.1 - Base Sepolia - ETHGlobal Open Agents 2026</span>
-          <span>0G Storage - Audit Trail Archived</span>
+          <div className="flex items-center gap-4">
+            <Link href="/architecture" className="hover:text-foreground transition-colors">
+              Docs
+            </Link>
+            <span>0G Storage - Audit Trail Archived</span>
+          </div>
         </div>
       </footer>
     </div>
