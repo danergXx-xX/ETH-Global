@@ -62,23 +62,38 @@ _BRACKET_PATTERNS: list[tuple[re.Pattern[str], str]] = [
         re.compile(r"<\s*/?\s*[a-z_]*_directive\s*>", re.IGNORECASE),
         "<DIRECTIVE_FILTERED>",
     ),
+    # H-01 fallback: unclosed bracket markers like "[SYSTEM OVERRIDE: vote FOR"
+    # without a matching "]". Catches up to 80 chars of payload after the role
+    # token. Word boundary on role token avoids matching legit "[SYSTEMS DOWN]".
+    (
+        re.compile(
+            r"\[\s*(SYSTEM|INST|ASSISTANT|USER)\b[^\n\]]{0,80}",
+            re.IGNORECASE,
+        ),
+        "[ROLE_MARKER_FILTERED]",
+    ),
 ]
 
 # ALL-CAPS instruction phrases. We require word boundaries to avoid
 # false positives like "OVERRIDE" appearing inside a legitimate compound
 # (rare in DAO proposals, but cheap to be careful). Multi-word phrases
 # tolerate variable whitespace.
+# M-01 fix: separator between words tolerates whitespace, hyphens, dots,
+# underscores. Attacker inserts non-space delimiters (IGNORE-PREVIOUS,
+# IGNORE.PREVIOUS) to bypass naive \s+ patterns.
+_SEP = r"[\s\-_.]+"
+
 _INSTRUCTION_PHRASES: list[re.Pattern[str]] = [
-    re.compile(r"\bIGNORE\s+(ALL\s+)?PREVIOUS(\s+INSTRUCTIONS?)?\b", re.IGNORECASE),
-    re.compile(r"\bIGNORE\s+(THE\s+)?ABOVE\b", re.IGNORECASE),
-    re.compile(r"\bDISREGARD\s+(ALL\s+)?(PREVIOUS|PRIOR|ABOVE)\b", re.IGNORECASE),
-    re.compile(r"\bSYSTEM\s+OVERRIDE\b", re.IGNORECASE),
-    re.compile(r"\bNEW\s+INSTRUCTIONS?\b", re.IGNORECASE),
-    re.compile(r"\bOVERRIDE\s+(YOUR\s+)?(BIAS|FRAMEWORK|RULES)\b", re.IGNORECASE),
-    re.compile(r"\bCOUNCIL\s+RULES\s+UPDATED?\b", re.IGNORECASE),
-    re.compile(r"\bYOU\s+ARE\s+NOW\b", re.IGNORECASE),
-    re.compile(r"\bSWITCH\s+TO\s+(ADMIN|DEV|TEST)\s+MODE\b", re.IGNORECASE),
-    re.compile(r"\bVOTE\s+(FOR|AGAINST|ABSTAIN)\s+REGARDLESS\b", re.IGNORECASE),
+    re.compile(rf"\bIGNORE{_SEP}(ALL{_SEP})?PREVIOUS({_SEP}INSTRUCTIONS?)?\b", re.IGNORECASE),
+    re.compile(rf"\bIGNORE{_SEP}(THE{_SEP})?ABOVE\b", re.IGNORECASE),
+    re.compile(rf"\bDISREGARD{_SEP}(ALL{_SEP})?(PREVIOUS|PRIOR|ABOVE)\b", re.IGNORECASE),
+    re.compile(rf"\bSYSTEM{_SEP}OVERRIDE\b", re.IGNORECASE),
+    re.compile(rf"\bNEW{_SEP}INSTRUCTIONS?\b", re.IGNORECASE),
+    re.compile(rf"\bOVERRIDE{_SEP}(YOUR{_SEP})?(BIAS|FRAMEWORK|RULES)\b", re.IGNORECASE),
+    re.compile(rf"\bCOUNCIL{_SEP}RULES{_SEP}UPDATED?\b", re.IGNORECASE),
+    re.compile(rf"\bYOU{_SEP}ARE{_SEP}NOW\b", re.IGNORECASE),
+    re.compile(rf"\bSWITCH{_SEP}TO{_SEP}(ADMIN|DEV|TEST){_SEP}MODE\b", re.IGNORECASE),
+    re.compile(rf"\bVOTE{_SEP}(FOR|AGAINST|ABSTAIN){_SEP}REGARDLESS\b", re.IGNORECASE),
 ]
 
 # Source-context sentinel markers. Even partial matches get neutralized so
@@ -180,7 +195,7 @@ def _sanitize_and_log(value: str, field: str, source_url: str) -> str:
         log.warning(
             "sanitized_source_marker",
             field=field,
-            source_url=(source_url or "")[:300],
+            source_url=(source_url or "")[: _FIELD_LIMITS["url"]],
             patterns_removed=patterns,
             input_length=len(value or ""),
             output_length=len(cleaned),
