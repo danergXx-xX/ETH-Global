@@ -80,6 +80,32 @@ class DebateRepo:
         result = await self.session.execute(stmt)
         return list(result.scalars().all())
 
+    async def list_recent_for_persona(
+        self,
+        persona: str,
+        limit: int = 3,
+    ) -> list[tuple[Debate, AgentStatement]]:
+        """
+        Return last N (debate, statement) pairs where this persona participated.
+
+        Sesja 50.5: feeds historical context into persona system prompts so each
+        agent maintains consistency across debates ("Crow always conservative").
+
+        Joins on debate_id and orders by debate.started_at desc. We use the
+        debate timestamp rather than statement.created_at - within one debate
+        all statements share roughly the same timestamp, but debate time is
+        the canonical "when did this council session happen" field.
+        """
+        stmt = (
+            select(Debate, AgentStatement)
+            .join(AgentStatement, AgentStatement.debate_id == Debate.id)
+            .where(AgentStatement.persona == persona)
+            .order_by(desc(Debate.started_at))
+            .limit(limit)
+        )
+        result = await self.session.execute(stmt)
+        return [(d, s) for d, s in result.all()]
+
     async def count(self) -> int:
         from sqlalchemy import func
 

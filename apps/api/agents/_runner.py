@@ -73,6 +73,7 @@ async def run_persona_agent(
     anthropic_client: AnthropicClient,
     pre_fetched_sources: list[Source] | None = None,
     sandbox_mode: bool = False,
+    past_decisions_block: str | None = None,
 ) -> AgentDecision:
     """
     Run a persona agent on a proposal.
@@ -91,6 +92,11 @@ async def run_persona_agent(
             audit clarity. Callers MUST guarantee no on-chain side effects
             (reputation, 0G upload). The runner itself never writes on-chain,
             so this flag is informational only.
+        past_decisions_block: Sesja 50.5 - pre-rendered "PAST DECISIONS CONTEXT"
+            section from services.historical_context.format_history_for_prompt.
+            Injected into the persona system prompt to encourage cross-debate
+            consistency. None or empty string disables (default Phase 0
+            behavior).
 
     Returns:
         Validated AgentDecision with persona auto-stamped, timestamp, tokens, cost.
@@ -102,7 +108,16 @@ async def run_persona_agent(
     if sandbox_mode:
         log.info("persona_run_sandbox", persona=persona_id)
     system_prompt = COUNCIL_RULES
-    persona_prompt = build_system_prompt(persona)
+    persona_prompt = build_system_prompt(
+        persona,
+        past_decisions_block=past_decisions_block,
+    )
+    if past_decisions_block:
+        log.info(
+            "persona_past_context_injected",
+            persona=persona_id,
+            chars=len(past_decisions_block),
+        )
 
     if pre_fetched_sources is not None:
         sources_context = format_sources_context(pre_fetched_sources)

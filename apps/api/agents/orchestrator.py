@@ -29,6 +29,11 @@ from agents.tools import compute_consensus
 from config import get_settings
 from data.aggregator import DataAggregator
 from schemas import AgentDecision, Source
+from services.historical_context import (
+    format_history_for_prompt,
+    get_agent_history,
+)
+from services.reputation_weighter import calculate_weighted_vote
 
 log = structlog.get_logger()
 
@@ -146,6 +151,28 @@ def _failure_decision(persona_id: str, error: str) -> AgentDecision:
     )
 
 
+async def _build_history_block(persona_id: str) -> str | None:
+    """
+    Fetch this persona's last 3 debates and render the prompt block.
+
+    Returns None on any failure or empty history so the runner skips
+    injecting the section entirely (pre-Sesja-50.5 behavior).
+    """
+    try:
+        entries = await get_agent_history(persona_id, limit=3)
+    except Exception as exc:
+        log.warning(
+            "history_fetch_failed",
+            persona=persona_id,
+            error_type=type(exc).__name__,
+            error=str(exc),
+        )
+        return None
+    if not entries:
+        return None
+    return format_history_for_prompt(entries)
+
+
 async def _run_persona_safe(
     persona: PersonaSpec,
     proposal_text: str,
@@ -159,8 +186,15 @@ async def _run_persona_safe(
         log.error("no_runner_for_persona", persona=persona.persona_id, error=str(exc))
         return _failure_decision(persona.persona_id, f"no runner registered: {exc}")
 
+    past_decisions_block = await _build_history_block(persona.persona_id)
+
     try:
-        return await runner(proposal_text, client, pre_fetched_sources=sources)
+        return await runner(
+            proposal_text,
+            client,
+            pre_fetched_sources=sources,
+            past_decisions_block=past_decisions_block,
+        )
     except Exception as exc:
         log.exception("persona_run_failed", persona=persona.persona_id)
         return _failure_decision(persona.persona_id, str(exc))
@@ -209,6 +243,27 @@ async def run_debate(
         for p in personas
     ]
     decisions: list[AgentDecision] = await asyncio.gather(*persona_tasks)
+
+    # Sesja 50.5: stamp reputation_score + vote_weight on each decision
+    # BEFORE consensus so compute_consensus can apply ENS-derived weighting.
+    # FAILURE_MARKER decisions are skipped - they already abstain at conf=0.0
+    # and consensus excludes them anyway.
+    weighted_results = await asyncio.gather(
+        *[
+            calculate_weighted_vote(d.persona, d.confidence)
+            for d in decisions
+            if FAILURE_MARKER not in d.reasoning
+        ]
+    )
+    weighted_index = {wv.persona: wv for wv in weighted_results}
+    for d in decisions:
+        if FAILURE_MARKER in d.reasoning:
+            continue
+        wv = weighted_index.get(d.persona)
+        if wv is None:
+            continue
+        d.reputation_score = wv.reputation_score
+        d.vote_weight = wv.vote_weight
 
     consensus = compute_consensus(decisions)
     total_latency = round(time.perf_counter() - start, 2)
