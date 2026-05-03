@@ -1,0 +1,39 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtualenvs
+venv/
+.venv/
+env/
+
+# Tests + dev artifacts
+tests/
+conftest.py
+*.test.py
+
+# Local env (NIGDY w obrazie - secrets ida przez Railway env vars)
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+
+# Git
+.git/
+.gitignore
+
+# Docs/CI (nie potrzebne w runtime - explicit zamiast *.md zeby
+# nie wykluczac przypadkiem agent prompt templates jesli kiedys dojda)
+README.md
+CHANGELOG.md
+docs/
