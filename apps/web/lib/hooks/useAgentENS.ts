@@ -36,16 +36,43 @@ const FALLBACK_ADDRESSES: Record<AgentId, string> = {
   sentiment: "0x0000000000000000000000000000000000000005",
 };
 
-// Klucze text records mintowane przez scripts/mint-ens-subnames.ts.
+// Klucze text records mintowane przez scripts/mint-ens-subnames.ts (Sesja 35: deep records).
+// Ghost in the Machine pattern - 26 records per subname dla ENS partner prize.
 const AGENT_TEXT_KEYS = [
+  // Identity
   "name",
   "description",
   "avatar",
   "url",
+  "email",
+  // Social
   "com.twitter",
+  "com.github",
+  "com.discord",
+  // AI persona metadata
   "ai.persona",
+  "ai.role",
+  "ai.framework",
+  "ai.consensus_method",
+  "ai.system_prompt_hash",
+  // Reputation + stats
   "ai.reputation",
+  "ai.debates_participated",
+  "ai.consensus_aligned",
   "ai.contract",
+  "ai.last_debate_cid",
+  // Tools / capabilities
+  "ai.tools",
+  "ai.data_sources",
+  "ai.update_frequency",
+  // Audit / verifiability
+  "ai.proof_of_work",
+  "ai.audit_log",
+  "ai.transparency_score",
+  // Memory / state
+  "ai.memory_type",
+  "ai.last_active",
+  // Backwards compat (Sesja 25)
   "ai.address",
 ] as const;
 
