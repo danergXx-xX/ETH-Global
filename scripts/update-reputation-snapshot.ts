@@ -71,14 +71,14 @@ const REPUTATION_ABI = [
   },
 ] as const;
 
-// Mapping: ENS label -> placeholder agent address (musi pokrywac się z mint-ens-subnames.ts).
-// Gdy beda realne agent wallets, zmien ten map.
+// Sesja 37 P0-2: Real deterministic agent EOAs (Szymon escalation).
+// Source: scripts/lib/agent-eoas.ts. Doc: scripts/AGENT-EOAS.md.
 const AGENT_LABELS: Array<{ label: string; address: Address }> = [
-  { label: "bull", address: "0x0000000000000000000000000000000000000001" },
-  { label: "bear", address: "0x0000000000000000000000000000000000000002" },
-  { label: "risk", address: "0x0000000000000000000000000000000000000003" },
-  { label: "tech", address: "0x0000000000000000000000000000000000000004" },
-  { label: "sentiment", address: "0x0000000000000000000000000000000000000005" },
+  { label: "bull", address: "0xB058a9B7Cf900640078E4259bf603d3f0918BEeC" },
+  { label: "bear", address: "0x9C399085A223F35fec0Dae9573D42294bf43b963" },
+  { label: "risk", address: "0x1679a3cf4e167EeeD15a567e5EA33871399a59bC" },
+  { label: "tech", address: "0x87648Ab8e343cDAC4a7439f006f85A8a8f100b3d" },
+  { label: "sentiment", address: "0xbD77e36F82Ad0041B021834f308065CFa5b5cB62" },
 ];
 
 function isHexPrivateKey(value: string): value is Hex {
