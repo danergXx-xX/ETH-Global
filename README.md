@@ -142,7 +142,7 @@ See [`docs/architecture.md`](docs/architecture.md) for the reputation update flo
 
 ## Frontend (Phase 1B in flight)
 
-The [CONCLAVE dashboard](apps/web/MOCKUPS.md) is a wagmi v2 + RainbowKit interface designed for sędziów to evaluate the system in 60 seconds. Eight components designed and handed off to engineering, implementation in progress on `feat/wagmi-ui`: Live Debate Viewer with typewriter streaming, Proposal Form, Verdict Card, Vote+Execute Flow with TimelockCountdown, Audit Log, ENS Identity Card, Council Rules Editor, and mobile views.
+The [CONCLAVE dashboard](apps/web/MOCKUPS.md) is a wagmi v2 + RainbowKit interface designed for judges to evaluate the system in 60 seconds. Eight components designed and handed off to engineering, implementation in progress on `feat/wagmi-ui`: Live Debate Viewer with typewriter streaming, Proposal Form, Verdict Card, Vote+Execute Flow with TimelockCountdown, Audit Log, ENS Identity Card, Council Rules Editor, and mobile views.
 
 Bilingual UI (Polish + English) via custom i18n provider (next-intl was incompatible with Turbopack + pnpm + Next 16; documented in ADR-002).
 

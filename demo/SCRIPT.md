@@ -162,13 +162,13 @@ Close (2:30-3:00) - 30s - CTA + GitHub + names
   - 2:02-2:09: **Uniswap v4** (Hayden) - code snippet `apps/contracts/src/hooks/CouncilHook.sol` z highlighted `beforeSwap()` + `afterSwap()` (15-20 linii Solidity). Overlay logo Uniswap + tagline "Custom v4 hook"
   - 2:09-2:16: **ENS Subnames** (Nick) - NameStone dashboard z 5 mintowanymi subnames pod aicouncil.eth + text records. Overlay logo ENS + tagline "5 subnames per agent"
   - 2:16-2:23: **KeeperHub** (Luca) - Basescan tx z "From: 0xKeeperHub..." zoomed + arch diagram inset (timelock -> KeeperHub -> tx). Overlay logo KeeperHub + tagline "Automated execution"
-  - 2:23-2:30: **Multi-chain ready** - small arch diagram + zoomed Base Sepolia explorer ze statystyka 4 deployments + Mainnet roadmap inset. Overlay tagline "Multi-chain ready · Q3 2026 mainnet"
+  - 2:23-2:30: **Multi-chain ready** - small arch diagram + zoomed Base Sepolia explorer ze statystyka 5 deployments + Mainnet roadmap inset. Overlay tagline "Multi-chain ready · Q3 2026 mainnet"
 
 **Voice-over PL:**
-> "Pięć fos: świeże dane, debata wieloagentowa, wykonanie on-chain, atrybucja źródeł, dowód pracy agentów. Zbudowane na 0G Storage, hookach Uniswap v4, subnames ENS przez NameStone, automatyzacji KeeperHub. Cztery kontrakty żywe na Base Sepolia. Open source. Gotowe do pilotu."
+> "Pięć fos: świeże dane, debata wieloagentowa, wykonanie on-chain, atrybucja źródeł, dowód pracy agentów. Zbudowane na 0G Storage, hookach Uniswap v4, subnames ENS przez NameStone, automatyzacji KeeperHub. Pięć kontraktów żywych na Base Sepolia. Open source. Gotowe do pilotu."
 
 **Voice-over EN:**
-> "Five moats: data freshness, multi-agent debate, on-chain execution, source attribution, proof of work for agents. Built on 0G Storage, Uniswap v4 hooks, ENS subnames via NameStone, KeeperHub automation. Four contracts live on Base Sepolia. Open source. Pilot ready."
+> "Five moats: data freshness, multi-agent debate, on-chain execution, source attribution, proof of work for agents. Built on 0G Storage, Uniswap v4 hooks, ENS subnames via NameStone, KeeperHub automation. Five contracts live on Base Sepolia. Open source. Pilot ready."
 
 ---
 
@@ -184,22 +184,22 @@ Close (2:30-3:00) - 30s - CTA + GitHub + names
 - 2:55-3:00: Final card - CONCLAVE logo (large) + tagline **"Your treasury, deliberated."** + names: **Dan Otomanski + Matthew [last name]** + ETHGlobal Open Agents 2026 logo bottom-right.
 
 **Voice-over PL - Wariant A (rzeczowy):**
-> "AI Treasury Council. Open source. Cztery kontrakty żywe na Base Sepolia. Pięciu agentów gotowych. Twoje DAO może pilotować już dziś. GitHub i demo na ekranie."
+> "AI Treasury Council. Open source. Pięć kontraktów żywych na Base Sepolia. Pięciu agentów gotowych. Twoje DAO może pilotować już dziś. GitHub i demo na ekranie."
 
 **Voice-over PL - Wariant B (narracyjny):**
 > "Dwadzieścia sześć miliardów dolarów zasługuje na coś więcej niż garstkę głosów. Zasługuje na Radę. AI Treasury Council. Kod otwarty. Pilotuj z nami."
 
 **Voice-over PL - Wariant C (crypto-native CTA):**
-> "Cztery kontrakty na Base Sepolia. Pięć agentów. Open source pod adresem na ekranie. Forkuj, deployuj, pilotuj. AI Treasury Council."
+> "Pięć kontraktów na Base Sepolia. Pięciu agentów. Open source pod adresem na ekranie. Forkuj, deployuj, pilotuj. AI Treasury Council."
 
 **Voice-over EN - Wariant A:**
-> "AI Treasury Council. Open source. Four contracts live on Base Sepolia. Five agents ready. Your DAO can pilot today. GitHub and demo on screen."
+> "AI Treasury Council. Open source. Five contracts live on Base Sepolia. Five agents ready. Your DAO can pilot today. GitHub and demo on screen."
 
 **Voice-over EN - Wariant B:**
 > "Twenty six billion dollars deserves more than a handful of votes. It deserves a Council. AI Treasury Council. Open source. Pilot with us."
 
 **Voice-over EN - Wariant C (crypto-native CTA):**
-> "Four contracts on Base Sepolia. Five agents. Open source at the URL on screen. Fork it, deploy it, pilot it. AI Treasury Council."
+> "Five contracts on Base Sepolia. Five agents. Open source at the URL on screen. Fork it, deploy it, pilot it. AI Treasury Council."
 
 ---
 
