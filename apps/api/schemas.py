@@ -49,6 +49,22 @@ class AgentDecision(BaseModel):
     timestamp: datetime
     tokens_used: int | None = None
     cost_usd: float | None = None
+    # Sesja 50.5: ENS reputation as off-chain voting weight (Eva demo VO).
+    # reputation_score 0-100 read from AgentReputation contract via Redis cache.
+    # vote_weight = reputation_score / 100 (clamped 0.0-2.0). None when reputation
+    # data unavailable - consensus then falls back to equal weight (1.0).
+    reputation_score: float | None = Field(
+        default=None,
+        ge=0.0,
+        le=200.0,
+        description="ENS reputation 0-100 from AgentReputation contract (Sesja 50.5).",
+    )
+    vote_weight: float | None = Field(
+        default=None,
+        ge=0.0,
+        le=2.0,
+        description="Off-chain voting weight derived from reputation_score (Sesja 50.5).",
+    )
 
 
 # ============================================================
