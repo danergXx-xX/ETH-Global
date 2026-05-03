@@ -9,6 +9,7 @@ module = [
     "structlog.*",
     "uvicorn.*",
     "sentry_sdk.*",
+    "feedparser",
 ]
 ignore_missing_imports = true
 

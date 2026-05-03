@@ -102,6 +102,11 @@ class DefiLlamaSource:
             resp = await client.get(f"{BASE_URL}/protocols")
             resp.raise_for_status()
             data = resp.json()
+            if not isinstance(data, list):
+                raise TypeError(
+                    f"defillama /protocols returned {type(data).__name__}, "
+                    "expected list"
+                )
             self._protocols_cache = (now, data)
             log.info("defillama_protocols_fetched", count=len(data))
             return data

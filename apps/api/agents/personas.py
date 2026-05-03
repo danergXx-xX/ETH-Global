@@ -13,7 +13,15 @@ Quality gate: Vera rubric po pierwszej impl.
 """
 
 from __future__ import annotations
+
+import importlib
 from dataclasses import dataclass
+from typing import TYPE_CHECKING, Awaitable, Callable, cast
+
+if TYPE_CHECKING:
+    from schemas import AgentDecision
+
+PersonaRunner = Callable[..., Awaitable["AgentDecision"]]
 
 
 @dataclass(frozen=True)
@@ -282,6 +290,26 @@ def get_persona(persona_id: str) -> PersonaSpec:
         if p.persona_id == persona_id:
             return p
     raise ValueError(f"Unknown persona: {persona_id}")
+
+
+def get_runner(persona_id: str) -> PersonaRunner:
+    """
+    Lazy-import the runner coroutine for a persona by id (TD-006 single SoT).
+
+    Convention: persona_id "bull" maps to module "agents.bull_agent" with a
+    public coroutine "run_bull". This removes the parallel PERSONA_RUNNERS
+    dict (previously in orchestrator.py) so adding a persona requires only
+    a new PersonaSpec + matching agents/<id>_agent.py module - one place to
+    register, one convention to follow.
+
+    Raises:
+        ValueError: persona_id not in ALL_PERSONAS / PHASE_3_OPTIONAL.
+        ImportError / AttributeError: matching module/function missing
+            (treat as a programming error, not a recoverable runtime case).
+    """
+    get_persona(persona_id)
+    module = importlib.import_module(f"agents.{persona_id}_agent")
+    return cast(PersonaRunner, getattr(module, f"run_{persona_id}"))
 
 
 def build_system_prompt(persona: PersonaSpec) -> str:
