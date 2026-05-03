@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LanguageToggle } from "@/components/language-toggle";
@@ -98,7 +99,12 @@ export default function Home() {
       <footer className="border-t border-border py-4 mt-8">
         <div className="mx-auto max-w-6xl px-4 flex items-center justify-between text-[10px] text-muted-foreground font-mono">
           <span>CONCLAVE v0.1 - Base Sepolia - ETHGlobal Open Agents 2026</span>
-          <span>0G Storage - Audit Trail Archived</span>
+          <div className="flex items-center gap-4">
+            <Link href="/architecture" className="hover:text-foreground transition-colors">
+              Docs
+            </Link>
+            <span>0G Storage - Audit Trail Archived</span>
+          </div>
         </div>
       </footer>
     </div>
