@@ -104,7 +104,7 @@ subnames ENS przez NameStone, automatyzacji KeeperHub.
 
 27
 00:02:18,000 --> 00:02:24,000
-Cztery kontrakty żywe na Base Sepolia.
+Pięć kontraktów żywych na Base Sepolia.
 
 28
 00:02:24,000 --> 00:02:30,000
@@ -112,7 +112,7 @@ Open source. Gotowe do pilotu.
 
 29
 00:02:30,000 --> 00:02:40,000
-AI Treasury Council. Open source. Cztery kontrakty żywe.
+AI Treasury Council. Open source. Pięć kontraktów żywych.
 
 30
 00:02:40,000 --> 00:02:50,000

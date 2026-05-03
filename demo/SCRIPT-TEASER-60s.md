@@ -74,14 +74,14 @@ Close (0:40-1:00) - 20s - tech stack + CTA
 ## Close (0:40-1:00) - 20s
 
 **Co widac:**
-- 0:40-0:50: Tech stack + sponsor logos band - quick horizontal carousel: 0G | Uniswap | ENS | KeeperHub | Base. Pod logos: "4 contracts live · Base Sepolia · Open source"
+- 0:40-0:50: Tech stack + sponsor logos band - quick horizontal carousel: 0G | Uniswap | ENS | KeeperHub | Base. Pod logos: "5 contracts live · Base Sepolia · Open source"
 - 0:50-1:00: Final card - CONCLAVE logo + tagline "Your treasury, deliberated." + GitHub URL (mono, czytelne) + ETHGlobal Open Agents 2026 logo
 
 **Voice-over PL:**
-> "AI Treasury Council. Cztery kontrakty żywe na Base Sepolia. Open source. Forkuj, deployuj, pilotuj. GitHub na ekranie."
+> "AI Treasury Council. Pięć kontraktów żywych na Base Sepolia. Open source. Forkuj, deployuj, pilotuj. GitHub na ekranie."
 
 **Voice-over EN:**
-> "AI Treasury Council. Four contracts live on Base Sepolia. Open source. Fork it, deploy it, pilot it. GitHub on screen."
+> "AI Treasury Council. Five contracts live on Base Sepolia. Open source. Fork it, deploy it, pilot it. GitHub on screen."
 
 ---
 

@@ -318,7 +318,7 @@ Po `POST /api/multisig/sign?proposalId=42&signature=0x...` -> ostatni signer `si
 - **2:02-2:09:** **Uniswap v4** (Hayden) - code snippet `apps/contracts/src/hooks/CouncilHook.sol` z highlighted `beforeSwap()` + `afterSwap()` lines (15-20 linii Solidity widoczne). Overlay logo Uniswap + tagline "Custom v4 hook". Voice-over: "Uniswap v4 hooks"
 - **2:09-2:16:** **ENS Subnames** (Nick) - NameStone dashboard z 5 mintowanymi subnames pod aicouncil.eth + text records visible. Overlay logo ENS + tagline "5 subnames per agent". Voice-over: "ENS subnames przez NameStone"
 - **2:16-2:23:** **KeeperHub** (Luca) - Basescan tx z "From: 0xKeeperHub..." zoomed + arch diagram inset (timelock -> KeeperHub bot -> tx). Overlay logo KeeperHub + tagline "Automated execution". Voice-over: "KeeperHub do automatyzacji"
-- **2:23-2:30:** **Multi-chain ready** - small arch diagram (top-right corner) + zoomed Base Sepolia explorer ze statystyka 4 deployments + Mainnet roadmap inset. Overlay: "Multi-chain ready · Q3 2026 mainnet". Voice-over: "Cztery kontrakty na Base Sepolia. Open source. Gotowe do pilotu z DAO."
+- **2:23-2:30:** **Multi-chain ready** - small arch diagram (top-right corner) + zoomed Base Sepolia explorer ze statystyka 5 deployments + Mainnet roadmap inset. Overlay: "Multi-chain ready · Q3 2026 mainnet". Voice-over: "Pięć kontraktów na Base Sepolia. Open source. Gotowe do pilotu z DAO."
 
 **Ruch kamery:** per close-up subtle Ken Burns zoom 1.0 -> 1.05 nad 4s. Cross-fade 0.3s miedzy close-upami.
 
@@ -327,7 +327,7 @@ Po `POST /api/multisig/sign?proposalId=42&signature=0x...` -> ostatni signer `si
 - Highlight pulse na key UI elementach per close-up (e.g. 0G CID amber ring, ENS resolution latency badge)
 - Voice-over emphasis word zsynchronizowany z visual cut (np. "0G Storage" przy 2:15 cut)
 
-**Audio cue:** "Pięć mechanizmów zaufania, każdy oparty o akademicki research Mayer-Davis-Schoorman z 1995. Atrybucja źródeł. Czterdziestoośmiogodzinny timelock. Niezmienialny audit log na 0G. Tożsamość ENS per agent. Reguły Rady edytowalne przez DAO. Wszystko zbudowane na Base Sepolia." (PL trust segment 1:50-2:15) -> "Pięć moats: świeże dane, debata wieloagentowa, on-chain wykonanie, atrybucja źródeł, dowód pracy agentów. Zbudowane na 0G Storage, Uniswap v4 hooks, ENS subnames przez NameStone, KeeperHub do automatyzacji. Cztery kontrakty na Base Sepolia. Open source. Gotowe do pilotu z DAO." (PL moats segment 2:15-2:30)
+**Audio cue:** "Pięć mechanizmów zaufania, każdy oparty o akademicki research Mayer-Davis-Schoorman z 1995. Atrybucja źródeł. Czterdziestoośmiogodzinny timelock. Niezmienialny audit log na 0G. Tożsamość ENS per agent. Reguły Rady edytowalne przez DAO. Wszystko zbudowane na Base Sepolia." (PL trust segment 1:50-2:15) -> "Pięć moats: świeże dane, debata wieloagentowa, on-chain wykonanie, atrybucja źródeł, dowód pracy agentów. Zbudowane na 0G Storage, Uniswap v4 hooks, ENS subnames przez NameStone, KeeperHub do automatyzacji. Pięć kontraktów na Base Sepolia. Open source. Gotowe do pilotu z DAO." (PL moats segment 2:15-2:30)
 
 ### Show > tell impact (per Vera #7)
 
@@ -377,7 +377,7 @@ Spelnia Charter Eva 80% target.
 - Sponsor logos stagger fade-in
 - CTA URLs hover-able (jezeli interactive video player)
 
-**Audio cue:** "AI Treasury Council. Otwarty kod. Cztery kontrakty żywe... Twoje DAO może próbować. Linki w opisie." (PL)
+**Audio cue:** "AI Treasury Council. Otwarty kod. Pięć kontraktów żywych... Twoje DAO może próbować. Linki w opisie." (PL)
 
 ---
 

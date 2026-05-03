@@ -14,7 +14,7 @@ Quick context (5 min read):
 - Repo + README: github.com/danergXx-xX/ETH-Global
 - Architecture (Mermaid diagrams): github.com/danergXx-xX/ETH-Global/blob/main/docs/architecture.md
 - Live demo: https://aitc.vercel.app
-- 4 contracts verified on Base Sepolia: github.com/danergXx-xX/ETH-Global/blob/main/contracts/deployments/base-sepolia.json
+- 5 contracts verified on Base Sepolia: github.com/danergXx-xX/ETH-Global/blob/main/contracts/deployments/base-sepolia.json
 - FEEDBACK.md (sponsor track context): github.com/danergXx-xX/ETH-Global/blob/main/docs/FEEDBACK.md
 
 What it does in 30 seconds:

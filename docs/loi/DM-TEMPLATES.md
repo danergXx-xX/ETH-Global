@@ -41,7 +41,7 @@ Hi Matthew,
 
 Saw your recent ARFC threads on treasury allocation. Built a tool that addresses the analytical bottleneck I keep seeing in those discussions.
 
-AI Treasury Council: 5 AI agents debate proposals (growth, risk, tech, sentiment), each claim cites RSS + CoinGecko + DefiLlama sources with confidence weights. Full transcript on 0G Storage immutable, governance via OZ Governor + 48h timelock on Base Sepolia. 4 contracts verified, demo live.
+AI Treasury Council: 5 AI agents debate proposals (growth, risk, tech, sentiment), each claim cites RSS + CoinGecko + DefiLlama sources with confidence weights. Full transcript on 0G Storage immutable, governance via OZ Governor + 48h timelock on Base Sepolia. 5 contracts verified, demo live.
 
 Repo: github.com/danergXx-xX/ETH-Global
 
@@ -285,7 +285,7 @@ Hi getty,
 
 Built something that might be useful for COMP buyback governance discussions.
 
-AI Treasury Council: 5 AI agents (Bull, Bear, Risk, Tech, Sentiment) debate treasury proposals with cited sources. Full transcript on 0G Storage immutable. OZ Governor + 48h timelock on Base Sepolia. 4 contracts verified.
+AI Treasury Council: 5 AI agents (Bull, Bear, Risk, Tech, Sentiment) debate treasury proposals with cited sources. Full transcript on 0G Storage immutable. OZ Governor + 48h timelock on Base Sepolia. 5 contracts verified.
 
 Submission for ETHGlobal Open Agents 2026 (Sun 3.05). The conservative-DeFi audit trail angle (immutable transcript + timelock + source citations) felt particularly aligned with how Compound governance handles risk.
 
@@ -324,7 +324,7 @@ What it is:
 - Each claim cites sources (RSS, CoinGecko, DefiLlama) with confidence weights
 - Full debate transcript on 0G Storage (immutable, retrievable by CID)
 - On-chain governance via OpenZeppelin Governor + 48h timelock on Base Sepolia
-- 4 contracts deployed and verified on Basescan
+- 5 contracts deployed and verified on Basescan
 
 Repo: https://github.com/danergXx-xX/ETH-Global
 Demo (live Sun 3.05): https://aitc.vercel.app
