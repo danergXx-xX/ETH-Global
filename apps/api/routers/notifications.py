@@ -8,6 +8,7 @@ WS contract:
   - 10 connections/min/IP rate limit (DoS protection, identical to /ws/debate).
 """
 
+import asyncio
 import re
 
 import structlog
@@ -121,7 +122,13 @@ async def ws_notifications(websocket: WebSocket) -> None:
     await websocket.send_json({"type": "connected", "address": address})
     try:
         while True:
-            msg = await websocket.receive_json()
+            try:
+                # Slow-loris guard: drop a connection that goes silent.
+                msg = await asyncio.wait_for(websocket.receive_json(), timeout=120)
+            except asyncio.TimeoutError:
+                await websocket.send_json({"type": "idle_timeout"})
+                await websocket.close(code=1000)
+                return
             if isinstance(msg, dict) and msg.get("type") == "ping":
                 await websocket.send_json({"type": "pong"})
     except WebSocketDisconnect:

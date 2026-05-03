@@ -513,4 +513,4 @@ class NotificationReadRequest(BaseModel):
     """POST /api/notifications/read body: mark notifications as read."""
 
     address: str = Field(..., pattern=ETH_ADDRESS_PATTERN)
-    ids: list[str] = Field(..., min_length=1, max_length=200)
+    ids: list[str] = Field(..., min_length=1, max_length=100)

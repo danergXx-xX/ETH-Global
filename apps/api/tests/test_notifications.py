@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 from datetime import datetime, timezone
+from typing import Any, Coroutine, TypeVar
 
 import pytest
 from fastapi.testclient import TestClient
@@ -15,10 +16,17 @@ from routers.notifications import publish_notification
 
 ADDR = "0xBeeF000000000000000000000000000000000003"
 
+T = TypeVar("T")
+
+
+def _run(coro: Coroutine[Any, Any, T]) -> T:
+    """Run an async coroutine from a sync test without re-using a stale loop."""
+    return asyncio.new_event_loop().run_until_complete(coro)
+
 
 @pytest.fixture(autouse=True)
 def _reset_state() -> None:
-    asyncio.get_event_loop().run_until_complete(clear_all_state())
+    _run(clear_all_state())
     reset_notification_manager()
 
 
@@ -43,18 +51,15 @@ def test_empty_history_returns_zero(client: TestClient) -> None:
 
 
 def test_history_after_push(client: TestClient) -> None:
-    asyncio.get_event_loop().run_until_complete(
-        push_notification(ADDR, _make_notification(1))
-    )
+    _run(push_notification(ADDR, _make_notification(1)))
     body = client.get(f"/api/notifications?address={ADDR}").json()
     assert len(body["notifications"]) == 1
     assert body["unread_count"] == 1
 
 
 def test_unread_filter(client: TestClient) -> None:
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(push_notification(ADDR, _make_notification(1, read=True)))
-    loop.run_until_complete(push_notification(ADDR, _make_notification(2, read=False)))
+    _run(push_notification(ADDR, _make_notification(1, read=True)))
+    _run(push_notification(ADDR, _make_notification(2, read=False)))
     body = client.get(f"/api/notifications?address={ADDR}&unread=true").json()
     assert len(body["notifications"]) == 1
     assert body["notifications"][0]["id"] == "n-2"
@@ -62,9 +67,8 @@ def test_unread_filter(client: TestClient) -> None:
 
 
 def test_mark_read_flips_state(client: TestClient) -> None:
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(push_notification(ADDR, _make_notification(1)))
-    loop.run_until_complete(push_notification(ADDR, _make_notification(2)))
+    _run(push_notification(ADDR, _make_notification(1)))
+    _run(push_notification(ADDR, _make_notification(2)))
     r = client.post(
         "/api/notifications/read",
         json={"address": ADDR, "ids": ["n-1", "n-2"]},
@@ -98,7 +102,7 @@ def test_websocket_connect_and_receive_push(client: TestClient) -> None:
         async def _publish() -> int:
             return await publish_notification(ADDR, _make_notification(7))
 
-        delivered = asyncio.get_event_loop().run_until_complete(_publish())
+        delivered = _run(_publish())
         assert delivered == 1
         msg = ws.receive_json()
         assert msg["type"] == "notification"

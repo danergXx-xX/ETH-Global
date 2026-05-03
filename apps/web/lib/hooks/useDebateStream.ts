@@ -89,6 +89,8 @@ export function useDebateStream(proposalText: string | null) {
   const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const startRef = useRef<number>(0);
   const proposalIdRef = useRef<string>("");
+  // Guard against state updates / retries scheduled after unmount.
+  const mountedRef = useRef<boolean>(true);
 
   const cleanupTimers = useCallback(() => {
     if (timerRef.current) {
@@ -321,6 +323,7 @@ export function useDebateStream(proposalText: string | null) {
       };
       ws.onclose = (ev) => {
         wsRef.current = null;
+        if (!mountedRef.current) return;
         const wasOpen = ev.code === 1000;
         if (wasOpen) return;
         if (retryRef.current >= MAX_RETRIES) {
@@ -333,10 +336,9 @@ export function useDebateStream(proposalText: string | null) {
           retrying: true,
           error: `Backend connecting, retry ${retryRef.current}/${MAX_RETRIES} in 3s...`,
         }));
-        retryTimeoutRef.current = setTimeout(
-          () => connect(text),
-          RETRY_DELAY_MS
-        );
+        retryTimeoutRef.current = setTimeout(() => {
+          if (mountedRef.current) connect(text);
+        }, RETRY_DELAY_MS);
       };
     },
     [handleEvent, playMockFallback]
@@ -367,7 +369,9 @@ export function useDebateStream(proposalText: string | null) {
   }, [cleanupTimers, closeSocket]);
 
   useEffect(() => {
+    mountedRef.current = true;
     return () => {
+      mountedRef.current = false;
       cleanupTimers();
       closeSocket();
     };

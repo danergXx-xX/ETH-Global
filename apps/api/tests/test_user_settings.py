@@ -14,7 +14,7 @@ ADDR = "0xAbCDef0123456789aBCdEF0123456789abCDef01"
 
 @pytest.fixture(autouse=True)
 def _reset_state() -> None:
-    asyncio.get_event_loop().run_until_complete(clear_all_state())
+    asyncio.run(clear_all_state())
 
 
 def test_default_settings_returned_for_unknown_address(client: TestClient) -> None:

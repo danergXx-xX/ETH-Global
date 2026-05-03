@@ -14,7 +14,7 @@ ADDR = "0xCAfe000000000000000000000000000000000001"
 
 @pytest.fixture(autouse=True)
 def _reset_state() -> None:
-    asyncio.get_event_loop().run_until_complete(clear_all_state())
+    asyncio.run(clear_all_state())
 
 
 def test_initial_state_is_first_step(client: TestClient) -> None:

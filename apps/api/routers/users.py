@@ -1,5 +1,7 @@
 """User-scoped endpoints: settings + onboarding (keyed by checksum address)."""
 
+import re
+
 import structlog
 from eth_utils import to_checksum_address
 from fastapi import APIRouter, HTTPException, Query, Request
@@ -28,8 +30,6 @@ _limiter = Limiter(key_func=get_remote_address)
 
 def _validate_address(raw: str) -> str:
     """Reject non-hex / wrong-length input early to surface a clean 422."""
-    import re
-
     if not re.fullmatch(ETH_ADDRESS_PATTERN, raw):
         raise HTTPException(
             status_code=422,

@@ -12,7 +12,7 @@ from services.in_memory_store import clear_all_state, get_custom_agent
 
 @pytest.fixture(autouse=True)
 def _reset_state() -> None:
-    asyncio.get_event_loop().run_until_complete(clear_all_state())
+    asyncio.run(clear_all_state())
 
 
 def _spec(**overrides: object) -> dict:
@@ -105,9 +105,7 @@ def test_system_prompt_too_long_rejected(client: TestClient) -> None:
 
 def test_persisted_agent_can_be_fetched_from_store(client: TestClient) -> None:
     body = client.post("/api/agents/custom", json=_spec()).json()
-    fetched = asyncio.get_event_loop().run_until_complete(
-        get_custom_agent(body["agent_id"])
-    )
+    fetched = asyncio.run(get_custom_agent(body["agent_id"]))
     assert fetched is not None
     assert fetched.persona_id == "alpha"
 

@@ -44,7 +44,7 @@ _INJECTION_PATTERNS: tuple[re.Pattern[str], ...] = tuple(
         r"\bDAN mode\b",
         r"\boverride your (rules|framework|bias)\b",
         r"\bpretend (to be|you are)\b",
-        r"\bact as (?!a |an )",  # "act as " followed by something other than "a/an"
+        r"\bact as\b",  # any role-override phrasing - reject all "act as ..."
         r"<\|.*?\|>",  # special LLM tokens
         r"###\s*system",  # fake system header
         r"\bbase64\b",
