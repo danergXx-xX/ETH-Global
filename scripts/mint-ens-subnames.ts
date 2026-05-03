@@ -200,7 +200,8 @@ function isHexPrivateKey(value: string): value is Hex {
 function logAgentPlan(agent: AgentSpec) {
   const fqdn = `${agent.label}.${PARENT_DOMAIN}`;
   console.log(`\n--- ${fqdn} ---`);
-  console.log(`  owner: ${agent.owner}`);
+  console.log(`  ENS owner: parent (Dan) -> zachowuje prawo do setText`);
+  console.log(`  ai.address text record: ${agent.owner} (placeholder agent wallet)`);
   console.log(`  resolver: ${PUBLIC_RESOLVER}`);
   console.log(`  text records: ${Object.keys(agent.texts).length}`);
   for (const [key, value] of Object.entries(agent.texts)) {
@@ -363,11 +364,15 @@ async function main() {
       );
     }
 
+    // Owner subnode = parent (Dan), aby zachowac prawo do setText na text records.
+    // Placeholder agent address jest mintowany jako `ai.address` text record (nizej),
+    // nie jako ENS subnode owner. To zgodne z patternem: ENS owner = administrator
+    // rekordow, ai.address = wskazanie wallet operacyjnego agenta (przyszle).
     const subnodeTx = await walletClient.writeContract({
       address: ENS_REGISTRY,
       abi: ENS_REGISTRY_ABI,
       functionName: "setSubnodeRecord",
-      args: [parentNode, label, agent.owner, PUBLIC_RESOLVER, TTL],
+      args: [parentNode, label, account.address, PUBLIC_RESOLVER, TTL],
     });
     console.log(`    setSubnodeRecord tx: https://sepolia.etherscan.io/tx/${subnodeTx}`);
     await publicClient.waitForTransactionReceipt({ hash: subnodeTx });
