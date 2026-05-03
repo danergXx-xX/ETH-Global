@@ -39,6 +39,14 @@ from schemas import (
     RecipientInfo,
     RecipientsResponse,
 )
+from routers import (
+    agents_custom_router,
+    notifications_router,
+    protocols_router,
+    treasury_router,
+    users_router,
+)
+from routers.notifications import ws_router as notifications_ws_router
 from services.debate_streamer import stream_debate
 from services.reputation_updater import (
     PERSONA_ADDRESSES,
@@ -86,6 +94,16 @@ app.add_middleware(
     allow_headers=["Content-Type", "X-Request-ID", "Authorization"],
 )
 app.add_middleware(RequestIDMiddleware)
+
+
+# Foundation routers (Wave 1 + Wave 2). Existing /api/debate, /ws/debate,
+# /api/proposals/* and /api/agents/{persona}/reputation stay below.
+app.include_router(treasury_router)
+app.include_router(protocols_router)
+app.include_router(users_router)
+app.include_router(agents_custom_router)
+app.include_router(notifications_router)
+app.include_router(notifications_ws_router)
 
 
 @app.get("/health")

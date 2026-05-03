@@ -52,15 +52,43 @@ export function SubmissionForm({ onSubmit }: SubmissionFormProps) {
 
   const currentState = getFormState();
 
-  function handleSubmit() {
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  async function handleSubmit() {
     if (currentState !== "filled" && currentState !== "warning") return;
+    setSubmitError(null);
     setState("submitting");
 
-    // Phase 1B: mock submission delay
-    setTimeout(() => {
-      setState("success");
-      onSubmit(description);
-    }, 2000);
+    // Real backend swap: POST /api/debate kicks off the council. The
+    // streaming visualization is owned by useDebateStream (WS). If the
+    // backend is offline we still hand off to the viewer which will fall
+    // back to mock playback after WS retries.
+    const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "";
+    const url = apiBase
+      ? `${apiBase.replace(/\/$/, "")}/api/debate`
+      : "/api/debate";
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: description }),
+      });
+      if (res.status === 503) {
+        setSubmitError("Council overloaded, try again in a moment.");
+        setState("filled");
+        return;
+      }
+      if (!res.ok) {
+        setSubmitError(`Backend returned ${res.status}. Falling back to demo mode.`);
+        // Still hand off to viewer so judges see the streaming UX.
+      }
+    } catch {
+      setSubmitError(
+        "Backend unreachable. Continuing in demo mode (mock playback)."
+      );
+    }
+    setState("success");
+    onSubmit(description);
   }
 
   return (
@@ -177,6 +205,16 @@ export function SubmissionForm({ onSubmit }: SubmissionFormProps) {
               className="rounded-md border border-vote-for/20 bg-vote-for/5 p-3 text-sm text-vote-for"
             >
               Proposal submitted. Council debate will begin shortly.
+            </motion.div>
+          )}
+          {submitError && currentState !== "submitting" && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="rounded-md border border-amber/30 bg-amber/5 p-3 text-sm text-amber"
+            >
+              {submitError}
             </motion.div>
           )}
         </AnimatePresence>

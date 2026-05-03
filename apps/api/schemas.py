@@ -289,3 +289,228 @@ class HealthResponse(BaseModel):
     version: str = "0.1.0"
     timestamp: datetime
     services: dict[str, Literal["ok", "degraded", "down"]] = Field(default_factory=dict)
+
+
+# ============================================================
+# TREASURY PORTFOLIO (Wave 2 Sesja 47)
+# ============================================================
+
+
+class TokenHolding(BaseModel):
+    """Single token position in treasury."""
+
+    symbol: str = Field(..., min_length=1, max_length=20)
+    balance: float = Field(..., ge=0)
+    usd_value: float = Field(..., ge=0)
+    allocation_pct: float = Field(..., ge=0, le=100)
+
+
+class ProtocolAllocation(BaseModel):
+    """Capital deployed to a DeFi protocol."""
+
+    name: str = Field(..., min_length=1, max_length=64)
+    balance_usd: float = Field(..., ge=0)
+    apy: float = Field(..., ge=0, le=10000, description="APY in percent (e.g. 4.2 = 4.2%)")
+    risk_score: int = Field(..., ge=0, le=100, description="0=safe, 100=highest risk")
+
+
+class RecentDecision(BaseModel):
+    """Recent council decision affecting treasury."""
+
+    proposal_id: str = Field(..., min_length=1, max_length=128)
+    verdict: Literal["FOR", "AGAINST", "ABSTAIN", "SPLIT"]
+    impact_usd: float = Field(..., description="Net USD change to treasury (signed)")
+    executed_at: datetime
+
+
+class PortfolioResponse(BaseModel):
+    """Treasury portfolio snapshot for dashboard."""
+
+    total_usd: float = Field(..., ge=0)
+    tokens: list[TokenHolding]
+    protocols: list[ProtocolAllocation]
+    pnl_7d: float = Field(..., description="Net USD P&L last 7 days (signed)")
+    recent_decisions: list[RecentDecision]
+
+
+# ============================================================
+# PROTOCOL REGISTRY (Wave 2 Sesja 48)
+# ============================================================
+
+
+ProtocolStatus = Literal["approved", "under_review", "banned", "light"]
+ProtocolCategory = Literal["lending", "dex", "staking", "derivatives", "yield", "stablecoin"]
+
+
+class AuditRef(BaseModel):
+    """Reference to a smart-contract audit report."""
+
+    firm: str = Field(..., min_length=1, max_length=64)
+    date: str = Field(..., pattern=r"^\d{4}-\d{2}-\d{2}$", description="ISO date YYYY-MM-DD")
+    report_url: str = Field(..., min_length=10, max_length=512)
+
+
+class Protocol(BaseModel):
+    """Protocol entry in registry (DeFi protocols council can interact with)."""
+
+    id: str = Field(..., min_length=1, max_length=64, pattern=r"^[a-z0-9_-]+$")
+    name: str = Field(..., min_length=1, max_length=64)
+    category: ProtocolCategory
+    chain: str = Field(..., min_length=1, max_length=32)
+    tvl_usd: float = Field(..., ge=0)
+    status: ProtocolStatus
+    risk_flags: list[str] = Field(default_factory=list, max_length=20)
+    audit_history: list[AuditRef] = Field(default_factory=list, max_length=20)
+
+
+# ============================================================
+# USER SETTINGS (Wave 2 Sesja 46)
+# ============================================================
+
+
+ThemeChoice = Literal["dark", "light", "conclave"]
+LanguageChoice = Literal["en", "pl"]
+ETH_ADDRESS_PATTERN = r"^0x[a-fA-F0-9]{40}$"
+
+
+class UserSettings(BaseModel):
+    """Per-user settings (keyed by wallet address)."""
+
+    notifications_enabled: bool = True
+    theme: ThemeChoice = "dark"
+    preferred_language: LanguageChoice = "en"
+    council_rules_overrides: dict[str, str] | None = Field(default=None)
+    trust_gate_threshold: int = Field(default=70, ge=50, le=100)
+    agent_weights: dict[str, float] = Field(default_factory=dict)
+
+
+class UserSettingsUpdate(UserSettings):
+    """POST body: includes address (server keys settings by checksum address)."""
+
+    address: str = Field(..., pattern=ETH_ADDRESS_PATTERN)
+
+
+# ============================================================
+# USER ONBOARDING (Wave 1 Sesja 42)
+# ============================================================
+
+
+ONBOARDING_STEPS: tuple[str, ...] = (
+    "wallet_connected",
+    "dao_verified",
+    "rules_read",
+    "role_selected",
+    "first_proposal_submitted",
+)
+
+
+class OnboardingStatus(BaseModel):
+    """Snapshot of onboarding progress for an address."""
+
+    completed_steps: list[str] = Field(default_factory=list)
+    current_step: str
+    is_complete: bool = False
+
+
+class OnboardingProgress(BaseModel):
+    """POST body: mark a step complete for an address."""
+
+    address: str = Field(..., pattern=ETH_ADDRESS_PATTERN)
+    step_id: Literal[
+        "wallet_connected",
+        "dao_verified",
+        "rules_read",
+        "role_selected",
+        "first_proposal_submitted",
+    ]
+    metadata: dict[str, str] | None = None
+
+
+# ============================================================
+# CUSTOM AGENT (Wave 1 Sesja 43)
+# ============================================================
+
+
+LLMModelChoice = Literal[
+    "claude-sonnet-4-6", "claude-opus-4-7", "gpt-4o", "gemini-2-pro"
+]
+CustomAgentStatus = Literal["testing", "awaiting_multisig", "approved", "rejected"]
+ENS_SUBNAME_PATTERN = r"^[a-z0-9-]{2,32}\.[a-z0-9-]{2,64}\.eth$"
+
+
+class TestArenaResult(BaseModel):
+    """Outcome of running a custom agent through Test Arena (sandbox debate)."""
+
+    proposal: str
+    custom_decision: Literal["FOR", "AGAINST", "ABSTAIN"]
+    custom_confidence: float = Field(..., ge=0.0, le=1.0)
+    custom_reasoning: str = Field(..., min_length=1, max_length=2000)
+    standard_consensus: Literal["FOR", "AGAINST", "ABSTAIN", "SPLIT"]
+    aligned_with_consensus: bool
+    sandbox: bool = True
+
+
+class CustomAgentSpec(BaseModel):
+    """User-submitted spec for a custom DAO agent (Moat 5 Proof-of-Work)."""
+
+    persona_id: str = Field(..., min_length=2, max_length=32, pattern=r"^[a-z0-9_-]+$")
+    display_name: str = Field(..., min_length=2, max_length=64)
+    llm_model: LLMModelChoice
+    ens_subname: str = Field(..., pattern=ENS_SUBNAME_PATTERN)
+    vote_weight: int = Field(..., ge=1, le=10)
+    trust_gate: int = Field(..., ge=50, le=100)
+    system_prompt: str = Field(..., min_length=20, max_length=2000)
+    test_arena_proposal: str | None = Field(default=None, max_length=2000)
+
+
+class CustomAgent(BaseModel):
+    """Server-side record of a registered custom agent."""
+
+    agent_id: str
+    persona_id: str
+    display_name: str
+    llm_model: LLMModelChoice
+    ens_subname: str
+    vote_weight: int
+    trust_gate: int
+    status: CustomAgentStatus
+    created_at: datetime
+    test_arena_result: TestArenaResult | None = None
+
+
+# ============================================================
+# NOTIFICATIONS (Wave 2 Sesja 45)
+# ============================================================
+
+
+NotificationCategory = Literal[
+    "verdict",
+    "signature",
+    "rule_change",
+    "debate_started",
+    "debate_completed",
+]
+
+
+class Notification(BaseModel):
+    """User-facing notification (delivered via WS push + REST history)."""
+
+    id: str = Field(..., min_length=1, max_length=64)
+    category: NotificationCategory
+    title: str = Field(..., min_length=1, max_length=200)
+    summary: str = Field(..., min_length=1, max_length=1000)
+    metadata: dict[str, str] = Field(default_factory=dict)
+    timestamp: datetime
+    read: bool = False
+
+
+class NotificationListResponse(BaseModel):
+    notifications: list[Notification]
+    unread_count: int = Field(..., ge=0)
+
+
+class NotificationReadRequest(BaseModel):
+    """POST /api/notifications/read body: mark notifications as read."""
+
+    address: str = Field(..., pattern=ETH_ADDRESS_PATTERN)
+    ids: list[str] = Field(..., min_length=1, max_length=100)
