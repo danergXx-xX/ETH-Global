@@ -71,8 +71,14 @@ Close (2:30-3:00) - 30s - CTA + GitHub + names
 **Voice-over PL:**
 > "Składam wniosek treasury: sto tysięcy USDC do Aave v3, cztery przecinek dwa procent APY. Parser dekoduje calldata. Wnioskodawca widzi dokładnie co podpisuje. Bez czarnej skrzynki."
 
-**Voice-over EN:**
+**Voice-over EN - Wariant A (rzeczowy, default):**
 > "I submit a treasury proposal: one hundred thousand USDC into Aave v3, four point two percent APY. The parser decodes the calldata. The proposer sees exactly what gets signed. No black box."
+
+**Voice-over EN - Wariant B (developer ton):**
+> "Treasury proposal in: 100k USDC into Aave v3, 4.2% APY. The parser pulls the calldata apart. You see the exact bytes you're signing. No abstract, no surprise."
+
+**Voice-over EN - Wariant C (skeptic-friendly, trust-first):**
+> "Submitting a treasury proposal: one hundred thousand USDC, Aave v3, four point two percent. Calldata decoded inline. The signer sees what hits the chain, not a wrapper. No black box, no trust me."
 
 ### Segment B: Live Debate - Typewriter Agents (0:35-1:00) - 25s
 
