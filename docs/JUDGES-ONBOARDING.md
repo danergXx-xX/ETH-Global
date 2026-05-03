@@ -107,9 +107,20 @@ Submission checklist: [docs/SUBMISSION-CHECKLIST.md](SUBMISSION-CHECKLIST.md).
 - **Matthew Foyle** - MVP plan, demo voice-over, sponsor liaison, FEEDBACK.md research
 - **15-agent AI dev-team** orchestrated through Claude Code: PM (Maxima/Pico/Atlas), engineering (Aiko/Hugo/Sol/Nova/Lumen), QA (Quill), security (Mateusz), design (Vela), docs (Nina), demo (Eva). Every commit went through automated code review and security audit before merge.
 
+## DAO Outreach Pipeline
+
+Validation outside the hackathon room is in flight. We are not claiming signed letters of intent we do not have - if a judge asks, this is the honest state on submission day.
+
+- **5 priority DAOs in active outreach:** Aave, Compound, Optimism, Gitcoin, ENS. 15 contacts mapped (3 per DAO across Twitter, Discord, governance forum).
+- **Templates and playbook ready** in `docs/loi/` (DM-TEMPLATES.md, ONE-PAGER.md, LOI-TEMPLATE.md, RESPONSE-PLAYBOOK.md, TRACKING.md). First DM wave: Marc Zeller (Aave), Kevin Owocki (Gitcoin), nick.eth (ENS), Lefteris (Optimism), getty.eth (Compound).
+- **Why no signed LOIs at submission:** outreach window opened Sat 2.05; LOI capture cutoff Sun 16:00 PL is post-submission. Live tracking in `docs/loi/TRACKING.md`.
+
 ## Contact
 
 - GitHub issues: [github.com/danergXx-xX/ETH-Global/issues](https://github.com/danergXx-xX/ETH-Global/issues)
+- Email: council@aicouncil-danergy.eth
+- Telegram: @aitc_council (handle reserved post-hackathon)
+- X (Twitter): @aitc_council (handle reserved post-hackathon)
 - Dan on Signal: see ETHGlobal submission form
 
 Thank you for evaluating. We built this for sędziów and DAO contributors first.

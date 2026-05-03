@@ -10,9 +10,13 @@
 
 ### CQ-1: "Co was odroznia od Alpha Dawg, Goldman Stacked, Agentropolis?"
 
-**Krotka odpowiedz (15s):**
+**Krotka odpowiedz (10s, 22 slow):**
 
-> Alpha Dawg robi personal trading swarm w TEE - 10 agentow szuka alpha dla 1 usera. Agentropolis to gamified personal trading na Uniswap v4 hooks. Goldman Stacked ma quadratic voting cross-chain ale bez source attribution. My robimy DAO TREASURY (nie personal), z 5 trust mechanisms strukturalnie wbudowanymi (source attribution per claim z confidence, timelock countdown UI, 0G immutable audit trail, ENS reputation, human-in-loop config), oraz native OpenZeppelin Governor + Timelock 48h - production-grade DAO stack ktory contributor wezmie do produkcji jutro.
+> Alpha Dawg, Agentropolis: personal trading. We govern DAO treasuries with source-attributed claims, native OpenZeppelin Governor, 48-hour timelock. Zero competitors stack all three.
+
+**Rozwiniecie jesli sedzia drilluje (15s):**
+
+> Goldman Stacked has AI council voting but no source attribution and no timelock UI. Alpha Dawg is 10 agents hunting alpha for one user in TEE. We are the only stack with cited claims plus production-grade Governor plus human-in-loop config that a DAO contributor takes to mainnet tomorrow.
 
 **Backup data dla challengowego sedziego:**
 - Alpha Dawg: ETHGlobal Cannes 2026, 0G "Best De Fi App" 2nd place. URL: https://ethglobal.com/showcase/alpha-dawg-fh6vm
@@ -24,9 +28,9 @@
 
 ### CQ-2: "Czy Ghost in the Machine (1st ENS for AI Agents Cannes) was zwwyciezyl?"
 
-**Krotka odpowiedz (15s):**
+**Krotka odpowiedz (15s, sharper framing - bez "komplementarne"):**
 
-> Ghost in the Machine to brilliant projekt - 30+ ENS text records per agent, full state on-chain dla PERSONALNYCH agentow trade/learn/die. My idziemy w innym kierunku: ENS subname per agent w COUNCIL governance (bull.aicouncil.eth, bear.aicouncil.eth), reputation surfaced w text records, anchored w DAO treasury context. Roznia: oni "agent zyje sam", my "agent ma role w organizacji ktora kontroluje treasury". Komplementarne approach.
+> We solve a different problem than Ghost in the Machine. They ship autonomous individuals - agents that trade, learn, and die alone, with private state in 30+ ENS text records. We ship a governable council - bull.aicouncil.eth, bear.aicouncil.eth as roles inside a DAO, with reputation read by token holders before a 48-hour timelock vote. Their agent answers to itself. Ours answers to voters.
 
 **Honest disclosure:** w PHASE 4 mamy frontend stub dla ENS resolution (Phase 2 NameStone signup pending). Jesli sedzia zapyta:
 
