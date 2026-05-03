@@ -128,27 +128,36 @@ export function ProtocolDetailModal({
                 Connect wallet to vote on protocol whitelist or ban.
               </div>
             ) : (
-              <div className="flex flex-wrap gap-2">
-                {showWhitelist && (
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    className="text-xs font-mono border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/10"
-                  >
-                    Vote to whitelist
-                  </Button>
-                )}
-                {showBan && (
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    className="text-xs font-mono border-rose-500/40 text-rose-300 hover:bg-rose-500/10"
-                  >
-                    Vote to ban
-                  </Button>
-                )}
+              <div className="space-y-2">
+                <div className="flex flex-wrap gap-2">
+                  {showWhitelist && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      disabled
+                      title="Available in v0.2 - Governor proposal flow"
+                      className="text-xs font-mono border-emerald-500/40 text-emerald-300/70 hover:bg-emerald-500/10"
+                    >
+                      Vote to whitelist
+                    </Button>
+                  )}
+                  {showBan && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      disabled
+                      title="Available in v0.2 - Governor proposal flow"
+                      className="text-xs font-mono border-rose-500/40 text-rose-300/70 hover:bg-rose-500/10"
+                    >
+                      Vote to ban
+                    </Button>
+                  )}
+                </div>
+                <p className="text-[10px] text-muted-foreground font-mono">
+                  Whitelist proposals route through Governor in v0.2.
+                </p>
               </div>
             )}
           </section>
