@@ -72,6 +72,7 @@ async def run_persona_agent(
     proposal_text: str,
     anthropic_client: AnthropicClient,
     pre_fetched_sources: list[Source] | None = None,
+    sandbox_mode: bool = False,
 ) -> AgentDecision:
     """
     Run a persona agent on a proposal.
@@ -86,6 +87,10 @@ async def run_persona_agent(
         anthropic_client: Configured client with prompt caching.
         pre_fetched_sources: Sources from DataAggregator. None disables source context
             for backward compatibility with Phase 0 callers.
+        sandbox_mode: When True, the run is part of a Test Arena. Logged for
+            audit clarity. Callers MUST guarantee no on-chain side effects
+            (reputation, 0G upload). The runner itself never writes on-chain,
+            so this flag is informational only.
 
     Returns:
         Validated AgentDecision with persona auto-stamped, timestamp, tokens, cost.
@@ -94,6 +99,8 @@ async def run_persona_agent(
         ValueError: After both attempts fail JSON parsing or schema validation.
     """
     persona_id = persona.persona_id
+    if sandbox_mode:
+        log.info("persona_run_sandbox", persona=persona_id)
     system_prompt = COUNCIL_RULES
     persona_prompt = build_system_prompt(persona)
 
