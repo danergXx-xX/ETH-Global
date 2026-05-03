@@ -1,0 +1,123 @@
+1
+00:00:00,000 --> 00:00:05,000
+Dwadzieścia sześć miliardów dolarów w skarbcach DAO.
+
+2
+00:00:05,500 --> 00:00:11,000
+A większość decyzji podejmuje mniej niż jeden procent posiadaczy tokenów.
+
+3
+00:00:11,500 --> 00:00:15,000
+Apatia, brak kworum, koncentracja władzy. Czas to zmienić.
+
+4
+00:00:15,500 --> 00:00:19,000
+Submituję wniosek treasury: alokuj sto tysięcy USDC do Aave v3.
+
+5
+00:00:19,500 --> 00:00:24,000
+AI parser dekoduje calldata. Wnioskodawca widzi DOKŁADNIE co podpisuje.
+
+6
+00:00:24,500 --> 00:00:28,000
+Bez black-boxa.
+
+7
+00:00:35,000 --> 00:00:40,000
+Pięciu wyspecjalizowanych agentów debatuje na żywo.
+
+8
+00:00:40,500 --> 00:00:45,000
+Bull, Bear, Risk, Tech, Sentiment. Każdy cytuje źródła.
+
+9
+00:00:45,500 --> 00:00:51,000
+Każdy ma wagę głosu opartego o on-chain reputację.
+
+10
+00:00:51,500 --> 00:00:57,000
+Widać jak myślą. To nie jest czarna skrzynka.
+
+11
+00:01:00,000 --> 00:01:06,000
+Pięciu z siedmiu multisig podpisuje.
+
+12
+00:01:06,500 --> 00:01:12,000
+Timelock 48 godzin - okno na cofnięcie.
+
+13
+00:01:12,500 --> 00:01:18,000
+Wykonanie on-chain. Bez pośredników.
+
+14
+00:01:20,000 --> 00:01:25,000
+Cała debata zarchiwizowana na 0G Storage.
+
+15
+00:01:25,500 --> 00:01:28,500
+Każdy agent ma swoją tożsamość ENS.
+
+16
+00:01:28,500 --> 00:01:30,000
+Każda decyzja audytowalna. Na zawsze.
+
+17
+00:01:30,000 --> 00:01:36,000
+Pięć mechanizmów zaufania, każdy oparty o akademicki research
+
+18
+00:01:36,000 --> 00:01:40,000
+Mayer-Davis-Schoorman z 1995.
+
+19
+00:01:40,000 --> 00:01:44,000
+Atrybucja źródeł. Czterdziestoośmiogodzinny timelock.
+
+20
+00:01:44,000 --> 00:01:48,000
+Niezmienialny audit log na 0G. Tożsamość ENS per agent.
+
+21
+00:01:48,000 --> 00:01:52,000
+Reguły Rady edytowalne przez DAO.
+
+22
+00:01:52,000 --> 00:01:55,000
+Wszystko zbudowane na Base Sepolia.
+
+23
+00:01:55,000 --> 00:02:01,000
+Pięć moats: świeże dane, debata wieloagentowa,
+
+24
+00:02:01,000 --> 00:02:06,000
+on-chain wykonanie, atrybucja źródeł, dowód pracy agentów.
+
+25
+00:02:06,000 --> 00:02:12,000
+Zbudowane na 0G Storage, Uniswap v4 hooks,
+
+26
+00:02:12,000 --> 00:02:18,000
+ENS subnames przez NameStone, KeeperHub do automatyzacji.
+
+27
+00:02:18,000 --> 00:02:24,000
+Cztery kontrakty na Base Sepolia.
+
+28
+00:02:24,000 --> 00:02:30,000
+Open source. Gotowe do pilotu z DAO.
+
+29
+00:02:30,000 --> 00:02:40,000
+AI Treasury Council. Otwarty kod. Cztery kontrakty żywe na Base Sepolia.
+
+30
+00:02:40,000 --> 00:02:50,000
+Pięciu agentów gotowych. Twoje DAO może próbować.
+
+31
+00:02:50,000 --> 00:03:00,000
+Linki w opisie.
