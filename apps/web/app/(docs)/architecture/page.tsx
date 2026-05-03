@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DocsShell, H2, H3, P, UL, OL, Code, Callout } from "@/components/docs/docs-shell";
 import { LayerDiagram, FlowSteps, CompareTable } from "@/components/docs/diagram";
+import { VerifiedOnBasescanBadge } from "@/components/shared/verified-on-basescan-badge";
 
 export const metadata: Metadata = {
   title: "Architecture - CONCLAVE",
@@ -112,31 +113,46 @@ export default function ArchitecturePage() {
         rows={[
           [
             <Code key="1">CouncilToken</Code>,
-            <a key="1a" href="https://sepolia.basescan.org/address/0x5fE2a5E971d9FAafF9cC0b0C9981da44fefC4381" className="underline font-mono text-xs" target="_blank" rel="noopener noreferrer">0x5fE2...4381</a>,
+            <span key="1a" className="inline-flex items-center gap-1.5 flex-wrap">
+              <a href="https://sepolia.basescan.org/address/0x5fE2a5E971d9FAafF9cC0b0C9981da44fefC4381" className="underline font-mono text-xs" target="_blank" rel="noopener noreferrer">0x5fE2...4381</a>
+              <VerifiedOnBasescanBadge address="0x5fE2a5E971d9FAafF9cC0b0C9981da44fefC4381" label="CouncilToken" compact />
+            </span>,
             "ERC20Votes governance token, 5 minted, timestamp clock",
             <Code key="1b">delegate, getVotes</Code>,
           ],
           [
             <Code key="2">AICouncilGovernor</Code>,
-            <a key="2a" href="https://sepolia.basescan.org/address/0x1f95C796C5dc47d08B20CF3220a2AFa995e301F0" className="underline font-mono text-xs" target="_blank" rel="noopener noreferrer">0x1f95...01F0</a>,
+            <span key="2a" className="inline-flex items-center gap-1.5 flex-wrap">
+              <a href="https://sepolia.basescan.org/address/0x1f95C796C5dc47d08B20CF3220a2AFa995e301F0" className="underline font-mono text-xs" target="_blank" rel="noopener noreferrer">0x1f95...01F0</a>
+              <VerifiedOnBasescanBadge address="0x1f95C796C5dc47d08B20CF3220a2AFa995e301F0" label="AICouncilGovernor" compact />
+            </span>,
             "60% quorum, 1-day voting, 0 threshold",
             <Code key="2b">propose, castVote, execute</Code>,
           ],
           [
             <Code key="3">TimelockController</Code>,
-            <a key="3a" href="https://sepolia.basescan.org/address/0x76A69Bb6aeF69A2E76fA6C9632Ff6Ca101441B0f" className="underline font-mono text-xs" target="_blank" rel="noopener noreferrer">0x76A6...1B0f</a>,
+            <span key="3a" className="inline-flex items-center gap-1.5 flex-wrap">
+              <a href="https://sepolia.basescan.org/address/0x76A69Bb6aeF69A2E76fA6C9632Ff6Ca101441B0f" className="underline font-mono text-xs" target="_blank" rel="noopener noreferrer">0x76A6...1B0f</a>
+              <VerifiedOnBasescanBadge address="0x76A69Bb6aeF69A2E76fA6C9632Ff6Ca101441B0f" label="TimelockController" compact />
+            </span>,
             "48-hour delay, admin role revoked",
             <Code key="3b">schedule, execute</Code>,
           ],
           [
             <Code key="4">MockUSDC</Code>,
-            <a key="4a" href="https://sepolia.basescan.org/address/0x606EDE7755131e6206A29B67d88761eEbb3Bb59d" className="underline font-mono text-xs" target="_blank" rel="noopener noreferrer">0x606E...B59d</a>,
+            <span key="4a" className="inline-flex items-center gap-1.5 flex-wrap">
+              <a href="https://sepolia.basescan.org/address/0x606EDE7755131e6206A29B67d88761eEbb3Bb59d" className="underline font-mono text-xs" target="_blank" rel="noopener noreferrer">0x606E...B59d</a>
+              <VerifiedOnBasescanBadge address="0x606EDE7755131e6206A29B67d88761eEbb3Bb59d" label="MockUSDC" compact />
+            </span>,
             "Treasury asset, 1M mUSDC supply",
             <Code key="4b">transfer, approve</Code>,
           ],
           [
             <Code key="5">AgentReputation</Code>,
-            <a key="5a" href="https://sepolia.basescan.org/address/0xf3BAb9A2761131f4A9e5BA2d9e6395bea2186f44" className="underline font-mono text-xs" target="_blank" rel="noopener noreferrer">0xf3BA...6f44</a>,
+            <span key="5a" className="inline-flex items-center gap-1.5 flex-wrap">
+              <a href="https://sepolia.basescan.org/address/0xf3BAb9A2761131f4A9e5BA2d9e6395bea2186f44" className="underline font-mono text-xs" target="_blank" rel="noopener noreferrer">0xf3BA...6f44</a>
+              <VerifiedOnBasescanBadge address="0xf3BAb9A2761131f4A9e5BA2d9e6395bea2186f44" label="AgentReputation" compact />
+            </span>,
             "Moat 5: per-agent reputation, permissioned writer",
             <Code key="5b">updateReputation, reputation</Code>,
           ],
