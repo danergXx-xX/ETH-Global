@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/components/shared/site-header";
 import { ClientOnly } from "@/components/shared/client-only";
