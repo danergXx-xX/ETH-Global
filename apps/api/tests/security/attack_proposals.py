@@ -30,7 +30,7 @@ from the audit doc).
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Literal
 
 from schemas import Source
