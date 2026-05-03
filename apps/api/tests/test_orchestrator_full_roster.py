@@ -295,7 +295,11 @@ async def test_orchestrator_global_source_dedup() -> None:
                 title=f"{st} data",
                 snippet="snippet",
                 weight=0.7,
-                source_type=st if st in {"rss", "coingecko", "defillama", "aixbt"} else "rss",
+                source_type=(
+                    st
+                    if st in {"rss", "coingecko", "defillama", "aixbt", "perplexity"}
+                    else "rss"
+                ),
             )
         ]
 
@@ -320,9 +324,10 @@ async def test_orchestrator_global_source_dedup() -> None:
     ):
         await orchestrator.run_debate("Test")
 
-    # ALL_PERSONAS unique source types after Sentiment aixbt fallback fix:
-    # rss, coingecko, defillama = 3. Each fetched once globally.
-    assert fake_aggregator.fetch_for_query.call_count == 3
+    # ALL_PERSONAS unique source types after Sesja 50 (LUMEN-HUGO-RESEARCH):
+    # rss, coingecko, defillama, perplexity = 4. Each fetched once globally.
+    # Tech: [perplexity, rss, defillama], Sentiment: [rss, perplexity, coingecko].
+    assert fake_aggregator.fetch_for_query.call_count == 4
 
 
 @pytest.mark.asyncio
