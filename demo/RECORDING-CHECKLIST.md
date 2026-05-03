@@ -1,6 +1,6 @@
 ---
 title: AI Treasury Council - Demo Recording Checklist
-date: 2026-05-02 (Eva Sesja 22)
+date: 2026-05-02 (Eva Sesja 22) | updated 2026-05-03 (Sesja 32 per Matthew tips)
 target: niedziela 13:00-14:30 nagranie, 14:30-16:00 editing
 linked: SCRIPT.md, STORYBOARD.md
 ---
@@ -10,6 +10,32 @@ linked: SCRIPT.md, STORYBOARD.md
 > **Eva regula:** storyboard ZANIM nagranie. Klatka po klatce. NIE nagrywaj "z dymka".
 
 > **Tool zalecany:** **Screen Studio** (Mac, lepsza jakosc niz Loom, automatic cursor highlight + click animations + zoom). Alternatywa: Loom Pro (jezeli Screen Studio niedostepny).
+
+---
+
+## ETHGlobal hard rules (Matthew explicit guidelines, 2026-05-03)
+
+### HARD BANNED - NIE ROBIMY pod zadnym pozorem
+
+- **TTS / AI voiceover** - mowa ludzka tylko. Jezeli Dan nie moze, **Matthew nagrywa**, NIGDY TTS.
+- **Phone recording** - tylko laptop + zewnetrzny mic. Telefon = fail.
+- **Music + text only (no voice)** - voice-over jest obowiazkowy. Sama muzyka + napisy = fail.
+- **Speed up video** - oryginalny pacing. Acceleration = fail.
+- **Background music conflict z voice-over** - jezeli muzyka, to BARDZO cicho i nigdy nad voice. Default: brak muzyki.
+
+### HARD REQUIRED - musi byc spelnione
+
+- **Resolution:** 720p min wymagane, **target 1080p** (buffer na re-encoding podczas upload).
+- **Length:** 2-4 min wymagane, **target 3:00 z 10s tolerancja** (2:50-3:10 acceptable hard window).
+- **Slides:** max 4 bullets per slide. Wiecej = przeladowanie poznawcze.
+- **Speak clearly, dont rush:** 140 wpm max, pauzy 0.5-1s miedzy zdaniami.
+- **Backstory max 20s** - nie marnuj czasu na tlo, jak najszybciej do dema.
+- **Show in action** - skip waiting moments via edit (czekanie 5s na load = wytnij).
+
+### Reference - obowiazkowy pre-recording watchparty
+
+- **Good example to study:** https://ethglobal.com/showcase/umbra-wsugm
+- **Sesja 33 watchparty 15 min** - ogladamy Umbra z Danem PRZED nagraniem, zaznaczamy co adoptujemy (hook, pacing, captions style).
 
 ---
 
@@ -85,7 +111,7 @@ linked: SCRIPT.md, STORYBOARD.md
 
 ### Recording settings
 
-- [ ] **Resolution:** 1920x1080 native record, export 1280x720 (mniej tokenow w upload, sufficient quality)
+- [ ] **Resolution:** 1920x1080 native record, **export 1080p target** (per Matthew rules - 720p tylko absolute fallback dla bardzo duzego pliku)
 - [ ] **Framerate:** 60fps record, 30fps export (smooth scroll/typewriter, smaller file)
 - [ ] **Cursor highlight:** ON (Screen Studio domyslnie, Loom: enable w settings)
 - [ ] **Click animations:** ON (Screen Studio amber ripple, Loom: enable)
@@ -133,7 +159,7 @@ Per segment z SCRIPT.md (Hook, Demo A, B, C, D, Tech trust, Tech moats, Close):
 
 ### Cuts + transitions
 
-- [ ] Trim do **2:50 target** (10s buffer pod 3:00 hard limit ETHGlobal - chroni przed editing overshoot)
+- [ ] Trim do **3:00 target z 10s tolerancja** (2:50-3:10 acceptable per Matthew rule). 4:00 hard ceiling ETHGlobal.
 - [ ] Cuts smooth: cross-fade 0.3s typowe, hard cut OK na wow moments
 - [ ] Static shots max 8s (Eva rule)
 - [ ] Total cuts: 24-30 typowe
@@ -212,21 +238,31 @@ Per segment z SCRIPT.md (Hook, Demo A, B, C, D, Tech trust, Tech moats, Close):
 
 ---
 
-## Backup plan (jezeli nagranie się nie uda)
+## Backup plan (jezeli nagranie sie nie uda)
 
-### Plan B: minimal viable demo (1 godzina)
+> **WAZNE per Matthew 2026-05-03:** TTS / AI voiceover NIGDY. Plan B (TTS fallback) USUNIETY - jezeli Dan nie moze, **Matthew nagrywa voice-over**, ZERO TTS.
 
-Jezeli nagranie main 3 min nie wyjdzie:
-- 60s teaser version (Hook 15s + Demo highlights 30s + Close 15s)
-- Acceptable jezeli main 3 min absolutnie nieudane
-- Jurorzy preferuja krotsze + dobre niz dluzsze + słabe
+### Plan B: Matthew nagrywa voice-over EN (zamiast Dana)
+
+Jezeli Dan nie moze z jakiegokolwiek powodu (zachryply glos, brak czasu, blokada):
+- Matthew nagrywa cala wersje EN (native speaker, lepszy accent)
+- Dan moze nagrac potem PL i podlozyc na ten sam visual
+- Recording w tym samym setupie (laptop + zewnetrzny mic - NIE telefon)
+- Tool: ten sam Screen Studio / Loom
 
 ### Plan C: voice-over re-record only (30 min)
 
 Jezeli wizualy OK ale audio zle:
-- Re-record voice-over na ciszej, lepszym micu
+- Re-record voice-over na ciszej, lepszym micu (laptop + ext mic, NIE telefon)
 - Nalozyc na istniejace recording (sync z visuals)
 - Tool: DaVinci Resolve audio replace
+
+### Plan D: 60s teaser tylko (last resort)
+
+Jezeli main 3 min absolutnie nieudane:
+- 60s teaser version (Hook 15s + Demo highlights 30s + Close 15s)
+- Z voice-over (NIE TTS, NIE muzyka+text)
+- Jurorzy preferuja krotsze + dobre niz dluzsze + slabe
 
 ---
 
@@ -235,6 +271,7 @@ Jezeli wizualy OK ale audio zle:
 - [ ] **Dan + Matthew:** kto nagrywa voice-over? Decyzja przed sobota wieczor.
   - Rekomendacja Eva: Dan PL (rozumie nuanse storyline), Matthew EN (native speaker, lepszy accent)
   - Alternatywa: Matthew nagrywa obie wersje (1 person consistency)
+  - **TTS BANNED per Matthew 2026-05-03** - jezeli zaden nie moze, opozniamy nagranie. Nie wstawiamy TTS.
 - [ ] **Aiko:** czy Phase 1B wagmi UI gotowy do recording w niedziele 12:00? (wymagane dla Frame 7 i 8)
 - [ ] **Sol + Aiko:** czy Phase 2 ENS subnames live (NameStone)? Jezeli NIE - Frame 10 swap na mock + voice-over note
 - [ ] **Lumen:** czy data freshness (RSS + CoinGecko) działa live w niedziele 12:00? (Trust mech #1 wymaga real data)
