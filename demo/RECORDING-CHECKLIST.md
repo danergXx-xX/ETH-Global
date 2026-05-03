@@ -98,6 +98,14 @@ linked: SCRIPT.md, STORYBOARD.md
 - [ ] Voice-over wybrany (Wariant A vs B per segment) i highlighted
 - [ ] Timing reference: telefon z stoperem widoczny w polu widzenia
 
+### 0G qualification - video duration check (R-021)
+
+- [ ] **Hard limit ETHGlobal Open Agents 2026:** 180s. Final cut MUST be `<= 180.0s` w pliku exportu (sprawdz w Final Cut / DaVinci timeline duration panel).
+- [ ] SCRIPT.md target: 3:00 (180s exact). **Bufor zalecany: 175-178s w finalnym cut.**
+- [ ] Po pierwszym roughcut - jezeli `> 178s`: skroc Hook (0:00-0:15 -> mozna do 12s) lub Close (2:30-3:00 -> mozna do 25s). NIE skracaj Live Demo (1:15s) ani Tech (1:00s) - to substance.
+- [ ] Disqualification risk: 0G dyskwalifikuje > 180s automatycznie. Sprawdz `ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 final.mp4` przed upload.
+- [ ] Failure playbook: patrz `demo/FAILURE-PLAYBOOK.md` (live demo recovery) + `demo/FAILURE-PLAYBOOK-VIDEO-CLIPS.md` (pre-recorded fallback clips Sun morning).
+
 ### Maja T1 review voice-over (PRZED nagraniem)
 
 - [ ] **Maja T1 read** voice-over PL+EN final (anti-AI guard, naturalnosc, ton)
