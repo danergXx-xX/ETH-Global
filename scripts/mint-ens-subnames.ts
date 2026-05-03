@@ -120,7 +120,7 @@ const AGENTS: AgentSpec[] = [
     owner: "0x0000000000000000000000000000000000000001",
     texts: {
       name: "Bull Agent",
-      description: "Optymistyczny analityk - identyfikuje upside i okazje wzrostowe.",
+      description: "Optimistic analyst - identifies upside and growth opportunities.",
       avatar: `${AVATAR_BASE}/bull.png`,
       url: GITHUB_REPO,
       "com.twitter": "@aicouncil",
@@ -135,7 +135,7 @@ const AGENTS: AgentSpec[] = [
     owner: "0x0000000000000000000000000000000000000002",
     texts: {
       name: "Bear Agent",
-      description: "Pesymistyczny analityk - wskazuje ryzyka i możliwe spadki.",
+      description: "Skeptical analyst - flags risks and potential drawdowns.",
       avatar: `${AVATAR_BASE}/bear.png`,
       url: GITHUB_REPO,
       "com.twitter": "@aicouncil",
@@ -150,7 +150,7 @@ const AGENTS: AgentSpec[] = [
     owner: "0x0000000000000000000000000000000000000003",
     texts: {
       name: "Risk Manager",
-      description: "Ocenia ekspozycje portfelowe, koreluje aktywa, pilnuje limitow.",
+      description: "Portfolio risk officer - tracks exposure, correlations, and concentration caps.",
       avatar: `${AVATAR_BASE}/risk.png`,
       url: GITHUB_REPO,
       "com.twitter": "@aicouncil",
@@ -165,7 +165,7 @@ const AGENTS: AgentSpec[] = [
     owner: "0x0000000000000000000000000000000000000004",
     texts: {
       name: "Technical Analyst",
-      description: "Analiza techniczna - wskaźniki, formacje, momentum.",
+      description: "Technical analyst - indicators, patterns, momentum.",
       avatar: `${AVATAR_BASE}/tech.png`,
       url: GITHUB_REPO,
       "com.twitter": "@aicouncil",
@@ -180,7 +180,7 @@ const AGENTS: AgentSpec[] = [
     owner: "0x0000000000000000000000000000000000000005",
     texts: {
       name: "Sentiment Reader",
-      description: "Sentyment z newsow, mediow spolecznosciowych i AIXBT.",
+      description: "Sentiment reader - news, social media, and AIXBT signals.",
       avatar: `${AVATAR_BASE}/sentiment.png`,
       url: GITHUB_REPO,
       "com.twitter": "@aicouncil",
