@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { LanguageToggle } from "@/components/language-toggle";
 import { WalletButton } from "@/components/shared/wallet-button";
 import { InboxBell } from "@/components/notifications";
 import {
@@ -45,7 +44,7 @@ export function TreasuryView() {
             </div>
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
-            <LanguageToggle />
+            
             <InboxBell />
             <WalletButton />
           </div>

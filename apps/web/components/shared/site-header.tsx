@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LanguageToggle } from "@/components/language-toggle";
 import { WalletButton } from "@/components/shared/wallet-button";
 import { InboxBell } from "@/components/notifications";
 
@@ -72,7 +71,6 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2 shrink-0">
-          <LanguageToggle />
           <InboxBell />
           <WalletButton />
         </div>
