@@ -25,6 +25,7 @@ from governance import (
 )
 from logging_config import RequestIDMiddleware, setup_logging
 from middleware import get_budget_tracker, get_ws_tracker
+from services.cache import cache_connect, cache_disconnect, cache_get, cache_set
 from agents.orchestrator import run_debate
 from data.seed_historical_debates import (
     get_debate_by_id,
@@ -77,6 +78,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     # Initialize singletons so they're warm at first request.
     ws_tracker = get_ws_tracker()
     budget = get_budget_tracker()
+    cache_ready = await cache_connect()
     log.info(
         "api_ready",
         env=settings.env,
@@ -84,8 +86,10 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         ws_cap=ws_tracker.max_concurrent,
         budget_usd_daily=budget.cap_usd,
         budget_halt_pct=budget.halt_fraction,
+        cache_ready=cache_ready,
     )
     yield
+    await cache_disconnect()
     log.info("api_shutdown")
 
 
@@ -394,7 +398,17 @@ async def get_agent_reputation(persona: str) -> dict[str, object]:
 
 @app.get("/api/agents/reputation/all")
 async def get_all_agent_reputations() -> dict[str, object]:
-    """Batch read all 5 personas. Each entry returns its own status on RPC failure."""
+    """Batch read all 5 personas. Each entry returns its own status on RPC failure.
+
+    Cached in Redis for 30 seconds (5 RPC calls -> 1 cached read). Cache miss
+    or Redis unavailable falls back to live RPC for all 5 personas.
+    """
+    cache_key = "agents:reputation:all:v1"
+    cached = await cache_get(cache_key)
+    if cached is not None and isinstance(cached, dict) and "agents" in cached:
+        log.debug("reputation_cache_hit", key=cache_key)
+        return cached
+
     updater = get_reputation_updater()
     if updater is None:
         raise HTTPException(status_code=503, detail="reputation contract not configured")
@@ -430,7 +444,11 @@ async def get_all_agent_reputations() -> dict[str, object]:
     items = await asyncio.gather(
         *[_one(p, a) for p, a in PERSONA_ADDRESSES.items()]
     )
-    return {"agents": items}
+    payload = {"agents": items}
+    # Only cache when no error entries (avoid pinning transient RPC failures).
+    if all(item.get("status") == "ok" for item in items):
+        await cache_set(cache_key, payload, ttl_seconds=30)
+    return payload
 
 
 @app.get("/api/proposals/recipients")
@@ -460,8 +478,16 @@ async def list_suggested_proposals() -> dict[str, list[dict]]:
     Used by frontend submission form: judge picks one to pre-fill the textarea
     with full_context, demonstrating council across geopolitics, crypto-native,
     time-sensitive, and meta-DAO scenarios.
+
+    Cached for 300s (static seed data, refreshes when seed_proposals.py changes).
     """
-    return {"proposals": get_suggested_proposals()}
+    cache_key = "proposals:suggested:v1"
+    cached = await cache_get(cache_key)
+    if cached is not None and isinstance(cached, dict) and "proposals" in cached:
+        return cached
+    payload = {"proposals": get_suggested_proposals()}
+    await cache_set(cache_key, payload, ttl_seconds=300)
+    return payload
 
 
 @app.get("/api/proposals/suggested/{proposal_id}")

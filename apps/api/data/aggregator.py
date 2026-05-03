@@ -12,6 +12,8 @@ Lifecycle: call close() on app shutdown to release HTTP clients.
 
 from __future__ import annotations
 
+import hashlib
+
 import httpx
 import structlog
 
@@ -20,8 +22,16 @@ from data.defillama import DefiLlamaSource
 from data.rss import RSSSource
 from data.sources import DataSource
 from schemas import Source
+from services.cache import cache_get, cache_set
 
 log = structlog.get_logger()
+
+DATA_CACHE_TTL_SECONDS = 300
+
+
+def _cache_key(source_name: str, query: str, limit: int) -> str:
+    digest = hashlib.sha256(query.encode("utf-8")).hexdigest()[:16]
+    return f"datasrc:{source_name}:{digest}:n{limit}"
 
 
 def create_default_registry() -> dict[str, DataSource]:
@@ -59,9 +69,36 @@ class DataAggregator:
             if not adapter:
                 log.debug("source_not_registered", source=src_name)
                 continue
+
+            cache_key = _cache_key(src_name, query, limit_per_source)
+            cached = await cache_get(cache_key)
+            if isinstance(cached, list):
+                try:
+                    parsed = [Source(**item) for item in cached]
+                    all_sources.extend(parsed)
+                    log.debug(
+                        "source_cache_hit",
+                        source=src_name,
+                        results=len(parsed),
+                        query=query,
+                    )
+                    continue
+                except Exception as exc:
+                    log.warning(
+                        "source_cache_decode_failed",
+                        source=src_name,
+                        error=str(exc),
+                    )
+
             try:
                 sources = await adapter.fetch(query, limit=limit_per_source)
                 all_sources.extend(sources)
+                if sources:
+                    await cache_set(
+                        cache_key,
+                        [s.model_dump(mode="json") for s in sources],
+                        ttl_seconds=DATA_CACHE_TTL_SECONDS,
+                    )
                 log.info(
                     "source_fetched",
                     source=src_name,
