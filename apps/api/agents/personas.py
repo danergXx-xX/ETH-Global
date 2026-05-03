@@ -16,11 +16,10 @@ from __future__ import annotations
 
 import importlib
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Awaitable, Callable
+from typing import TYPE_CHECKING, Awaitable, Callable, cast
 
 if TYPE_CHECKING:
-    from agents.anthropic_client import AnthropicClient
-    from schemas import AgentDecision, Source
+    from schemas import AgentDecision
 
 PersonaRunner = Callable[..., Awaitable["AgentDecision"]]
 
@@ -310,8 +309,7 @@ def get_runner(persona_id: str) -> PersonaRunner:
     """
     get_persona(persona_id)
     module = importlib.import_module(f"agents.{persona_id}_agent")
-    runner: Any = getattr(module, f"run_{persona_id}")
-    return runner
+    return cast(PersonaRunner, getattr(module, f"run_{persona_id}"))
 
 
 def build_system_prompt(persona: PersonaSpec) -> str:
