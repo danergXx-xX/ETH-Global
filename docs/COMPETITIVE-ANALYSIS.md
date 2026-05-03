@@ -103,7 +103,7 @@ Proxy events analizowane:
 | Groundtruth | 2nd AI Agents | Intelligence map z humans + AI agents reportujacymi i walidujacymi |
 | VEIL VPN | 1st Most Creative | Encrypted Internet Layer pay-as-you-go |
 
-**HackMoney 2026 ENS "Integrate" winners:** debacle, InsightAI, Backr, Nominal, ENSRouter, SocialENS - wieksksosc to payment routing + reputation (NIE AI agents identity).
+**HackMoney 2026 ENS "Integrate" winners:** debacle, InsightAI, Backr, Nominal, ENSRouter, SocialENS - wiekszosc to payment routing + reputation (NIE AI agents identity).
 
 **Co Nick / ENS team ceni (synthesis):**
 - ENS jako "rdzen tozsamosci agenta" (NIE ozdoba) - explicit qual: "doing real work, resolving the agent's address, storing its metadata, gating access, enabling discovery"
@@ -147,7 +147,7 @@ Nie ma sponsora "Synthesis" w Open Agents 2026 (sprawdzono `/api/sponsors`). Naj
 - AIMen - reusable agent workflows
 
 **Common traits Finalists (Agentic Ethereum 2025):**
-- Wieksksosc to "AI agents w narzedziach DeFi" (yield, intent, deployment, payments)
+- Wiekszosc to "AI agents w narzedziach DeFi" (yield, intent, deployment, payments)
 - Mniej DAO governance / treasury / multi-agent debate angle
 - Wszyscy maja **live demo + GitHub** + zazwyczaj > 1 sponsor track integration
 

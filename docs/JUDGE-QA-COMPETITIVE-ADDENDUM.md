@@ -74,7 +74,7 @@
 > Open source core (governance + agent framework). Premium SaaS dla DAO contributors: managed council deployment, custom agent personas, integrations z istniejacymi DAO frameworks (Aragon, Tally, Snapshot). Trust-as-a-service dla DAOs ktore juz kontroluja $26B treasury i potrzebuja structured analysis. Have LOI conversations rozpoczete (patrz docs/loi/).
 
 **Backup pattern (ETHGlobal Cannes 2026 winners):**
-- Wieksksosc 0G winners ma SaaS / open core model w deck (Croisette, Meridian)
+- Wiekszosc 0G winners ma SaaS / open core model w deck (Croisette, Meridian)
 - "Just exploration" projekty NIE wygrywaja Best De Fi top-3
 - ETHGlobal Finalists Agentic Ethereum 2025: 7/10 mialo jasny business angle, 3/10 explorations - pattern: business angle helps but not strict requirement for Finalist
 
@@ -86,7 +86,7 @@
 
 > Nasz ENS jest na L1 Sepolia (Phase 2 NameStone w plany na L1 mainnet). Smart contracts deployed na Base Sepolia. Integration cross-chain: ENS resolution z Base wymaga ENS Resolver lookup na L1 - mamy implementacje w `apps/web/components/ENSIdentityCard.tsx`.
 
-**Pattern HackMoney 2026 ENS Integrate winners:** wieksksosc robila cross-chain payments via ENS (Nominal, ENSRouter, WarpSend). ALE wszystkie placement < 1st (1st was Ghost in the Machine na Cannes earlier dla AI Agents). Cross-chain = baseline, NIE differentiator do 1st prize.
+**Pattern HackMoney 2026 ENS Integrate winners:** wiekszosc robila cross-chain payments via ENS (Nominal, ENSRouter, WarpSend). ALE wszystkie placement < 1st (1st was Ghost in the Machine na Cannes earlier dla AI Agents). Cross-chain = baseline, NIE differentiator do 1st prize.
 
 **Honest:** my robimy ENS jako agent identity (anchor reputation), NIE jako payment routing. Differentiator w INNY angle (AI Agents track), nie cross-chain.
 
