@@ -82,7 +82,7 @@ When uploading data segments via `zgs_uploadSegment`, the `proof` field format i
 
 ### 4. web3.storage legacy API sunset - Pinata required as fallback
 
-Matthew's original plan referenced `web3.storage` as the IPFS fallback. We discovered during implementation that the web3.storage legacy upload API (`api.web3.storage/upload`) was sunset in January 2024. The new w3up protocol uses UCAN auth, which adds significant complexity for a hackathon.
+The original architecture plan referenced `web3.storage` as the IPFS fallback. We discovered during implementation that the web3.storage legacy upload API (`api.web3.storage/upload`) was sunset in January 2024. The new w3up protocol uses UCAN auth, which adds significant complexity for a hackathon.
 
 **Our workaround:** We switched to Pinata as our IPFS fallback (simpler JWT auth model). See `apps/api/storage/ipfs.py`. Our factory pattern (`storage/factory.py`) handles automatic fallback from 0G to IPFS with a single env var.
 

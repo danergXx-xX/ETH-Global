@@ -165,7 +165,7 @@ linked: SCRIPT.md, STORYBOARD.md
 - "Wage glosu opartego o on-chain reputacje" (0:35-1:00) - A2A z verifiable reputation
 
 ### Hidden details Ben zauwazy
-- AgentReputation.sol on-chain (Moat 5 PoW Matthew)
+- AgentReputation.sol on-chain (Moat 5 PoW for agents)
 - Source attribution per claim = agenty cite zewnetrzne źródła AND siebie nawzajem (e.g. Bear cytuje Bull's confidence as evidence)
 - Council Rules JSON ma parametry agent vote weights (HITL adjustable)
 
@@ -203,7 +203,7 @@ linked: SCRIPT.md, STORYBOARD.md
 - FEEDBACK.md ma 12 items (sponsor feedback)
 - README ma Mermaid arch diagram
 - Branch protection active on main
-- Mateusz security audit (0 CRITICAL, 0 HIGH per status update Matthew 2026-05-02 - sprawdz aktualnosc przed nagraniem)
+- Mateusz security audit (0 CRITICAL, 0 HIGH per status update 2026-05-02 - sprawdz aktualnosc przed nagraniem)
 
 ### Probability: **80%** Finalist top 20% (was 80%, confirmed po Phase 1B + 2 + Moat 5)
 
@@ -242,7 +242,7 @@ Jezeli Finalist top 20% -> top 5 live presentation. **Eva przygotowuje extended 
 
 ## Probability disclaimer
 
-Probabilities = Eva subjective estimate based on per-juror demo coverage. Calibrate z panel jurors output session 2026-05-02 (gdy dostepny). Bazowe wartosci z Matthew status update v2 (Finalist 80%, ENS Track 70%, 0G 50%).
+Probabilities = Eva subjective estimate based on per-juror demo coverage. Calibrate z panel jurors output session 2026-05-02 (gdy dostepny). Bazowe wartosci z early status update v2 (Finalist 80%, ENS Track 70%, 0G 50%).
 
 ---
 

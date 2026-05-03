@@ -1,7 +1,7 @@
 ---
 title: AI Treasury Council - Judge Q&A Preparation
 date: 2026-05-03 (Sesja 32 - Sora+Maja)
-audience: Dan + Matthew (live judging response prep)
+audience: Dan (solo founder, live judging response prep)
 duration_per_answer: 30 sec spoken (~70-90 words)
 related: docs/JUDGES-ONBOARDING.md, demo/SCRIPT.md, README.md
 ---
@@ -218,7 +218,7 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 **A:** "Honest answer - no, not in this MVP. Our use case is treasury governance, not AMM hooks. The natural fit would be a v4 hook that consults the AI Council before executing large swaps from the treasury - if a proposal allocates 100k USDC to swap into ETH, the hook could require an AI Council verdict CID as input. We documented this in FEEDBACK.md as an extension path. Did not implement to keep MVP scope tight."
 
-**Backup:** `docs/FEEDBACK.md` + roadmap noted in `Projects/AI-Tech/ETHGlobal-Open-Agents/external-input/2026-05-03-plan-to-submission-matthew.md`
+**Backup:** `docs/FEEDBACK.md` + roadmap noted in `Projects/AI-Tech/ETHGlobal-Open-Agents/external-input/2026-05-03-plan-to-submission.md`
 
 **CHALLENGE:** Honest scope statement - judges respect this more than vaporware claims.
 
@@ -272,7 +272,7 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 **A:** "Real product. Five LOI templates ready for Aave, Compound, Optimism, Gitcoin, ENS. Aria sub-agent confirmed Marc Zeller exits Aave by July 2026, contacts pivoted to TokenLogic and Llamaxyz. Post-hackathon plan is paid pilot with one DAO over Q3 2026, real treasury proposals, real reputation accumulation. Code goes public on submission. Repo is github.com/danergXx-xX/ETH-Global, contributions welcome."
 
-**Backup:** `docs/loi/` (5 LOI templates), `Projects/AI-Tech/ETHGlobal-Open-Agents/external-input/2026-05-03-plan-to-submission-matthew.md`
+**Backup:** `docs/loi/` (5 LOI templates), `Projects/AI-Tech/ETHGlobal-Open-Agents/external-input/2026-05-03-plan-to-submission.md`
 
 ---
 
@@ -349,11 +349,11 @@ If an answer requires "we plan to..." it is flagged **CHALLENGE** with safer ref
 
 ---
 
-## Open questions for Dan / Matthew
+## Open questions for Dan (solo founder)
 
 - [ ] Q1.6 Base Sepolia justification - confirm wagmi config is actually chain-agnostic (Aiko verify)
-- [ ] Q3.5 Uniswap honest answer - confirm with Matthew if we want to claim more or stay honest
-- [ ] Q3.7 KeeperHub - same as Uniswap, Matthew judgment call
+- [ ] Q3.5 Uniswap honest answer - Dan decides: claim more or stay honest (recommend honest)
+- [ ] Q3.7 KeeperHub - same as Uniswap, Dan judgment call
 - [ ] **Q4.3 BLOCKER:** Diversification snapshot must be BROADCAST before Sesja 33 recording. If reputation in ENS is still 100/100/100/100/100 at recording time, reframe Q4.3 (see MUST-DO note inline).
 - [ ] Q1.8 Gas estimates - run `forge test --gas-report` and replace 730k figure with measured value, OR keep industry estimate framing
 - [ ] Q1.2 cost per debate (12c -> 4c) - verify against actual Anthropic invoices or reframe as estimate

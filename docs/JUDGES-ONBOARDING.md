@@ -103,9 +103,8 @@ Submission checklist: [docs/SUBMISSION-CHECKLIST.md](SUBMISSION-CHECKLIST.md).
 
 ## Team
 
-- **Dan Otomanski** ([@danergXx-xX](https://github.com/danergXx-xX)) - Lead, system architecture, AI agent orchestration
-- **Matthew Foyle** - MVP plan, demo voice-over, sponsor liaison, FEEDBACK.md research
-- **15-agent AI dev-team** orchestrated through Claude Code: PM (Maxima/Pico/Atlas), engineering (Aiko/Hugo/Sol/Nova/Lumen), QA (Quill), security (Mateusz), design (Vela), docs (Nina), demo (Eva). Every commit went through automated code review and security audit before merge.
+- **Dan Otomanski** ([@danergXx-xX](https://github.com/danergXx-xX)) - Solo human founder. System architecture, AI agent orchestration, scope/quality decisions.
+- **15-agent AI dev-team via Claude Code (Opus 4.7)**: PM (Maxima/Pico/Atlas), engineering (Aiko/Hugo/Sol/Nova/Lumen), QA (Quill), security (Mateusz), design (Vela), docs (Nina), demo (Eva), copy (Maja). Every commit went through automated code review and security audit before merge. Built by 1 human directing 15+ AI agent personas - the same meta-pattern AI Treasury Council applies to DAO decisions.
 
 ## DAO Outreach Pipeline
 

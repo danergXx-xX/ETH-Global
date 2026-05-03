@@ -1,7 +1,7 @@
 ---
 title: AI Treasury Council - Post-Production Guide
 date: 2026-05-02 (Eva Sesja 22)
-target: Editor (Dan/Matthew lub agencja) niedziela 14:30-16:30
+target: Editor (Dan solo lub agencja) niedziela 14:30-16:30
 linked: SCRIPT.md, STORYBOARD.md, RECORDING-CHECKLIST.md
 ---
 
@@ -233,7 +233,7 @@ git add demo/final/ && git commit -m "feat(demo): final video master 3:00 EN cap
 ```
 
 ### Upload primary: YouTube unlisted
-1. Upload na konto YouTube Dana/Matthew
+1. Upload na konto YouTube Dana
 2. **Visibility: Unlisted** (NIE public - hackathon judging only)
 3. **Title:** "AI Treasury Council - ETHGlobal Open Agents 2026 Demo"
 4. **Description:**
@@ -250,7 +250,7 @@ git add demo/final/ && git commit -m "feat(demo): final video master 3:00 EN cap
    Demo app: [Vercel URL]
    FEEDBACK: docs/FEEDBACK.md
    
-   Built by Dan Otomanski + Matthew [last name].
+   Built by Dan Otomanski (solo founder) with AI dev-team coordination via Claude Code (Opus 4.7): 15+ agent personas including Aiko (frontend), Hugo (backend), Sol (smart contracts), Nova (AI agents), Lumen (data), Critic/Vera/Mateusz (quality + security).
    ```
 5. **Custom thumbnail:** CONCLAVE logo + tagline "Your treasury, deliberated." (Inter Bold 32pt)
 6. **Captions:** YouTube ma własne caption layer - upload SRT jako backup (CAPTIONS-EN.srt + CAPTIONS-PL.srt)

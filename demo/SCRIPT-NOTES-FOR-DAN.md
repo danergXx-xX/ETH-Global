@@ -1,11 +1,11 @@
 ---
-title: Script Notes for Dan + Matthew - jak czytac voice-over
+title: Script Notes for Dan (solo founder) - jak czytac voice-over
 date: 2026-05-03 (Maja Sesja 28)
 purpose: Wskazowki czytania per segment - tempo, emfaza, pauzy, ton
 linked: SCRIPT.md, SCRIPT-TEASER-60s.md, RECORDING-CHECKLIST.md
 ---
 
-# Notes dla nagrywajacego (Dan PL, Matthew EN)
+# Notes dla nagrywajacego (Dan PL + EN, solo founder, first-person narrative)
 
 > **Filozofia Maji:** voice-over to nie deklamacja. To rozmowa z sedzia, ktory siedzi 5 metrow od ciebie. Mowic tak jakbyc tlumaczyl problem koledze przy piwie, nie pitchu na konferencji.
 
@@ -62,7 +62,7 @@ linked: SCRIPT.md, SCRIPT-TEASER-60s.md, RECORDING-CHECKLIST.md
 **Emfaza:**
 - "Bull, Bear, Risk, Tech, Sentiment" - rytm staccato, kazda nazwa wyrazna
 - "cytuje zrodla / cites sources" - to jest claim, nie mit
-- "on-chain reputacje / on-chain reputation" - PoW Moat 5 callout (Matthew's signature)
+- "on-chain reputacje / on-chain reputation" - PoW Moat 5 callout (signature differentiator)
 - "to jest deliberacja / this is deliberation" - PUNCH line po "nie czarna skrzynka"
 
 **Ton:** entuzjastyczny ale kontrolowany. To jest peak demo moment - daj wybrzmiec.
@@ -182,7 +182,7 @@ Komfortowe tempo. Bufor na pauzy + naturalny styl.
 - [ ] Wariant close wybrany (A/B/C)
 - [ ] Voice-over polish PL+EN przeczytane na glos 1x (timing check)
 - [ ] Polskie znaki w PL sprawdzone (regula #69)
-- [ ] EN warianty Matthew approved (jezeli on nagrywa)
+- [ ] EN warianty Maja T1 + Dan native fluency check
 - [ ] Microphone test (peak -3dB do -6dB, no clipping)
 - [ ] Cisza w pokoju (zamknij okno, AC off)
 - [ ] Druga osoba w pokoju? -> wyjdzie (lub headphones niemo)

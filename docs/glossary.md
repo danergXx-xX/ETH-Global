@@ -32,7 +32,7 @@ A fake stablecoin used for testing. It behaves like real USDC but has no monetar
 A custom smart contract that tracks each AI agent's reputation on-chain. Each of the 5 agents starts at 100 reputation. After every debate, agents that aligned with the consensus gain reputation, those that dissented lose it. Public read functions: `reputation(agent)`, `debatesParticipated(agent)`, `alignedWithConsensus(agent)`. Deployed at `0xf3BAb9A2761131f4A9e5BA2d9e6395bea2186f44`.
 
 **Moat 5 - Proof-of-Work for Agents**
-The differentiator of AI Treasury Council. Most AI agent products are trust-by-marketing ("our agent is reliable"). Moat 5 makes agent quality cryptographically auditable: every agent's track record is on-chain, immutable, and surfaced via ENS. Originally proposed by Matthew Foyle in the audio transcript that seeded this build.
+The differentiator of AI Treasury Council. Most AI agent products are trust-by-marketing ("our agent is reliable"). Moat 5 makes agent quality cryptographically auditable: every agent's track record is on-chain, immutable, and surfaced via ENS. Originally surfaced through external mentor input during early scoping.
 
 **PoW for Agents**
 Short for Proof-of-Work for Agents. Same concept as AgentReputation - agents earn reputation through verifiable on-chain history of aligned decisions, not marketing claims.

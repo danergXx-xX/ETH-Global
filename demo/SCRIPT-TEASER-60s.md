@@ -175,6 +175,6 @@ Same settings co main (Inter SemiBold 22pt white, 70% black bg, bottom 8%).
 
 **Eva decyzja:** TAK, w scope. Per prompt L140 ("Mozesz zaproponowac alternative version (60s teaser dla Twitter/Farcaster)"). Plan B jako fallback dla main 3:00 demo + post-hackathon distribution. Czas tworzenia tego dokumentu: ~10 min.
 
-**NIE nagrywa Eva** - to Phase 4 (Dan + Matthew niedziela).
+**NIE nagrywa Eva** - to Phase 4 (Dan solo niedziela).
 
 **Teaser nagranie czas:** 30 min (jezeli re-uzycie raw z main) lub 60 min (od zera).
