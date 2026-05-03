@@ -243,7 +243,15 @@ class TestSourceContextSentinelInjection:
 
 
 class TestDefendedBehaviorReachesConsensus:
-    """When model defends correctly, decision must reach the caller."""
+    """When model defends correctly, decision must reach the caller.
+
+    Bull is used as canary persona because all 5 personas share the same
+    runtime path (run_persona_agent in _runner.py) - what passes for Bull
+    structurally passes for Bear/Risk/Tech/Sentiment. Per-persona prompt
+    differences are exercised by GOLDEN_QUESTIONS in test_persona_agents.py
+    (Sesja 21 baseline). Adding all 5 personas here would 5x the test
+    runtime for zero additional defensive coverage.
+    """
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("attack", DIRECT_ATTACKS, ids=lambda a: a.attack_id)
