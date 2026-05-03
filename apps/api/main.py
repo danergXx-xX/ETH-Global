@@ -26,7 +26,13 @@ from governance import (
 from logging_config import RequestIDMiddleware, setup_logging
 from middleware import get_budget_tracker, get_ws_tracker
 from services.cache import cache_connect, cache_disconnect, cache_get, cache_set
-from db import db_connect, db_disconnect, is_connected as db_is_connected, session_scope
+from db import (
+    db_connect,
+    db_disconnect,
+    is_connected as db_is_connected,
+    mark_schema_ready,
+    session_scope,
+)
 from db.migrations import run_alembic_upgrade
 from db.repositories import DebateRepo
 from db.seed import seed_historical_debates_if_empty
@@ -88,8 +94,9 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     seeded = 0
     migration_ok = False
     if db_ready:
-        migration_ok = run_alembic_upgrade()
+        migration_ok = await run_alembic_upgrade()
         if migration_ok:
+            mark_schema_ready(True)
             try:
                 seeded = await seed_historical_debates_if_empty()
             except Exception as exc:

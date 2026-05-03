@@ -15,6 +15,7 @@ from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
 import structlog
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -26,6 +27,7 @@ log = structlog.get_logger()
 
 _engine: AsyncEngine | None = None
 _sessionmaker: async_sessionmaker[AsyncSession] | None = None
+_schema_ready: bool = False
 
 
 def _async_database_url() -> str | None:
@@ -63,7 +65,13 @@ async def db_connect() -> bool:
         # Smoke test: open a connection so we surface errors at startup.
         async with engine.connect() as conn:
             await conn.exec_driver_sql("SELECT 1")
-    except Exception as exc:
+    except (
+        SQLAlchemyError,
+        OSError,
+        ConnectionError,
+        TimeoutError,
+        ValueError,
+    ) as exc:
         log.warning(
             "db_connect_failed",
             error_type=type(exc).__name__,
@@ -77,18 +85,35 @@ async def db_connect() -> bool:
 
 
 async def db_disconnect() -> None:
-    global _engine, _sessionmaker
+    global _engine, _sessionmaker, _schema_ready
     if _engine is not None:
         try:
             await _engine.dispose()
-        except Exception as exc:
+        except (SQLAlchemyError, OSError) as exc:
             log.warning("db_disconnect_error", error=str(exc))
     _engine = None
     _sessionmaker = None
+    _schema_ready = False
 
 
 def is_connected() -> bool:
+    """True only when engine is up AND schema is ready (migrations applied)."""
+    return (
+        _engine is not None
+        and _sessionmaker is not None
+        and _schema_ready
+    )
+
+
+def is_engine_ready() -> bool:
+    """True when engine is connected, regardless of schema readiness."""
     return _engine is not None and _sessionmaker is not None
+
+
+def mark_schema_ready(ready: bool = True) -> None:
+    """Called by migration runner after successful upgrade to enable repo reads."""
+    global _schema_ready
+    _schema_ready = ready
 
 
 def get_engine() -> AsyncEngine | None:
@@ -116,9 +141,10 @@ async def session_scope() -> AsyncIterator[AsyncSession]:
 
 
 def _set_engine_for_tests(engine: AsyncEngine | None) -> None:
-    """Test helper - inject in-memory SQLite engine."""
-    global _engine, _sessionmaker
+    """Test helper - inject in-memory SQLite engine. Marks schema ready when engine is set."""
+    global _engine, _sessionmaker, _schema_ready
     _engine = engine
     _sessionmaker = (
         async_sessionmaker(engine, expire_on_commit=False) if engine is not None else None
     )
+    _schema_ready = engine is not None

@@ -209,3 +209,17 @@ async def test_debate_count(session: AsyncSession) -> None:
     await repo.create(debate_id="d1", proposal_id="p1", proposal_text="x", consensus="FOR")
     await session.commit()
     assert await repo.count() == 1
+
+
+@pytest.mark.asyncio
+async def test_is_connected_requires_schema_ready(session: AsyncSession) -> None:
+    """is_connected() should return False until mark_schema_ready(True) is called.
+
+    Fixture sets engine + marks ready (default True). We toggle off to verify gate.
+    """
+    assert db_pkg.is_connected() is True
+    db_pkg.mark_schema_ready(False)
+    assert db_pkg.is_connected() is False
+    assert db_pkg.is_engine_ready() is True
+    db_pkg.mark_schema_ready(True)
+    assert db_pkg.is_connected() is True
