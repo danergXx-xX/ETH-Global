@@ -19,7 +19,7 @@ Format: per sponsor track + general ETHGlobal submission. Status: OK / PENDING /
 | Demo video pod 3 min (180s) | PENDING | Eva | Niedz rano |
 | Live demo link | PENDING | Rio (deploy demo.aitc.app) | Niedz rano |
 | Protocol features/SDKs explained | OK (`apps/api/storage/zerog.py`) | - | - |
-| Team contact (Telegram & X) | CRITICAL | Dan + Matthew | Niedz przed 17:00 |
+| Team contact (Telegram & X) | CRITICAL | Dan (solo founder) | Niedz przed 17:00 |
 | Swarm: how agents communicate/coordinate (explicit explanation) | PENDING | Nina | Sob noc |
 | iNFT minted (jesli claim track iNFT) | NIE CLAIM | - | - |
 | Architecture diagram | OK (Mermaid w architecture.md) | - | - |
@@ -85,7 +85,7 @@ Brak osobnego sponsora "Synthesis Finalist" w Open Agents 2026. To top-level ETH
 ### P0 (do submission MUSI byc)
 1. Eva final video <180s + caption check
 2. Rio deploy demo.aitc.app + smoke test (live demo URL must work)
-3. Dan + Matthew Telegram + X handles do README + ETHGlobal form
+3. Dan Telegram + X handles do README + ETHGlobal form (solo founder)
 4. Maxima decision on ENS demo: A/B/C (z COMPETITIVE-ANALYSIS.md sekcja ENS)
 5. Maxima decision on Uniswap track: claim TAK/NIE (-> FEEDBACK.md location)
 6. Final smoke test: 0G CID resolves on explorer (jesli down -> dokumentowac IPFS fallback)

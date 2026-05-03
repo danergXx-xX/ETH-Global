@@ -2,7 +2,7 @@
 title: AI Treasury Council - Demo Video Script
 duration: 3:00 (180s hard limit ETHGlobal)
 format: 1920x1080 native, 1280x720 export, MP4 H.264
-audio: voice-over Dan lub Matthew (mowa, NIE TTS), no background music
+audio: voice-over Dan (mowa, NIE TTS), no background music
 captions: open captions burned-in, PL+EN versions
 date: 2026-05-02 (Eva Sesja 22)
 ---
@@ -181,7 +181,7 @@ Close (2:30-3:00) - 30s - CTA + GitHub + names
   - **Demo:** `demo.aitc.app` (lub Vercel URL jezeli nie ma)
   - **Docs:** README + FEEDBACK.md links
 - 2:45-2:55: Sponsor logos band (5 logos w rzedzie, kazde 1s fade): 0G | Uniswap | ENS | KeeperHub | Base. Pod tym: "Built at ETHGlobal Open Agents 2026".
-- 2:55-3:00: Final card - CONCLAVE logo (large) + tagline **"Your treasury, deliberated."** + names: **Dan Otomanski + Matthew [last name]** + ETHGlobal Open Agents 2026 logo bottom-right.
+- 2:55-3:00: Final card - CONCLAVE logo (large) + tagline **"Your treasury, deliberated."** + name: **Dan Otomanski** (solo founder + AI dev-team via Claude Code Opus 4.7) + ETHGlobal Open Agents 2026 logo bottom-right.
 
 **Voice-over PL - Wariant A (rzeczowy):**
 > "AI Treasury Council. Open source. Pięć kontraktów żywych na Base Sepolia. Pięciu agentów gotowych. Twoje DAO może pilotować już dziś. GitHub i demo na ekranie."
@@ -219,7 +219,7 @@ Close (2:30-3:00) - 30s - CTA + GitHub + names
 - [x] **Multi-agent debate** - 0:35-1:00 (live + ten WHOLE moment to ten moat)
 - [x] **Smart contract execution** - 1:00-1:20 (live tx Basescan)
 - [x] **Source attribution** - jak wyzej
-- [x] **PoW for agents** (Moat 5 Matthew) - 1:55-2:05 (infografika), 1:25-1:30 (ENS card text records `rep.score`, `rep.statements`)
+- [x] **PoW for agents** (Moat 5) - 1:55-2:05 (infografika), 1:25-1:30 (ENS card text records `rep.score`, `rep.statements`)
 
 ### Sponsor jurors - każdy ma konkretny moment
 
@@ -248,7 +248,7 @@ Close (2:30-3:00) - 30s - CTA + GitHub + names
 ## A/B Intro test plan (Eva rule)
 
 Nagrac obie wersje hooka (Wariant A rzeczowy + Wariant B narracyjny). Test:
-- 3 osoby (Dan, Matthew, third party z hackathonu)
+- 2-3 osoby (Dan + 1-2 third party z hackathonu)
 - Pytanie: "Po pierwszych 5 sekundach - chcesz ogladac dalej? Jakie pierwsze wrazenie?"
 - Zwyciezca z 2/3 idzie do final cut
 - Jezeli tie - Eva decyduje na podstawie pacing/audio quality
@@ -257,7 +257,7 @@ Nagrac obie wersje hooka (Wariant A rzeczowy + Wariant B narracyjny). Test:
 
 ## Open questions / needs
 
-- [ ] **Dan / Matthew:** kto nagrywa voice-over EN? (Matthew native = polecane, Dan PL bo rozumie nuanse storyline)
+- [ ] **Dan:** voice-over EN i PL nagrywany przez Dana (solo founder, first-person "I built this"). Zero TTS.
 - [ ] **Maja T1 review:** finalizacja EN copy (Eva storyline + Maja precyzyjne slowa)
 - [ ] **Aiko / Sol:** czy ENS subnames sa LIVE w niedziele rano (wymaga Phase 2 NameStone)? Jezeli NIE - swap na mock w segmencie D, dodac note "ENS subnames coming in Phase 2"
 - [ ] **Quill manual QA:** smoke test apki przed nagraniem (proposal submit -> debate -> vote -> execute -> audit log) - bez błędów visible

@@ -229,7 +229,7 @@ curl -X POST http://localhost:8000/api/debate \
 
 ## How We Built It
 
-Two-person team (Dan + Matthew) with a 15-agent AI dev-team orchestrated through Claude Code over a 3-day sprint. Dan directed architecture decisions and managed agent coordination. Matthew provided the phased MVP plan, demo voice-over, and sponsor feedback.
+Solo founder coordinating a 15-agent AI dev-team through Claude Code (Opus 4.7) over a 3-day sprint. Dan directed architecture decisions, managed agent coordination, and made every scope/quality call. The meta-narrative is intentional: AI Treasury Council uses AI agents to deliberate DAO decisions, and was itself built by 1 human directing 15+ AI agent personas.
 
 The AI agents handled specialized work: Sol for Solidity contracts, Hugo for FastAPI backend, Aiko for Next.js frontend, Nova for debate orchestration, Quill for testing. Every commit went through automated code review (Critic agent) and security audit (Mateusz agent) before merge.
 
@@ -237,9 +237,8 @@ Key architectural decisions: OpenZeppelin Wizard for contracts (battle-tested, n
 
 ## Team
 
-- **Dan Otomanski** ([@danergXx-xX](https://github.com/danergXx-xX)) - Lead, AI orchestration, system design
-- **Matthew Foyle** - Architecture plan, demo voice-over, FEEDBACK.md
-- **15-agent dev-team** - AI agents for PM, engineering, QA, security, and docs
+- **Dan Otomanski** ([@danergXx-xX](https://github.com/danergXx-xX)) - Solo human founder. Architecture, AI orchestration, system design, scope/quality decisions.
+- **AI dev-team via Claude Code (Opus 4.7)** - 15+ agent personas: Aiko (frontend), Hugo (backend), Sol (smart contracts), Nova (AI agents), Lumen (data), Critic / Vera / Mateusz (quality + security), Quill (QA), Eva (demo), Maja (copy), Nina (docs), Pico (PM), Atlas (EM), Maxima (PO), Zen (Tech Lead).
 
 ## License
 

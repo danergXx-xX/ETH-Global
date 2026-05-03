@@ -177,7 +177,7 @@ Nie ma sponsora "Synthesis" w Open Agents 2026 (sprawdzono `/api/sponsors`). Naj
 3. **DAO Governance integration native** (OpenZeppelin Governor + ERC20Votes + Timelock 48h) - Goldman Stacked ma quadratic voting custom, my mamy production-grade OZ stack
 4. **Bilingual UI (Polish + English) z custom i18n provider** - bardzo rzadkie w hackathonie ETHGlobal (przewaga dla audience non-English DAO contributors)
 5. **Pattern E git hook (auto-Critic per commit) + 15-agent dev-team workflow** - meta differentiator, nie produkt ale honest engineering story dla sedziow
-6. **Moat 5 Proof-of-Work for agents** (AgentReputation.sol jako on-chain reputation za alignment z consensus) - wzmiankowane Matthew transcript, unique angle dla nas
+6. **Moat 5 Proof-of-Work for agents** (AgentReputation.sol jako on-chain reputation za alignment z consensus) - signature differentiator, unique angle dla nas
 
 ### Risk: czy ktos zrobil to lepiej?
 
@@ -210,7 +210,7 @@ Nie ma sponsora "Synthesis" w Open Agents 2026 (sprawdzono `/api/sponsors`). Naj
 
 **Action items dla Maxima/Nina przed submission:**
 1. CHECK: video <180 sekund (Eva)
-2. ADD: Telegram + X handles dla Dan + Matthew (README + ETHGlobal form)
+2. ADD: Telegram + X handles dla Dan (solo founder, README + ETHGlobal form)
 3. ADD: explicit "Agent communication & coordination" sekcja w architecture.md (P1)
 
 ### ENS - "Best ENS Integration for AI Agents"
@@ -279,8 +279,8 @@ Wpisuje do `dev-team/risk-register.md` (jesli istnieje) jako nowe ryzyka:
 ### R-NEW-3: Brak X / Telegram handles w README - LOW
 
 **Description:** 0G qual "Team member names and contact info (Telegram & X)". Obecnie README ma tylko GitHub.
-**Mitigation:** Dan dodaje swoje handles + Matthew. README + ETHGlobal submission form.
-**Owner:** Dan + Matthew + Nina
+**Mitigation:** Dan dodaje swoje handles (solo founder). README + ETHGlobal submission form.
+**Owner:** Dan + Nina
 **Deadline:** Niedz przed 17:00
 
 ### R-NEW-4: FEEDBACK.md location - LOW (jesli claim Uniswap)

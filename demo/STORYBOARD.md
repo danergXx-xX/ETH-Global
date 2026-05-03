@@ -8,7 +8,7 @@ linked: SCRIPT.md (per segment)
 
 # Demo Storyboard - 12 Frames
 
-> **Filozofia Eva:** kazda klatka zaplanowana. Co na ekranie, co user mowi, jakie clicki, jakie efekty. Storyboard JEST samodzielnym dokumentem - Dan + Matthew nagrywaja patrzac TYLKO tutaj + SCRIPT.md.
+> **Filozofia Eva:** kazda klatka zaplanowana. Co na ekranie, co user mowi, jakie clicki, jakie efekty. Storyboard JEST samodzielnym dokumentem - Dan nagrywa patrzac TYLKO tutaj + SCRIPT.md.
 
 > **Format opisu per frame:** scena (co kompozycja), co na ekranie (UI elementy), ruch kamery (zoom/pan/static), efekty (highlighty, arrows, callouts), audio cue (jaki voice-over).
 
@@ -367,7 +367,7 @@ Spelnia Charter Eva 80% target.
 **2:55-3:00:** Final card
 - CONCLAVE logo (large, center)
 - Pod: tagline **"Your treasury, deliberated."** (Inter Bold, 36pt, white)
-- Pod tym: **"Dan Otomanski + Matthew [last name]"** (Inter, 18pt, gray)
+- Pod tym: **"Dan Otomanski - solo founder + AI dev-team via Claude Code Opus 4.7"** (Inter, 16pt, gray)
 - Bottom-right corner: ETHGlobal Open Agents 2026 logo (small)
 
 **Ruch kamery:** subtle zoom-in 1.0 -> 1.08 na CONCLAVE logo nad ostatnich 3s.

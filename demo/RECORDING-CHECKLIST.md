@@ -1,6 +1,6 @@
 ---
 title: AI Treasury Council - Demo Recording Checklist
-date: 2026-05-02 (Eva Sesja 22) | updated 2026-05-03 (Sesja 32 per Matthew tips)
+date: 2026-05-02 (Eva Sesja 22) | updated 2026-05-03 (Sesja 32 per ETHGlobal guidelines)
 target: niedziela 13:00-14:30 nagranie, 14:30-16:00 editing
 linked: SCRIPT.md, STORYBOARD.md
 ---
@@ -13,11 +13,11 @@ linked: SCRIPT.md, STORYBOARD.md
 
 ---
 
-## ETHGlobal hard rules (Matthew explicit guidelines, 2026-05-03)
+## ETHGlobal hard rules (sponsor guidelines, 2026-05-03)
 
 ### HARD BANNED - NIE ROBIMY pod zadnym pozorem
 
-- **TTS / AI voiceover** - mowa ludzka tylko. Jezeli Dan nie moze, **Matthew nagrywa**, NIGDY TTS.
+- **TTS / AI voiceover** - mowa ludzka tylko. Dan nagrywa solo (PL + EN). Jezeli Dan nie moze - opozniamy nagranie. ZERO TTS, zero AI voice.
 - **Phone recording** - tylko laptop + zewnetrzny mic. Telefon = fail.
 - **Music + text only (no voice)** - voice-over jest obowiazkowy. Sama muzyka + napisy = fail.
 - **Speed up video** - oryginalny pacing. Acceleration = fail.
@@ -110,7 +110,7 @@ linked: SCRIPT.md, STORYBOARD.md
 
 - [ ] **Maja T1 read** voice-over PL+EN final (anti-AI guard, naturalnosc, ton)
 - [ ] Sprawdz polskie znaki kazdej linii voice-over PL (regula #69)
-- [ ] Sprawdz EN warianty z native speaker perspective (jezeli Matthew nagrywa EN)
+- [ ] Sprawdz EN warianty - Dan native check, second pass na fluency
 - [ ] Jezeli Wariant B narracyjny EN - sprawdz czy fluency native (inaczej defaultuj do Wariant A)
 
 ---
@@ -119,7 +119,7 @@ linked: SCRIPT.md, STORYBOARD.md
 
 ### Recording settings
 
-- [ ] **Resolution:** 1920x1080 native record, **export 1080p target** (per Matthew rules - 720p tylko absolute fallback dla bardzo duzego pliku)
+- [ ] **Resolution:** 1920x1080 native record, **export 1080p target** (per ETHGlobal sponsor guidelines - 720p tylko absolute fallback dla bardzo duzego pliku)
 - [ ] **Framerate:** 60fps record, 30fps export (smooth scroll/typewriter, smaller file)
 - [ ] **Cursor highlight:** ON (Screen Studio domyslnie, Loom: enable w settings)
 - [ ] **Click animations:** ON (Screen Studio amber ripple, Loom: enable)
@@ -167,7 +167,7 @@ Per segment z SCRIPT.md (Hook, Demo A, B, C, D, Tech trust, Tech moats, Close):
 
 ### Cuts + transitions
 
-- [ ] Trim do **3:00 target z 10s tolerancja** (2:50-3:10 acceptable per Matthew rule). 4:00 hard ceiling ETHGlobal.
+- [ ] Trim do **3:00 target z 10s tolerancja** (2:50-3:10 acceptable per ETHGlobal sponsor rules). 4:00 hard ceiling ETHGlobal.
 - [ ] Cuts smooth: cross-fade 0.3s typowe, hard cut OK na wow moments
 - [ ] Static shots max 8s (Eva rule)
 - [ ] Total cuts: 24-30 typowe
@@ -219,7 +219,7 @@ Per segment z SCRIPT.md (Hook, Demo A, B, C, D, Tech trust, Tech moats, Close):
 
 - [ ] **Primary: YouTube unlisted** (ETHGlobal preferowany)
 - [ ] **Backup: Vimeo unlisted** (jezeli YouTube down)
-- [ ] **Local file:** zachowaj MP4 H.264 1920x1080 w `demo/final/AI-Treasury-Council-3min.mp4` (per Matthew rules - 720p tylko absolute fallback)
+- [ ] **Local file:** zachowaj MP4 H.264 1920x1080 w `demo/final/AI-Treasury-Council-3min.mp4` (per ETHGlobal sponsor rules - 720p tylko absolute fallback)
 - [ ] Thumbnail custom (CONCLAVE logo + tagline)
 - [ ] Description: link do GitHub + demo URL + docs
 
@@ -248,45 +248,36 @@ Per segment z SCRIPT.md (Hook, Demo A, B, C, D, Tech trust, Tech moats, Close):
 
 ## Backup plan (jezeli nagranie sie nie uda)
 
-> **WAZNE per Matthew 2026-05-03:** TTS / AI voiceover NIGDY. Plan B (TTS fallback) USUNIETY - jezeli Dan nie moze, **Matthew nagrywa voice-over**, ZERO TTS.
+> **WAZNE 2026-05-03:** TTS / AI voiceover NIGDY (per ETHGlobal sponsor guidelines). Solo founder = Dan nagrywa wszystko. Jezeli Dan nie moze - opozniamy submission. Zero TTS, zero AI voice.
 
-### Plan B: Matthew nagrywa voice-over EN (zamiast Dana)
-
-Jezeli Dan nie moze z jakiegokolwiek powodu (zachryply glos, brak czasu, blokada):
-- Matthew nagrywa cala wersje EN (native speaker, lepszy accent)
-- Dan moze nagrac potem PL i podlozyc na ten sam visual
-- Recording w tym samym setupie (laptop + zewnetrzny mic - NIE telefon)
-- Tool: ten sam Screen Studio / Loom
-
-### Plan C: voice-over re-record only (30 min)
+### Plan B: voice-over re-record only (30 min)
 
 Jezeli wizualy OK ale audio zle:
 - Re-record voice-over na ciszej, lepszym micu (laptop + ext mic, NIE telefon)
 - Nalozyc na istniejace recording (sync z visuals)
 - Tool: DaVinci Resolve audio replace
 
-### Plan B-prim: zaden z dwoch nie moze (Dan + Matthew unavailable)
+### Plan C: Dan unavailable
 
-Jezeli ANI Dan ANI Matthew nie sa dostepni do voice-over:
-- Voice z dowolnego team membera z native EN (Aiko/Hugo/Sol jezeli dostepni)
-- TTS NIGDY (Matthew explicit BAN, Sesja 32 update)
-- Jezeli zero alternatyw human voice -> opozniamy submission, NIE wstawiamy TTS
+Jezeli Dan nie moze z jakiegokolwiek powodu (zachryply glos, blokada):
+- TTS NIGDY (ETHGlobal explicit BAN). Zero AI voice.
+- Opozniamy nagranie do momentu gdy Dan moze nagrac
+- Submission deadline ETHGlobal jest hard - jezeli Dan totally unable -> last resort Plan D (teaser bez voice, jezeli regulamin pozwala)
 
 ### Plan D: 60s teaser tylko (last resort)
 
 Jezeli main 3 min absolutnie nieudane:
 - 60s teaser version (Hook 15s + Demo highlights 30s + Close 15s)
-- Z voice-over (NIE TTS, NIE muzyka+text)
+- Z voice-over Dana (NIE TTS, NIE muzyka+text)
 - Jurorzy preferuja krotsze + dobre niz dluzsze + slabe
 
 ---
 
 ## Open questions / blockers
 
-- [ ] **Dan + Matthew:** kto nagrywa voice-over? Decyzja przed sobota wieczor.
-  - Rekomendacja Eva: Dan PL (rozumie nuanse storyline), Matthew EN (native speaker, lepszy accent)
-  - Alternatywa: Matthew nagrywa obie wersje (1 person consistency)
-  - **TTS BANNED per Matthew 2026-05-03** - jezeli zaden nie moze, opozniamy nagranie. Nie wstawiamy TTS.
+- [ ] **Dan:** voice-over PL + EN obie wersje. First-person ("I built this..."). Solo founder narrative.
+  - Sobota: PL recording, niedziela rano: EN recording
+  - **TTS BANNED 2026-05-03** - opozniamy nagranie. Nie wstawiamy TTS pod zadnym pozorem.
 - [ ] **Aiko:** czy Phase 1B wagmi UI gotowy do recording w niedziele 12:00? (wymagane dla Frame 7 i 8)
 - [ ] **Sol + Aiko:** czy Phase 2 ENS subnames live (NameStone)? Jezeli NIE - Frame 10 swap na mock + voice-over note
 - [ ] **Lumen:** czy data freshness (RSS + CoinGecko) działa live w niedziele 12:00? (Trust mech #1 wymaga real data)

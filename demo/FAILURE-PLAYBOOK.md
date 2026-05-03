@@ -1,7 +1,7 @@
 ---
 title: AI Treasury Council - Live Demo Failure Playbook
 date: 2026-05-03 (Eva + Rio - Sesja 36 action batch A4)
-audience: Dan (presenter) + Matthew (voice-over)
+audience: Dan (presenter + voice-over, solo founder)
 linked: SCRIPT.md, RECORDING-CHECKLIST.md, docs/JUDGES-ONBOARDING.md
 purpose: zero-panic recovery scripts for live demo in front of judges
 ---

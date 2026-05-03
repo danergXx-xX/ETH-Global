@@ -171,8 +171,8 @@ Lokalizacja: `/Users/danergy/Documents/Obsidian/Dan-Vault/Projects/AI-Tech/ETHGl
 
 | Plik | Co |
 |------|----|
-| `external-input/matthew-mvp-plan.md` | Plan wykonawczy Matthewa (Phase 0-4) |
-| `external-input/matthew-audio-transcript.md` | Audio Matthewa - Moat 5 PoW for agents |
+| `external-input/matthew-mvp-plan.md` | Plan wykonawczy mentora (Phase 0-4) |
+| `external-input/matthew-audio-transcript.md` | Audio mentora - Moat 5 PoW for agents |
 | `external-input/trust-research.md` | Sora 5 mechanizmow trust (OBLIGATORYJNE w MVP) |
 | `external-input/team-status-and-decisions.md` | Decyzje + NOT-TO-DO list |
 
