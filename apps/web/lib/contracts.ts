@@ -49,12 +49,15 @@ export const CONTRACTS = {
   AgentReputation: {
     address: "0xf3BAb9A2761131f4A9e5BA2d9e6395bea2186f44" as const,
     abi: AgentReputationAbi,
+    // Sesja 37 P0-2: real deterministic agent EOAs (Szymon escalation).
+    // Source: scripts/lib/agent-eoas.ts. Doc: scripts/AGENT-EOAS.md.
+    // Wczesniej: precompile 0x...01-05 (smell test failure).
     agentAddresses: {
-      bull: "0x0000000000000000000000000000000000000001",
-      bear: "0x0000000000000000000000000000000000000002",
-      risk: "0x0000000000000000000000000000000000000003",
-      tech: "0x0000000000000000000000000000000000000004",
-      sentiment: "0x0000000000000000000000000000000000000005",
+      bull: "0xB058a9B7Cf900640078E4259bf603d3f0918BEeC",
+      bear: "0x9C399085A223F35fec0Dae9573D42294bf43b963",
+      risk: "0x1679a3cf4e167EeeD15a567e5EA33871399a59bC",
+      tech: "0x87648Ab8e343cDAC4a7439f006f85A8a8f100b3d",
+      sentiment: "0xbD77e36F82Ad0041B021834f308065CFa5b5cB62",
     },
     initialReputation: 100,
   },
