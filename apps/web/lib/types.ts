@@ -71,6 +71,8 @@ export interface AgentDecision {
   confidence: number;
   claims: Claim[];
   timestamp: string;
+  reasoning?: string;
+  sources?: unknown[];
 }
 
 export interface ProposalMeta {
