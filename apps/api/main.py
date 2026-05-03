@@ -24,6 +24,7 @@ from governance import (
     encode_mock_usdc_transfer,
 )
 from logging_config import RequestIDMiddleware, setup_logging
+from middleware import get_budget_tracker, get_ws_tracker
 from agents.orchestrator import run_debate
 from data.seed_historical_debates import (
     get_debate_by_id,
@@ -73,7 +74,17 @@ def _rate_limit_handler(request: Request, exc: RateLimitExceeded) -> JSONRespons
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    log.info("api_ready", env=settings.env, version="0.1.0")
+    # Initialize singletons so they're warm at first request.
+    ws_tracker = get_ws_tracker()
+    budget = get_budget_tracker()
+    log.info(
+        "api_ready",
+        env=settings.env,
+        version="0.1.0",
+        ws_cap=ws_tracker.max_concurrent,
+        budget_usd_daily=budget.cap_usd,
+        budget_halt_pct=budget.halt_fraction,
+    )
     yield
     log.info("api_shutdown")
 
@@ -115,10 +126,51 @@ async def health() -> HealthResponse:
     )
 
 
+@app.get("/api/budget")
+async def get_budget_status() -> dict[str, object]:
+    """
+    Current Anthropic spend snapshot for today (UTC).
+
+    Returned fields:
+      date_utc, spent_usd, cap_usd, pct_used, halt_threshold_usd,
+      debates_count, halted, ws_open, ws_cap.
+    """
+    snap = await get_budget_tracker().snapshot()
+    ws_tracker = get_ws_tracker()
+    return {
+        "date_utc": snap.date_utc,
+        "spent_usd": snap.spent_usd,
+        "cap_usd": snap.cap_usd,
+        "pct_used": snap.pct_used,
+        "halt_threshold_usd": snap.halt_threshold_usd,
+        "debates_count": snap.debates_count,
+        "halted": snap.halted,
+        "ws_open": await ws_tracker.open_count(),
+        "ws_cap": ws_tracker.max_concurrent,
+    }
+
+
 @app.post("/api/debate", response_model=DebateResponse)
 @limiter.limit("10/minute")
 async def debate(request: Request, req: DebateRequest) -> DebateResponse:
     log.info("debate_requested", text_length=len(req.text))
+    budget = get_budget_tracker()
+    if await budget.is_halted():
+        snap = await budget.snapshot()
+        log.warning(
+            "debate_halted_budget",
+            spent_usd=snap.spent_usd,
+            cap_usd=snap.cap_usd,
+            pct=snap.pct_used,
+        )
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                f"Daily Anthropic budget at {snap.pct_used}% "
+                f"(${snap.spent_usd}/${snap.cap_usd}). "
+                "New debates halted until UTC midnight reset."
+            ),
+        )
     try:
         result = await run_debate(req.text)
     except Exception as exc:
@@ -128,6 +180,21 @@ async def debate(request: Request, req: DebateRequest) -> DebateResponse:
             detail="Debate orchestration unavailable. Try again or contact support.",
         ) from exc
     log.info("debate_complete", consensus=result["consensus"])
+
+    # Record Anthropic spend from per-decision cost_usd / token usage.
+    try:
+        debate_cost = sum(
+            float(getattr(d, "cost_usd", 0.0) or 0.0) for d in result["decisions"]
+        )
+        if debate_cost <= 0.0:
+            in_tok = sum(
+                int(getattr(d, "tokens_used", 0) or 0) for d in result["decisions"]
+            )
+            await budget.record_debate(input_tokens=in_tok, output_tokens=0)
+        else:
+            await budget.record_debate(cost_usd=debate_cost)
+    except Exception as track_err:
+        log.warning("budget_track_failed", error=str(track_err))
 
     audit_cid: str | None = None
     audit_gateway: str | None = None
@@ -226,51 +293,72 @@ async def ws_debate(websocket: WebSocket) -> None:
         await websocket.close(code=1008)
         return
 
-    await websocket.accept()
-    proposal_id_raw = websocket.query_params.get("proposal_id", "")
-    text = websocket.query_params.get("text", "")
-    try:
-        proposal_id = _validate_proposal_id(proposal_id_raw)
-    except ValueError as exc:
-        await websocket.send_json({"type": "error", "message": str(exc), "recoverable": False})
-        await websocket.close(code=1008)
-        return
-    if not (10 <= len(text) <= 2000):
+    ws_tracker = get_ws_tracker()
+    conn_id = await ws_tracker.try_acquire()
+    if conn_id is None:
+        await websocket.accept()
+        cap = ws_tracker.max_concurrent
         await websocket.send_json(
-            {"type": "error", "message": "text must be 10-2000 chars", "recoverable": False}
+            {
+                "type": "error",
+                "message": f"server at capacity ({cap} concurrent WS). Retry shortly.",
+                "recoverable": True,
+                "retry_after_seconds": 5,
+            }
         )
-        await websocket.close(code=1008)
+        await websocket.close(code=1013)  # Try Again Later
         return
 
-    step_delay = max(settings.debate_stream_step_ms, 0) / 1000.0
+    await websocket.accept()
     try:
-        async for event in stream_debate(proposal_id, text, step_delay_s=step_delay):
-            await websocket.send_json(event)
-    except WebSocketDisconnect:
-        log.info("ws_debate_client_disconnect", proposal_id=proposal_id)
-        return
-    except Exception as exc:
-        log.error(
-            "ws_debate_failed",
-            proposal_id=proposal_id,
-            error_type=type(exc).__name__,
-            error=str(exc),
-        )
+        proposal_id_raw = websocket.query_params.get("proposal_id", "")
+        text = websocket.query_params.get("text", "")
         try:
+            proposal_id = _validate_proposal_id(proposal_id_raw)
+        except ValueError as exc:
             await websocket.send_json(
-                {
-                    "type": "error",
-                    "proposal_id": proposal_id,
-                    "message": "internal error",
-                    "recoverable": False,
-                }
+                {"type": "error", "message": str(exc), "recoverable": False}
             )
-        except Exception:  # nosec - best effort error notification
-            pass
-        await websocket.close(code=1011)
-        return
+            await websocket.close(code=1008)
+            return
+        if not (10 <= len(text) <= 2000):
+            await websocket.send_json(
+                {"type": "error", "message": "text must be 10-2000 chars", "recoverable": False}
+            )
+            await websocket.close(code=1008)
+            return
 
-    await websocket.close(code=1000)
+        step_delay = max(settings.debate_stream_step_ms, 0) / 1000.0
+        try:
+            async for event in stream_debate(proposal_id, text, step_delay_s=step_delay):
+                await websocket.send_json(event)
+        except WebSocketDisconnect:
+            log.info("ws_debate_client_disconnect", proposal_id=proposal_id)
+            return
+        except Exception as exc:
+            log.error(
+                "ws_debate_failed",
+                proposal_id=proposal_id,
+                error_type=type(exc).__name__,
+                error=str(exc),
+            )
+            try:
+                await websocket.send_json(
+                    {
+                        "type": "error",
+                        "proposal_id": proposal_id,
+                        "message": "internal error",
+                        "recoverable": False,
+                    }
+                )
+            except Exception:  # nosec - best effort error notification
+                pass
+            await websocket.close(code=1011)
+            return
+
+        await websocket.close(code=1000)
+    finally:
+        await ws_tracker.release(conn_id)
 
 
 @app.get("/api/agents/{persona}/reputation")
