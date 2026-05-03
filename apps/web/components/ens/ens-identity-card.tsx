@@ -95,7 +95,7 @@ function TreasuryENSCard() {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">url</span>
-                <span className="text-amber">aicouncil.eth.limo</span>
+                <span className="text-amber">aicouncil-danergy.eth</span>
               </div>
             </div>
           </div>
@@ -145,7 +145,7 @@ export function ENSIdentityCard() {
             <ResolutionBadge resolved={parentENS.resolved} latencyMs={parentENS.latencyMs} />
           </div>
           <p className="text-[10px] text-muted-foreground mt-1">
-            NameStone registrar - {agents.length + 1} subnames registered
+            Direct ENS (Sepolia) - {agents.length + 1} subnames mintowane via viem
           </p>
         </CardContent>
       </Card>
