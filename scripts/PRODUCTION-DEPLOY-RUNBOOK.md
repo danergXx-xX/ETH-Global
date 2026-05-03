@@ -55,6 +55,37 @@ railway login             # otworzy browser
 
 ---
 
+## CZESC 0.5: Pre-deploy local validation (5 min - oszczedza credits + nerwy)
+
+ZANIM sciagniesz Railway/Vercel CLI - sprawdz lokalnie czy backend Docker buduje sie i healthcheck odpowiada. Wykrywa ~80% bledow ZANIM spalisz Railway buildtime/credit.
+
+```bash
+cd /Users/danergy/repos/ai-treasury-council/apps/api
+
+# Build (3-5 min pierwszy raz, potem cached layers)
+docker build -t aitc-api:local .
+
+# Run z minimalnymi env (tylko healthcheck wymaga)
+docker run -d --rm --name aitc-test -p 8000:8000 \
+    -e ANTHROPIC_API_KEY="dummy" \
+    -e ENV="dev" \
+    aitc-api:local
+
+# Wait 10s na startup
+sleep 10
+
+# Healthcheck
+curl -fsS http://localhost:8000/health | jq
+# {"status":"ok","version":"0.1.0","timestamp":"..."}
+
+# Cleanup
+docker stop aitc-test
+```
+
+Jesli build padnie -> debug LOKALNIE (logi w terminalu). Jesli `/health` 200 -> deploy ma 80% szans wstac na Railway od razu.
+
+---
+
 ## CZESC A: Frontend Vercel (apps/web)
 
 ### A.1 Pierwszy deploy
