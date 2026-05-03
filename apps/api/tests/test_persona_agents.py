@@ -22,7 +22,7 @@ import pytest
 
 from agents.anthropic_client import AnthropicClient, UsageStats
 from agents.bear_agent import run_bear
-from agents.personas import GOLDEN_QUESTIONS
+from agents.personas import GOLDEN_QUESTIONS, get_runner
 from agents.risk_agent import run_risk
 from agents.sentiment_agent import run_sentiment
 from agents.tech_agent import run_tech
@@ -110,15 +110,19 @@ def _make_response(
 # ============================================================
 
 
+# Resolve runners via personas.get_runner (TD-006 single SoT) so tests pick
+# up new personas automatically when added to ALL_PERSONAS, instead of
+# silently skipping them when this dict goes stale.
 PERSONA_RUNNERS: dict[
     str,
     Callable[..., Awaitable[AgentDecision]],
-] = {
-    "bear": run_bear,
-    "risk": run_risk,
-    "tech": run_tech,
-    "sentiment": run_sentiment,
-}
+] = {pid: get_runner(pid) for pid in ("bear", "risk", "tech", "sentiment")}
+
+# Sanity-check the convention still holds for the personas tested here.
+assert PERSONA_RUNNERS["bear"] is run_bear
+assert PERSONA_RUNNERS["risk"] is run_risk
+assert PERSONA_RUNNERS["tech"] is run_tech
+assert PERSONA_RUNNERS["sentiment"] is run_sentiment
 
 
 @pytest.mark.asyncio

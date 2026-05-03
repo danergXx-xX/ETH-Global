@@ -32,11 +32,11 @@ const STAGE_LABELS: Record<ExecuteStage, string> = {
 };
 
 const MOCK_SIGNERS: SignerInfo[] = [
-  { address: "0xA001...0001", ens: "bull.aicouncil.eth", signed: true, timestamp: "2026-05-02T14:20:00Z" },
-  { address: "0xA002...0002", ens: "bear.aicouncil.eth", signed: true, timestamp: "2026-05-02T14:21:00Z" },
-  { address: "0xA003...0003", ens: "risk.aicouncil.eth", signed: true, timestamp: "2026-05-02T14:22:00Z" },
-  { address: "0xA004...0004", ens: "tech.aicouncil.eth", signed: true, timestamp: "2026-05-02T14:23:00Z" },
-  { address: "0xA005...0005", ens: "sentiment.aicouncil.eth", signed: true, timestamp: "2026-05-02T14:24:00Z" },
+  { address: "0xA001...0001", ens: "bull.aicouncil-danergy.eth", signed: true, timestamp: "2026-05-02T14:20:00Z" },
+  { address: "0xA002...0002", ens: "bear.aicouncil-danergy.eth", signed: true, timestamp: "2026-05-02T14:21:00Z" },
+  { address: "0xA003...0003", ens: "risk.aicouncil-danergy.eth", signed: true, timestamp: "2026-05-02T14:22:00Z" },
+  { address: "0xA004...0004", ens: "tech.aicouncil-danergy.eth", signed: true, timestamp: "2026-05-02T14:23:00Z" },
+  { address: "0xA005...0005", ens: "sentiment.aicouncil-danergy.eth", signed: true, timestamp: "2026-05-02T14:24:00Z" },
   { address: "0x4872...148a", ens: "deployer.eth", signed: false },
   { address: "0x7B2C...3D4E", signed: false },
 ];

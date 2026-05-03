@@ -133,7 +133,8 @@ class CoinGeckoSource:
         }
         resp = await client.get(url, params=params)
         resp.raise_for_status()
-        return resp.json()
+        data: dict = resp.json()
+        return data
 
     @staticmethod
     def _build_source(data: dict, token_id: str) -> Source:

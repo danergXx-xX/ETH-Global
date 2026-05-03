@@ -88,3 +88,4 @@ temp/
 # Quill QA tests
 apps/api/.venv/
 test-results/
+.claude/critic-reports/auto-pending-log.txt

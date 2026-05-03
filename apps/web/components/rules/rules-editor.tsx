@@ -47,11 +47,11 @@ export function RulesEditor() {
   const [state, setState] = useState<EditorState>("in_sync");
   const [showValidation, setShowValidation] = useState(false);
   const [signers, setSigners] = useState<SignerState[]>([
-    { name: "bull.aicouncil.eth", signed: false },
-    { name: "bear.aicouncil.eth", signed: false },
-    { name: "risk.aicouncil.eth", signed: false },
-    { name: "tech.aicouncil.eth", signed: false },
-    { name: "sentiment.aicouncil.eth", signed: false },
+    { name: "bull.aicouncil-danergy.eth", signed: false },
+    { name: "bear.aicouncil-danergy.eth", signed: false },
+    { name: "risk.aicouncil-danergy.eth", signed: false },
+    { name: "tech.aicouncil-danergy.eth", signed: false },
+    { name: "sentiment.aicouncil-danergy.eth", signed: false },
   ]);
 
   const signedCount = signers.filter((s) => s.signed).length;

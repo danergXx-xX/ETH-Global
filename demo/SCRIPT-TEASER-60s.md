@@ -34,10 +34,10 @@ Close (0:40-1:00) - 20s - tech stack + CTA
 - 0:03-0:08: Cut na **Live Debate Viewer w trakcie** - 5 agentow z typewriter active. Visual storyteller (NIE statyczny - rusza sie). CONCLAVE logo top-left small.
 
 **Voice-over PL:**
-> "Dwadzieścia sześć miliardów dolarów w skarbcach DAO. Decyduje o nim jeden procent. AI Treasury Council to zmienia."
+> "Dwadzieścia sześć miliardów dolarów w skarbcach DAO. Decyduje jeden procent. AI Treasury Council daje DAO Radę."
 
 **Voice-over EN:**
-> "Twenty six billion dollars in DAO treasuries. One percent decides. AI Treasury Council changes that."
+> "Twenty six billion dollars in DAO treasuries. One percent decides. AI Treasury Council gives DAOs a Council."
 
 **Cel:** w 3s liczba + problem, w 8s tease rozwiazania (juz widac apke).
 
@@ -51,10 +51,10 @@ Close (0:40-1:00) - 20s - tech stack + CTA
 - 0:08-0:25: Live Debate Viewer w pelnym widoku. 5 agent cards (Bull, Bear, Risk, Tech, Sentiment). Typewriter w toku, source attribution pojawia sie [1][2][3]. Tally bar animuje w real-time: 0-0-0 -> 3-2 PASSED. ENS subnames pod kazdym (`bull.aicouncil.eth` itd.).
 
 **Voice-over PL:**
-> "Pięciu agentów AI debatuje na żywo. Każdy z własnym ENS. Każdy cytuje źródła. Decyzja wazona on-chain reputacją."
+> "Pięciu agentów debatuje na żywo. Każdy z własnym ENS. Każdy cytuje źródła. Głos ważony on-chain reputacją."
 
 **Voice-over EN:**
-> "Five AI agents debate live. Each with their own ENS. Each cites sources. Decision weighted by on-chain reputation."
+> "Five agents debate live. Each with their own ENS. Each cites sources. Vote weighted by on-chain reputation."
 
 ### Segment B: Vote + Execute + Audit (0:25-0:40) - 15s
 
@@ -64,10 +64,10 @@ Close (0:40-1:00) - 20s - tech stack + CTA
 - 0:35-0:40: Audit Log z "0G STORAGE · LIVE" pulsing badge + scroll do najnowszego event z 0G CID
 
 **Voice-over PL:**
-> "Multisig podpisuje. Timelock 48 godzin - okno na cofnięcie. Wykonanie on-chain. Cała debata zarchiwizowana na 0G Storage. Na zawsze."
+> "Multisig podpisuje. Timelock czterdzieści osiem godzin, okno na cofnięcie. Wykonanie on-chain. Debata zarchiwizowana na 0G Storage. Permanentnie."
 
 **Voice-over EN:**
-> "Multisig signs. Forty eight hour timelock - window to revert. On-chain execution. Full debate archived on 0G Storage. Forever."
+> "Multisig signs. Forty eight hour timelock, the window to revert. On-chain execution. Debate archived on 0G Storage. Permanently."
 
 ---
 
@@ -78,10 +78,10 @@ Close (0:40-1:00) - 20s - tech stack + CTA
 - 0:50-1:00: Final card - CONCLAVE logo + tagline "Your treasury, deliberated." + GitHub URL (mono, czytelne) + ETHGlobal Open Agents 2026 logo
 
 **Voice-over PL:**
-> "AI Treasury Council. Cztery kontrakty żywe. Open source. Twoje DAO może próbować. Linki w opisie."
+> "AI Treasury Council. Cztery kontrakty żywe na Base Sepolia. Open source. Forkuj, deployuj, pilotuj. GitHub na ekranie."
 
 **Voice-over EN:**
-> "AI Treasury Council. Four contracts live. Open source. Your DAO can pilot. Links in description."
+> "AI Treasury Council. Four contracts live on Base Sepolia. Open source. Fork it, deploy it, pilot it. GitHub on screen."
 
 ---
 
