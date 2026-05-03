@@ -37,16 +37,22 @@ Close (2:30-3:00) - 30s - CTA + GitHub + names
 - 0:10-0:15: Cut na CONCLAVE logo reveal animation (5 dots wokol centrum, gradient amber-green, fade-in z scale 0.8 -> 1.0 nad 0.5s) + tagline pojawia się pod logo: **"Your treasury, deliberated."**
 
 **Voice-over PL - Wariant A (rzeczowy):**
-> "Dwadzieścia sześć miliardów dolarów w skarbcach DAO. A większość decyzji podejmuje mniej niż jeden procent posiadaczy tokenów. Apatia, brak kworum, koncentracja władzy. Czas to zmienić."
+> "Dwadzieścia sześć miliardów dolarów w skarbcach DAO. Decyduje o nich mniej niż jeden procent posiadaczy tokenów. Apatia. Brak kworum. Koncentracja władzy. DAO governance jest zepsute."
 
 **Voice-over PL - Wariant B (narracyjny):**
-> "Wyobraź sobie skarbiec wart dwadzieścia sześć miliardów dolarów. A teraz wyobraź sobie, że decyduje o nim garstka ludzi. To nie jest hipoteza. To jest stan DAO w 2026 roku."
+> "Skarbiec wart dwadzieścia sześć miliardów dolarów. Garstka głosów decyduje o jego losie. To nie hipoteza, to stan DAO w 2026 roku. Czas dać DAO Radę."
+
+**Voice-over PL - Wariant C (crypto-native, hacker ton):**
+> "Dwadzieścia sześć miliardów dolarów. Jeden procent głosujących. Reszta śpi. DAO governance jest zepsute, a apatia kosztuje skarbce więcej niż exploity. Zbudowaliśmy Radę."
 
 **Voice-over EN - Wariant A:**
-> "Twenty six billion dollars sit in DAO treasuries. Yet most decisions are made by less than one percent of token holders. Voter apathy. Quorum failures. Concentrated power. We can do better."
+> "Twenty six billion dollars sit in DAO treasuries. Less than one percent of token holders decide. Voter apathy. Quorum failures. Concentrated power. DAO governance is broken."
 
 **Voice-over EN - Wariant B:**
-> "Imagine a treasury worth twenty six billion dollars. Now imagine that fewer than one percent of token holders decide its fate. This is not a hypothesis. This is the state of DAO governance in 2026."
+> "A treasury worth twenty six billion dollars. A handful of votes decides its fate. This is not a hypothesis, this is DAO governance in 2026. Time to give DAOs a Council."
+
+**Voice-over EN - Wariant C (crypto-native, hacker tone):**
+> "Twenty six billion dollars. One percent voting. The rest asleep. DAO governance is broken, and apathy costs treasuries more than exploits. We built the Council."
 
 **Cel:** zlapac uwage w 5s liczba + problem, w 10s pokazac konkretne dowody (forum, proposal), w 15s tease rozwiązanie (CONCLAVE brand).
 
@@ -63,10 +69,10 @@ Close (2:30-3:00) - 30s - CTA + GitHub + names
 - 0:32-0:35: Toast notification "Proposal PROP-042 submitted on Base Sepolia" + tx hash truncated. Stage bar przechodzi z "draft" -> "debating".
 
 **Voice-over PL:**
-> "Submituję wniosek treasury: alokuj sto tysięcy USDC do Aave v3. AI parser dekoduje calldata. Wnioskodawca widzi DOKŁADNIE co podpisuje. Bez black-boxa."
+> "Składam wniosek treasury: sto tysięcy USDC do Aave v3, cztery przecinek dwa procent APY. Parser dekoduje calldata. Wnioskodawca widzi dokładnie co podpisuje. Bez czarnej skrzynki."
 
 **Voice-over EN:**
-> "I submit a treasury proposal: allocate one hundred thousand USDC to Aave v3. The AI parser decodes calldata. The proposer sees EXACTLY what gets signed. No black box."
+> "I submit a treasury proposal: one hundred thousand USDC into Aave v3, four point two percent APY. The parser decodes the calldata. The proposer sees exactly what gets signed. No black box."
 
 ### Segment B: Live Debate - Typewriter Agents (0:35-1:00) - 25s
 
@@ -87,10 +93,10 @@ Close (2:30-3:00) - 30s - CTA + GitHub + names
 - 0:55-1:00: Risk + Tech + Sentiment każdy z 1-zdaniowym argumentem + source + vote chip. Tally pasek u dolu pojawia się animowany: **3 FOR, 2 AGAINST**. Verdict card po prawej rolluje się z animacja: amber border, "PASSED with 3-2 majority, weighted reputation 4.1-2.0".
 
 **Voice-over PL:**
-> "Pięciu wyspecjalizowanych agentów debatuje na żywo. Bull, Bear, Risk, Tech, Sentiment. Każdy cytuje źródła. Każdy ma wagę głosu opartego o on-chain reputację. Widać jak myślą. To nie jest czarna skrzynka."
+> "Pięciu agentów debatuje na żywo. Bull, Bear, Risk, Tech, Sentiment. Każdy cytuje źródła. Każdy ma wagę głosu opartą o on-chain reputację. Widzisz jak myślą. To nie jest czarna skrzynka, to jest deliberacja."
 
 **Voice-over EN:**
-> "Five specialized agents debate live. Bull, Bear, Risk, Tech, Sentiment. Each cites sources. Each has vote weight backed by on-chain reputation. You see them think. This is not a black box."
+> "Five agents debate live. Bull, Bear, Risk, Tech, Sentiment. Each cites sources. Each has vote weight backed by on-chain reputation. You see them think. This is not a black box, this is deliberation."
 
 ### Segment C: Vote + Timelock + Execute (1:00-1:20) - 20s
 
@@ -101,10 +107,10 @@ Close (2:30-3:00) - 30s - CTA + GitHub + names
 - 1:15-1:20: Cut na "Execute" button - klik. MetaMask popup, user signuje. Tx wysylany. **Cut na Basescan w nowej zakladce (real URL):** `sepolia.basescan.org/tx/0xabc...` - tx confirmed, status green checkmark, gas used 84,521. Pod tym: "Mock USDC transferred: 100,000 to Aave v3 pool".
 
 **Voice-over PL:**
-> "Pięciu z siedmiu multisig podpisuje. Timelock 48 godzin - okno na cofnięcie. Wykonanie on-chain. Bez pośredników."
+> "Pięciu z siedmiu multisig podpisuje. Timelock czterdzieści osiem godzin, okno na cofnięcie. Wykonanie on-chain. Bez pośredników."
 
 **Voice-over EN:**
-> "Five of seven multisig sign. Forty eight hour timelock - window to revert. On-chain execution. No middlemen."
+> "Five of seven multisig signers approve. Forty eight hour timelock, the window to revert. On-chain execution. No middlemen."
 
 ### Segment D: Audit Trail + 0G + ENS Resolution (1:20-1:30) - 10s
 
@@ -115,10 +121,10 @@ Close (2:30-3:00) - 30s - CTA + GitHub + names
 - 1:25-1:30: Cut na ENS Identity Card. 5 subnames pod `aicouncil.eth` z live viem resolution badge "Resolved · 84ms" per name. **`bull.aicouncil.eth` -> 0x1a2b...` z text records: rep.score=87, rep.statements=142, llm=claude-sonnet-4.6**.
 
 **Voice-over PL:**
-> "Cała debata zarchiwizowana na 0G Storage. Każdy agent ma swoją tożsamość ENS. Każda decyzja audytowalna. Na zawsze."
+> "Cała debata zarchiwizowana na 0G Storage. Każdy agent ma swoją tożsamość ENS. Każda decyzja audytowalna on-chain. Permanentnie."
 
 **Voice-over EN:**
-> "Full debate archived on 0G Storage. Every agent has an ENS identity. Every decision auditable. Forever."
+> "The full debate archived on 0G Storage. Each agent has an ENS identity. Every decision auditable on-chain. Permanently."
 
 ---
 
@@ -137,10 +143,10 @@ Close (2:30-3:00) - 30s - CTA + GitHub + names
   - 1:50-1:55: Council Rules JSON editor live diff (key change `5` -> `10` highlighted) + multisig sign. Overlay: "**HITL Rules** · User-editable thresholds"
 
 **Voice-over PL:**
-> "Pięć mechanizmów zaufania, każdy oparty o akademicki research Mayer-Davis-Schoorman z 1995. Atrybucja źródeł. Czterdziestoośmiogodzinny timelock. Niezmienialny audit log na 0G. Tożsamość ENS per agent. Reguły Rady edytowalne przez DAO. Wszystko zbudowane na Base Sepolia."
+> "Pięć mechanizmów zaufania, każdy oparty o akademicki research Mayera, Davisa i Schoormana z dziewięćdziesiątego piątego. Atrybucja źródeł. Timelock czterdzieści osiem godzin. Niezmienialny audit log na 0G. Tożsamość ENS per agent. Reguły Rady edytowalne przez DAO. Wszystko żywe na Base Sepolia."
 
 **Voice-over EN:**
-> "Five trust mechanisms, each grounded in the Mayer Davis Schoorman ABI model from 1995. Source attribution. Forty eight hour timelock. Immutable audit log on 0G. ENS identity per agent. Council Rules editable by DAO. All in production."
+> "Five trust mechanisms, each grounded in the Mayer Davis Schoorman trust framework from nineteen ninety five. Source attribution. Forty eight hour timelock. Immutable audit log on 0G. ENS identity per agent. Council Rules editable by DAO. All live on Base Sepolia."
 
 ### 5 Moats + Sponsor Tech (1:55-2:30) - 35s
 
@@ -153,10 +159,10 @@ Close (2:30-3:00) - 30s - CTA + GitHub + names
   - 2:23-2:30: **Multi-chain ready** - small arch diagram + zoomed Base Sepolia explorer ze statystyka 4 deployments + Mainnet roadmap inset. Overlay tagline "Multi-chain ready · Q3 2026 mainnet"
 
 **Voice-over PL:**
-> "Pięć moats: świeże dane, debata wieloagentowa, on-chain wykonanie, atrybucja źródeł, dowód pracy agentów. Zbudowane na 0G Storage, Uniswap v4 hooks, ENS subnames przez NameStone, KeeperHub do automatyzacji. Cztery kontrakty na Base Sepolia. Open source. Gotowe do pilotu z DAO."
+> "Pięć fos: świeże dane, debata wieloagentowa, wykonanie on-chain, atrybucja źródeł, dowód pracy agentów. Zbudowane na 0G Storage, hookach Uniswap v4, subnames ENS przez NameStone, automatyzacji KeeperHub. Cztery kontrakty żywe na Base Sepolia. Open source. Gotowe do pilotu."
 
 **Voice-over EN:**
-> "Five moats: data freshness, multi-agent debate, on-chain execution, source attribution, proof of work for agents. Built on 0G Storage, Uniswap v4 hooks, ENS subnames via NameStone, KeeperHub for automation. Four contracts deployed on Base Sepolia. Open source. Pilot ready with DAOs."
+> "Five moats: data freshness, multi-agent debate, on-chain execution, source attribution, proof of work for agents. Built on 0G Storage, Uniswap v4 hooks, ENS subnames via NameStone, KeeperHub automation. Four contracts live on Base Sepolia. Open source. Pilot ready."
 
 ---
 
@@ -172,16 +178,22 @@ Close (2:30-3:00) - 30s - CTA + GitHub + names
 - 2:55-3:00: Final card - CONCLAVE logo (large) + tagline **"Your treasury, deliberated."** + names: **Dan Otomanski + Matthew [last name]** + ETHGlobal Open Agents 2026 logo bottom-right.
 
 **Voice-over PL - Wariant A (rzeczowy):**
-> "AI Treasury Council. Otwarty kod. Cztery kontrakty żywe na Base Sepolia. Pięciu agentów gotowych. Twoje DAO może próbować. Linki w opisie."
+> "AI Treasury Council. Open source. Cztery kontrakty żywe na Base Sepolia. Pięciu agentów gotowych. Twoje DAO może pilotować już dziś. GitHub i demo na ekranie."
 
 **Voice-over PL - Wariant B (narracyjny):**
-> "Dwadzieścia sześć miliardów dolarów zasługuje na coś lepszego niż garstka głosów. Zasługuje na Radę. AI Treasury Council. Kod otwarty. Linki w opisie."
+> "Dwadzieścia sześć miliardów dolarów zasługuje na coś więcej niż garstkę głosów. Zasługuje na Radę. AI Treasury Council. Kod otwarty. Pilotuj z nami."
+
+**Voice-over PL - Wariant C (crypto-native CTA):**
+> "Cztery kontrakty na Base Sepolia. Pięć agentów. Open source pod adresem na ekranie. Forkuj, deployuj, pilotuj. AI Treasury Council."
 
 **Voice-over EN - Wariant A:**
-> "AI Treasury Council. Open source. Four contracts live on Base Sepolia. Five agents ready. Your DAO can pilot. Links in description."
+> "AI Treasury Council. Open source. Four contracts live on Base Sepolia. Five agents ready. Your DAO can pilot today. GitHub and demo on screen."
 
 **Voice-over EN - Wariant B:**
-> "Twenty six billion dollars deserves better than a handful of votes. It deserves a Council. AI Treasury Council. Open source. Links in description."
+> "Twenty six billion dollars deserves more than a handful of votes. It deserves a Council. AI Treasury Council. Open source. Pilot with us."
+
+**Voice-over EN - Wariant C (crypto-native CTA):**
+> "Four contracts on Base Sepolia. Five agents. Open source at the URL on screen. Fork it, deploy it, pilot it. AI Treasury Council."
 
 ---
 
