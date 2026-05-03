@@ -90,3 +90,6 @@ apps/api/.venv/
 test-results/
 .claude/critic-reports/auto-pending-log.txt
 apps/api/.venv
+
+# Vercel CLI cache
+.vercel/
