@@ -22,7 +22,7 @@ const sourceSerif = Source_Serif_4({
 });
 
 export const metadata: Metadata = {
-  title: "CONCLAVE - AI Treasury Council",
+  title: "AI Treasury Council",
   description: "Multi-agent AI council for DAO treasury governance",
 };
 

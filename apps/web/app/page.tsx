@@ -340,7 +340,7 @@ export default function LandingPage() {
           <VerifiedContractsSummary />
         </div>
         <div className="mx-auto max-w-6xl px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-[10px] text-muted-foreground font-mono">
-          <span>CONCLAVE v0.1 - Base Sepolia - ETHGlobal Open Agents 2026</span>
+          <span>AI Treasury Council v0.1 - Base Sepolia - ETHGlobal Open Agents 2026</span>
           <div className="flex flex-wrap items-center gap-3 sm:gap-4">
             <a
               href="https://github.com/danergXx-xX/ETH-Global"

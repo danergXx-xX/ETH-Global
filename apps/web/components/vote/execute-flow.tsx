@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -61,6 +61,19 @@ export function ExecuteFlow({ initialStage = "collecting_sigs" }: ExecuteFlowPro
 
   const [mockEta] = useState(() => Math.floor(Date.now() / 1000) + 42 * 3600 + 18 * 60);
   const mockTxHash = "0xabc123def456789...";
+
+  // Demo skip is gated behind ?demo=fast so judges/reviewers cannot trigger it
+  // by accident. Phase 1 will replace this with a real "Sign with wallet" flow.
+  const [demoMode, setDemoMode] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      setDemoMode(params.get("demo") === "fast");
+    } catch {
+      setDemoMode(false);
+    }
+  }, []);
 
   function advanceStage() {
     const next = STAGES[currentIdx + 1];
@@ -250,9 +263,15 @@ export function ExecuteFlow({ initialStage = "collecting_sigs" }: ExecuteFlowPro
             </a>
           </Button>
         )}
-        {/* Demo advance button */}
-        {stage !== "executed" && (
-          <Button variant="ghost" size="sm" onClick={advanceStage}>
+        {/* Demo advance - only visible with ?demo=fast in URL (avoids juror confusion) */}
+        {demoMode && stage !== "executed" && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={advanceStage}
+            className="text-[10px] opacity-60 hover:opacity-100"
+            title="Demo mode: skip stage (URL ?demo=fast)"
+          >
             Demo: next stage
           </Button>
         )}

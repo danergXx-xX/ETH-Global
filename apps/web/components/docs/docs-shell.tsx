@@ -26,7 +26,7 @@ export function DocsShell({ title, subtitle, toc, pagePath, currentHref, childre
         <div className="mx-auto max-w-7xl flex items-center justify-between px-4 py-3">
           <Link href="/" className="flex items-center gap-2 text-sm font-bold tracking-wider hover:opacity-80">
             <span aria-hidden>←</span>
-            <span>CONCLAVE</span>
+            <span>AI Treasury Council</span>
             <span className="text-muted-foreground font-normal">/ Docs</span>
           </Link>
           <nav

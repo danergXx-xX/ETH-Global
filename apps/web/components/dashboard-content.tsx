@@ -80,7 +80,7 @@ export default function DashboardContent() {
           <PoweredByBadges />
         </div>
         <div className="mx-auto max-w-6xl px-4 flex items-center justify-between text-[10px] text-muted-foreground font-mono">
-          <span>CONCLAVE v0.1 - Base Sepolia - ETHGlobal Open Agents 2026</span>
+          <span>AI Treasury Council v0.1 - Base Sepolia - ETHGlobal Open Agents 2026</span>
           <div className="flex items-center gap-4">
             <Link
               href="/architecture"

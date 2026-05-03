@@ -12,7 +12,7 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-40">
         <div className="mx-auto max-w-6xl flex items-center justify-between px-4 py-3">
           <Link href="/" className="text-sm font-bold tracking-wider hover:text-amber">
-            CONCLAVE
+            AI Treasury Council
           </Link>
           <Link
             href="/"

@@ -26,6 +26,17 @@ function getNestedValue(obj: Record<string, unknown>, path: string): string | nu
   return typeof current === "string" ? current : null;
 }
 
+function safeReadStoredLocale(): Locale | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const stored = window.localStorage.getItem("locale");
+    if (stored === "pl" || stored === "en") return stored;
+  } catch {
+    return null;
+  }
+  return null;
+}
+
 interface I18nContextValue {
   locale: Locale;
   setLocale: (l: Locale) => void;
@@ -51,9 +62,13 @@ export function useTranslations(namespace?: string) {
 
 function detectLocale(): Locale {
   if (typeof window === "undefined") return "en";
-  const stored = localStorage.getItem("locale");
-  if (stored === "pl" || stored === "en") return stored;
-  return navigator.language.startsWith("pl") ? "pl" : "en";
+  const stored = safeReadStoredLocale();
+  if (stored) return stored;
+  try {
+    return navigator.language.startsWith("pl") ? "pl" : "en";
+  } catch {
+    return "en";
+  }
 }
 
 export function I18nProvider({ children }: { children: ReactNode }) {
@@ -67,22 +82,30 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   const setLocale = useCallback((l: Locale) => {
     setLocaleState(l);
-    localStorage.setItem("locale", l);
-    document.documentElement.lang = l;
+    try {
+      window.localStorage.setItem("locale", l);
+      document.documentElement.lang = l;
+    } catch {
+      // localStorage unavailable (private mode, SSR edge) - state-only update is fine
+    }
   }, []);
 
-  const currentLocale = mounted ? locale : "en";
-  const messages = bundles[currentLocale];
+  const currentLocale: Locale = mounted && (locale === "pl" || locale === "en") ? locale : "en";
+  const messages = bundles[currentLocale] ?? bundles.en;
 
   const t = useCallback(
     (key: string, params?: Record<string, string>) => {
-      let value =
+      const resolved =
         getNestedValue(messages as unknown as Record<string, unknown>, key) ??
         getNestedValue(bundles.en as unknown as Record<string, unknown>, key) ??
         key;
+      // Hard guarantee: t() always returns a string, never an object/array.
+      // Prevents React error #31 ("Objects are not valid as a React child")
+      // when a translation key accidentally points at a nested namespace.
+      let value = typeof resolved === "string" ? resolved : key;
       if (params) {
         for (const [k, v] of Object.entries(params)) {
-          value = value.replace(`{${k}}`, v);
+          value = value.replace(`{${k}}`, String(v ?? ""));
         }
       }
       return value;

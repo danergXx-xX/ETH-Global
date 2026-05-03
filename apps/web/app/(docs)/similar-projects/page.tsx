@@ -3,7 +3,7 @@ import { DocsShell, H2, H3, P, UL, Code, Callout } from "@/components/docs/docs-
 import { CompareTable } from "@/components/docs/diagram";
 
 export const metadata: Metadata = {
-  title: "Similar Projects - CONCLAVE",
+  title: "Similar Projects - AI Treasury Council",
   description: "Honest comparison with other ETHGlobal AI agent projects.",
 };
 
@@ -27,7 +27,7 @@ export default function SimilarProjectsPage() {
       <P>
         We searched ETHGlobal showcases for projects in the AI-agent + governance space. Four
         direct competitors emerged. This page is honest about what they built well and where
-        CONCLAVE goes further. Source: internal competitive analysis (Sesja 34) plus public
+        AI Treasury Council goes further. Source: internal competitive analysis (Sesja 34) plus public
         ETHGlobal showcase data.
       </P>
 
@@ -51,7 +51,7 @@ export default function SimilarProjectsPage() {
 
       <H2 id="competitors">2. Direct competitors</H2>
       <P>
-        These are the four projects most adjacent to CONCLAVE. We evaluated them on what they
+        These are the four projects most adjacent to AI Treasury Council. We evaluated them on what they
         built, what they did well, and where our approach differs.
       </P>
 
@@ -84,7 +84,7 @@ export default function SimilarProjectsPage() {
           ["What they built", "AI alpha-discovery agent for crypto research with sentiment + on-chain signals"],
           ["What they did well", "Strong data integration (multiple sources), good signal fusion, real iNFT (ERC-7857) for agent identity"],
           ["What we do differently", "Group debate (5+1) vs single agent. Source attribution per claim vs aggregated alpha score. Governance execution layer vs research-only output."],
-          ["Our positioning vs them", "They give an alpha researcher a tool; we give a DAO a council. Complementary - their output could be a CONCLAVE agent's input."],
+          ["Our positioning vs them", "They give an alpha researcher a tool; we give a DAO a council. Complementary - their output could be a AI Treasury Council agent's input."],
         ]}
       />
 
@@ -105,7 +105,7 @@ export default function SimilarProjectsPage() {
         <Code>partial</Code> means working but limited, <Code>no</Code> means not present.
       </P>
       <CompareTable
-        headers={["Feature", "CONCLAVE", "Competitors (typical)"]}
+        headers={["Feature", "AI Treasury Council", "Competitors (typical)"]}
         rows={[
           ["DAO governance integration (Governor + Timelock)", <strong key="g1">YES</strong>, "no (mocked)"],
           ["0G Storage audit trail", <strong key="g2">YES</strong>, "rare"],
@@ -150,7 +150,7 @@ export default function SimilarProjectsPage() {
 
       <H2 id="positioning">5. Our positioning</H2>
       <Callout variant="info" title="One-line positioning">
-        CONCLAVE is the first multi-agent AI council with five wired trust mechanisms designed
+        AI Treasury Council is the first multi-agent AI council with five wired trust mechanisms designed
         specifically for DAO treasury governance. Others target trading, simulation, research, or
         privacy - we target the $26B sitting in DAO treasuries with broken governance.
       </Callout>

@@ -23,34 +23,33 @@ interface VerifiedContract {
   description: string;
 }
 
-// Base Sepolia deployment addresses. Until Sol Phase 1A session pushes real
-// addresses, `address` stays empty string and the UI falls back to an honest
-// "pending deployment" copy (Charter #7 - no fake "verified" claims).
+// Base Sepolia deployment addresses (deployed 2026-05-02, all verified on Basescan).
+// Source of truth: contracts/deployments/base-sepolia.json
 export const VERIFIED_CONTRACTS: VerifiedContract[] = [
   {
-    name: "Governor",
-    address: "",
-    description: "OpenZeppelin Governor with 5+1 council voting.",
+    name: "AICouncilGovernor",
+    address: "0x1f95c796c5dc47d08b20cf3220a2afa995e301f0",
+    description: "OpenZeppelin Governor with 5+1 council voting (60% quorum).",
   },
   {
-    name: "Timelock",
-    address: "",
+    name: "TimelockController",
+    address: "0x76a69bb6aef69a2e76fa6c9632ff6ca101441b0f",
     description: "48h delay before proposal execution.",
   },
   {
+    name: "CouncilToken",
+    address: "0x5fe2a5e971d9faaff9cc0b0c9981da44fefc4381",
+    description: "ERC20Votes token (AICT) used for voting power.",
+  },
+  {
     name: "AgentReputation",
-    address: "",
-    description: "On-chain reputation per agent ENS subname.",
+    address: "0xf3BAb9A2761131f4A9e5BA2d9e6395bea2186f44",
+    description: "On-chain reputation per agent (Moat 5 PoW).",
   },
   {
-    name: "VotesToken",
-    address: "",
-    description: "ERC20Votes token used for voting power.",
-  },
-  {
-    name: "CouncilRules",
-    address: "",
-    description: "DAO-admin set hard limits, agent-immutable.",
+    name: "MockUSDC",
+    address: "0x606ede7755131e6206a29b67d88761eebb3bb59d",
+    description: "Treasury asset for proposals (testnet stablecoin).",
   },
 ];
 
