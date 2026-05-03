@@ -138,11 +138,13 @@ Sesja 25 zostawila wszystkie 5 agentow na baseline reputation=100 (deploy state)
 
 | Agent | reputation | debates_participated | consensus_aligned | aligned_pct |
 |---|---|---|---|---|
-| bull | 108 | 12 | 10 | 87% |
-| bear | 95 | 12 | 9 | 76% |
-| risk | 112 | 12 | 11 | 92% |
-| tech | 105 | 12 | 10 | 84% |
-| sentiment | 102 | 12 | 10 | 80% |
+| bull | 108 | 12 | 10 | 83.3% |
+| bear | 95 | 12 | 9 | 75.0% |
+| risk | 112 | 12 | 11 | 91.7% |
+| tech | 105 | 12 | 10 | 83.3% |
+| sentiment | 102 | 12 | 10 | 83.3% |
+
+> Procenty = consensus_aligned / debates_participated (audit-friendly integer math). Reputation deltas oparte o tendencje alignment z odchyleniem (bull/risk rosna, bear traci, tech/sentiment lekko nad baseline).
 
 **Dry-run (default):**
 

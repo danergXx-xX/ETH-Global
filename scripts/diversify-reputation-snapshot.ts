@@ -68,12 +68,14 @@ const ENS_REGISTRY_ABI = [
  * Diversified snapshot values, PM-Lead decyzja Sesja 32.
  * Symulacja 12 debat per agent - bull/risk czesciej alignuja, bear kontra.
  *
- * Procent consensus_aligned -> integer count (debates_participated * pct).
- *   bull   87% z 12 = 10
- *   bear   76% z 12 = 9
- *   risk   92% z 12 = 11
- *   tech   84% z 12 = 10
- *   sentiment 80% z 12 = 10 (round up)
+ * Procent consensus_aligned = aligned/debates_participated (integer math, audit-friendly).
+ *   bull       10/12 = 83.3%
+ *   bear        9/12 = 75.0%
+ *   risk       11/12 = 91.7%
+ *   tech       10/12 = 83.3%
+ *   sentiment  10/12 = 83.3%
+ * Reputation deltas oparte o tendencje alignment z odchyleniem dla varietetu (bull rosnie,
+ * bear traci, risk najwyzej, tech umiarkowanie, sentiment lekko nad baseline 100).
  */
 const DIVERSIFIED_SNAPSHOT: Array<{
   label: string;
@@ -82,11 +84,11 @@ const DIVERSIFIED_SNAPSHOT: Array<{
   consensus_aligned: string;
   consensus_pct_note: string;
 }> = [
-  { label: "bull", reputation: "108", debates_participated: "12", consensus_aligned: "10", consensus_pct_note: "87%" },
-  { label: "bear", reputation: "95", debates_participated: "12", consensus_aligned: "9", consensus_pct_note: "76%" },
-  { label: "risk", reputation: "112", debates_participated: "12", consensus_aligned: "11", consensus_pct_note: "92%" },
-  { label: "tech", reputation: "105", debates_participated: "12", consensus_aligned: "10", consensus_pct_note: "84%" },
-  { label: "sentiment", reputation: "102", debates_participated: "12", consensus_aligned: "10", consensus_pct_note: "80%" },
+  { label: "bull", reputation: "108", debates_participated: "12", consensus_aligned: "10", consensus_pct_note: "83.3%" },
+  { label: "bear", reputation: "95", debates_participated: "12", consensus_aligned: "9", consensus_pct_note: "75.0%" },
+  { label: "risk", reputation: "112", debates_participated: "12", consensus_aligned: "11", consensus_pct_note: "91.7%" },
+  { label: "tech", reputation: "105", debates_participated: "12", consensus_aligned: "10", consensus_pct_note: "83.3%" },
+  { label: "sentiment", reputation: "102", debates_participated: "12", consensus_aligned: "10", consensus_pct_note: "83.3%" },
 ];
 
 function isHexPrivateKey(value: string): value is Hex {
@@ -172,6 +174,9 @@ async function main() {
       console.log(
         `  ${fqdn} ${u.key.padEnd(25)}=${u.value.padEnd(4)}  tx: https://sepolia.etherscan.io/tx/${tx}`,
       );
+      // Czekaj na confirmation przed kolejnym setText - inaczej publiczne RPC moga
+      // odrzucac z powodu stale nonce gdy 15 tx leci pod rzad (Critic M5).
+      await sepoliaPublic.waitForTransactionReceipt({ hash: tx });
     }
   }
 
