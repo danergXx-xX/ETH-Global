@@ -25,6 +25,11 @@ from governance import (
 )
 from logging_config import RequestIDMiddleware, setup_logging
 from agents.orchestrator import run_debate
+from data.seed_historical_debates import (
+    get_debate_by_id,
+    get_historical_debates,
+)
+from data.seed_proposals import get_proposal_by_id, get_suggested_proposals
 from schemas import (
     DebateRequest,
     DebateResponse,
@@ -340,3 +345,44 @@ async def list_recipients() -> RecipientsResponse:
         token_symbol="mUSDC",
         token_decimals=MOCK_USDC_DECIMALS,
     )
+
+
+@app.get("/api/proposals/suggested")
+async def list_suggested_proposals() -> dict[str, list[dict]]:
+    """Return 4 golden demo proposals for the Suggested Proposals dropdown.
+
+    Used by frontend submission form: judge picks one to pre-fill the textarea
+    with full_context, demonstrating council across geopolitics, crypto-native,
+    time-sensitive, and meta-DAO scenarios.
+    """
+    return {"proposals": get_suggested_proposals()}
+
+
+@app.get("/api/proposals/suggested/{proposal_id}")
+async def get_suggested_proposal(proposal_id: str) -> dict:
+    """Return single suggested proposal by id."""
+    proposal = get_proposal_by_id(proposal_id)
+    if proposal is None:
+        raise HTTPException(status_code=404, detail=f"Proposal {proposal_id} not found")
+    return proposal
+
+
+@app.get("/api/debates/history")
+async def list_debate_history() -> dict[str, list[dict]]:
+    """Return 3 mock historical debates for audit trail tab.
+
+    Each debate has: proposal meta, 5 agent statements with primary source
+    attribution, consensus verdict, 0G Storage CID, optional tx hash, and
+    per-agent reputation deltas. Used to populate audit trail before live
+    debates accumulate during demo.
+    """
+    return {"debates": get_historical_debates()}
+
+
+@app.get("/api/debates/history/{debate_id}")
+async def get_debate_history_detail(debate_id: str) -> dict:
+    """Return single historical debate by id (detail view)."""
+    debate = get_debate_by_id(debate_id)
+    if debate is None:
+        raise HTTPException(status_code=404, detail=f"Debate {debate_id} not found")
+    return debate
