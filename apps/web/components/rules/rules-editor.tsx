@@ -126,21 +126,30 @@ export function RulesEditor() {
         {/* JSON editor pane */}
         <Card>
           <CardContent className="py-3 px-0">
-            <div className="px-4 pb-2 text-[10px] font-mono text-muted-foreground">
-              {t("panes.json")}
-            </div>
+            <label
+              htmlFor="rules-json-editor"
+              className="block px-4 pb-2 text-[10px] font-mono text-muted-foreground"
+            >
+              Council Rules JSON - {t("panes.json")}
+            </label>
             <textarea
+              id="rules-json-editor"
+              aria-describedby="rules-json-error"
+              aria-invalid={!isValid}
               value={content}
               onChange={(e) => handleEdit(e.target.value)}
               className="w-full min-h-[360px] bg-transparent px-4 font-mono text-xs text-foreground resize-none focus:outline-none leading-relaxed"
               spellCheck={false}
               disabled={state === "committing"}
             />
-            {!isValid && (
-              <div className="px-4 py-1 text-[10px] text-destructive-foreground">
-                Invalid JSON syntax
-              </div>
-            )}
+            <div
+              id="rules-json-error"
+              role="alert"
+              aria-live="polite"
+              className="px-4 py-1 min-h-[1rem] text-[10px] text-destructive-foreground"
+            >
+              {!isValid ? "Invalid JSON syntax" : ""}
+            </div>
           </CardContent>
         </Card>
 

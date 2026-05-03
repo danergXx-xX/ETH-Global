@@ -4,7 +4,7 @@ import { LayerDiagram, FlowSteps, CompareTable } from "@/components/docs/diagram
 import { VerifiedOnBasescanBadge } from "@/components/shared/verified-on-basescan-badge";
 
 export const metadata: Metadata = {
-  title: "Architecture - CONCLAVE",
+  title: "Architecture - AI Treasury Council",
   description: "How AI Treasury Council works under the hood: layers, contracts, ENS, trust mechanisms.",
 };
 
@@ -29,7 +29,7 @@ export default function ArchitecturePage() {
       currentHref="/architecture"
     >
       <P>
-        CONCLAVE is a multi-agent AI council for DAO treasury governance. Five specialized agents
+        AI Treasury Council is a multi-agent AI council for DAO treasury governance. Five specialized agents
         debate every proposal in parallel, an Adversarial sixth agent attacks the consensus,
         and the full transcript lands on 0G Storage with on-chain reputation updates. The
         DAO votes via OpenZeppelin Governor with a 48-hour timelock before any treasury action
@@ -185,7 +185,7 @@ export default function ArchitecturePage() {
 
       <H2 id="trust">5. Trust mechanisms (5)</H2>
       <P>
-        DAOs do not adopt AI agents because they cannot trust them. CONCLAVE wires five concrete
+        DAOs do not adopt AI agents because they cannot trust them. AI Treasury Council wires five concrete
         trust mechanisms. None of them are post-hackathon promises - all five are live in the demo.
       </P>
       <CompareTable

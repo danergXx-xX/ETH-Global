@@ -59,7 +59,9 @@ export function TestArena({
   isSubmitting = false,
   submittedAgent = null,
 }: TestArenaProps) {
-  // Mock 5-of-7 multisig: 4 mock signers auto-sign over 5s after submit.
+  // Mock 5-of-7 multisig: 4 mock signers auto-sign over ~1s after submit
+  // (demo pacing - real production multisig requires real signatures from
+  // 5-of-7 elected DAO custodians, see footer note in this card).
   const [signatures, setSignatures] = useState(0);
   useEffect(() => {
     if (!submittedAgent) {
@@ -71,7 +73,7 @@ export function TestArena({
       return;
     }
     setSignatures(1);
-    const intervals = [1200, 2400, 3600, 4800];
+    const intervals = [200, 400, 600, 900];
     const timeouts = intervals.map((ms, idx) =>
       window.setTimeout(() => setSignatures(2 + idx), ms)
     );

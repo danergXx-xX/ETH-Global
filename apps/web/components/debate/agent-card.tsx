@@ -25,6 +25,16 @@ interface AgentCardProps {
   confidence?: number;
 }
 
+// Charter #7 (honest mode): mark which agents call real Anthropic Claude vs
+// simulated demo responses. Update when an agent moves from mock to live.
+const LIVE_DATA_AGENTS: ReadonlySet<string> = new Set([
+  "bull",
+  "bear",
+  "risk",
+  "tech",
+  "sentiment",
+]);
+
 const DECISION_STYLES: Record<Decision, string> = {
   FOR: "bg-vote-for/15 text-vote-for border-vote-for/30",
   AGAINST: "bg-vote-against/15 text-vote-against border-vote-against/30",
@@ -42,6 +52,7 @@ export function AgentDebateCard({
   const t = useTranslations("agentCard");
   const label = agent.label[locale] ?? agent.label.en;
   const bias = agent.bias[locale] ?? agent.bias.en;
+  const isLive = LIVE_DATA_AGENTS.has(agent.persona);
 
   return (
     <Card
@@ -63,7 +74,7 @@ export function AgentDebateCard({
           >
             <AgentPortrait persona={agent.persona} size={36} />
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-medium text-sm">{label}</span>
                 <Badge
                   variant="outline"
@@ -71,6 +82,35 @@ export function AgentDebateCard({
                 >
                   {bias}
                 </Badge>
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Badge
+                        variant="outline"
+                        className={`text-[9px] px-1.5 py-0 cursor-help ${
+                          isLive
+                            ? "border-vote-for/40 text-vote-for"
+                            : "border-muted-foreground/30 text-muted-foreground"
+                        }`}
+                      >
+                        <span
+                          aria-hidden
+                          className={`inline-block size-1 rounded-full mr-1 ${
+                            isLive ? "bg-vote-for" : "bg-muted-foreground"
+                          }`}
+                        />
+                        {isLive ? "Live data" : "Demo data"}
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-xs max-w-xs">
+                        {isLive
+                          ? "This agent calls real Anthropic Claude with live market sources."
+                          : "Simulated response for demo. Real Anthropic call is wired in production (Charter #7 honest mode)."}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
               <TooltipProvider delayDuration={200}>
                 <div className="flex items-center gap-3 text-[10px] opacity-70 font-mono">

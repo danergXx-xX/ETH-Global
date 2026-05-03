@@ -3,7 +3,7 @@ import { DocsShell, H2, H3, P, UL, Code, Callout } from "@/components/docs/docs-
 import { CompareTable } from "@/components/docs/diagram";
 
 export const metadata: Metadata = {
-  title: "Risks & Roadmap - CONCLAVE",
+  title: "Risks & Roadmap - AI Treasury Council",
   description: "Known risks, mitigations, tech debt, and post-hackathon roadmap.",
 };
 
@@ -199,7 +199,7 @@ export default function RisksRoadmapPage() {
 
       <Callout variant="success" title="Why we publish this">
         Every project has tech debt. Most hide it. We publish ours because: (a) judges deserve to
-        evaluate honest engineering, (b) DAOs adopting CONCLAVE can plan their integration
+        evaluate honest engineering, (b) DAOs adopting AI Treasury Council can plan their integration
         knowing the limits, (c) it forces us to keep the list short and actionable.
       </Callout>
     </DocsShell>
