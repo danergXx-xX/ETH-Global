@@ -76,9 +76,18 @@ async function main() {
     const fqdn = `${label}.${PARENT_DOMAIN}`;
     const start = performance.now();
 
-    const results = await Promise.allSettled(
+    // Critic MEDIUM-8: zachowaj key context przy reject - inaczej wszystkie errory pokazuja "unknown".
+    type LookupResult =
+      | { status: "ok"; key: string; value: string }
+      | { status: "err"; key: string; err: string };
+    const results = await Promise.all<LookupResult>(
       EXPECTED_KEYS.map((key) =>
-        client.getEnsText({ name: fqdn, key }).then((value) => ({ key, value })),
+        client
+          .getEnsText({ name: fqdn, key })
+          .then(
+            (value): LookupResult => ({ status: "ok", key, value: value ?? "" }),
+            (err): LookupResult => ({ status: "err", key, err: String(err) }),
+          ),
       ),
     );
 
@@ -88,14 +97,14 @@ async function main() {
     const errors: Array<{ key: string; err: string }> = [];
 
     for (const r of results) {
-      if (r.status === "fulfilled") {
-        if (r.value.value && r.value.value.length > 0) {
-          present.push(r.value.key);
+      if (r.status === "ok") {
+        if (r.value && r.value.length > 0) {
+          present.push(r.key);
         } else {
-          missing.push(r.value.key);
+          missing.push(r.key);
         }
       } else {
-        errors.push({ key: "unknown", err: String(r.reason) });
+        errors.push({ key: r.key, err: r.err });
       }
     }
 

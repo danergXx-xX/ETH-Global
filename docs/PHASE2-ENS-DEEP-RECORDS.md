@@ -12,11 +12,12 @@ Sesja 34 oznaczyla R-020 jako HIGH na risk register: Ghost in the Machine (zwyci
 Agents Cannes 2026) ma 30+ text records per agent subname. Nasza implementacja Sesji 25 miala
 9 records, co stwarza ryzyko ze sedzia ENS partner prize uzna profile za "shallow demo".
 
-Sesja 35 podnosi do 26 records per subname, w 7 logicznych grupach:
+Sesja 35 podnosi do 26 records per subname, w 7 logicznych grupach (UI render: 8 sekcji
+poniewaz Cross-chain Reference jest wydzielone z Reputation jako osobny highlight):
 - Identity (5)
 - Social (3)
 - AI persona metadata (5)
-- Reputation + stats (5)
+- Reputation + stats (5, w UI rozdzielone na Reputation + Cross-chain)
 - Tools / capabilities (3)
 - Audit / verifiability (3)
 - Memory / state (2)
@@ -209,6 +210,30 @@ open https://sepolia.app.ens.domains/bull.aicouncil-danergy.eth
 - Smart contract changes (out of scope)
 - com.discord realny serwer (placeholder)
 - email forwarding (placeholder)
+
+### Tech debt (zaplanowane do PHASE2-ENS-TECH-DEBT.md)
+- Unit tests dla `buildAgentTexts` + `buildMulticallPayload` (Vera, Critic, ~30 min)
+- Constants extract: `apps/web/lib/constants/ens.ts` (DRY: parent owner, registry, resolver, RPC URL hardcoded w 3 plikach) (Critic MEDIUM-6)
+- Replace ai.address placeholder (0x...0001-0005 = precompile addresses) realnymi agent EOA (Critic MEDIUM-9)
+- Constants extract dla AGENT_TEXT_KEYS / EXPECTED_KEYS (drift risk miedzy mint, hook, verify) (Critic MEDIUM-6)
+
+## RPC Rate-Limit RISK (HIGH, Mateusz/Critic)
+
+**Problem:** ENSIdentityCard renderuje 7 hookow useAgentENS, kazdy 28 RPC calls do
+`https://ethereum-sepolia-rpc.publicnode.com`. Burst ~196 requests w <1s. Public RPC
+ma rate-limit ~30 req/s. Jurorzy testujacy demo o tej samej godzinie zobacza
+"Resolving..." zamiast 26 records = **realne ryzyko ENS prize disqualifikacji**.
+
+**Quick win (Dan, 5 min):**
+```bash
+# Dodaj do apps/web/.env.local:
+NEXT_PUBLIC_SEPOLIA_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/YOUR_KEY
+# Zaloz konto: https://www.alchemy.com (free tier 300M req/mies)
+```
+Hook juz wspiera ten env var (useAgentENS.ts:24-26). Zero zmian w kodzie.
+
+**Alternatywy (jesli czas):** Multicall3 batch read text records w jednym RPC call
+(redukcja 28 -> 1 per agent), albo server-side resolution przez Next.js API route.
 
 ---
 

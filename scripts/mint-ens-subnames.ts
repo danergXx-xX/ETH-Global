@@ -143,7 +143,7 @@ const COMMON_TEXTS = {
   "ai.proof_of_work": `https://sepolia.basescan.org/address/${REPUTATION_CONTRACT_BASE_SEPOLIA}`,
   "ai.audit_log": `${APP_BASE}/audit`,
   "ai.transparency_score": "9.5/10",
-  "ai.memory_type": "Stateless per debate (audit log on 0G Storage)",
+  "ai.memory_type": "Stateless per debate (immutable audit log on 0G Network)",
   "ai.last_debate_cid": "tbd-after-first-debate-broadcast",
   "ai.debates_participated": "12",
 };
@@ -195,8 +195,8 @@ const AGENT_SPECS: AgentSpec[] = [
     owner: "0x0000000000000000000000000000000000000004",
     name: "Technical Analyst",
     description:
-      "Technical analyst reading indicators, chart patterns and momentum signals on relevant assets.",
-    role: "Technical Analyst",
+      "Technical analyst interpreting price indicators, chart patterns and momentum signals for assets under DAO review.",
+    role: "On-Chain Technical Analyst",
     reputation: "105",
     consensusAligned: "84",
   },
@@ -205,8 +205,8 @@ const AGENT_SPECS: AgentSpec[] = [
     owner: "0x0000000000000000000000000000000000000005",
     name: "Sentiment Reader",
     description:
-      "Sentiment reader aggregating news, social media and AIXBT signals into market mood scoring.",
-    role: "Sentiment Reader",
+      "Sentiment analyst aggregating news, social feeds and crypto-native signals into a market sentiment score.",
+    role: "Market Sentiment Analyst",
     reputation: "102",
     consensusAligned: "80",
   },
@@ -354,7 +354,11 @@ async function main() {
 
   if (!broadcast) {
     // Gas estimate: setSubnodeRecord + multicall(bytes[]) per subname.
-    const dummyAccount = "0x14b97991f681D0b69074B5AD3CcC675765C276F4" as Address;
+    // Critic HIGH-1: dummyAccount derive z parentOwner aby uniknac driftu gdy ENS owner sie zmieni.
+    if (parentOwner === "0x0000000000000000000000000000000000000000") {
+      throw new Error("Cannot estimate gas - parentOwner = zero. Sprawdz domene.");
+    }
+    const dummyAccount = parentOwner as Address;
     let estPerSubname = 0n;
     try {
       const setSubnodeData = encodeFunctionData({
@@ -464,6 +468,15 @@ async function main() {
     recordsCount: number;
   }> = [];
 
+  // Critic HIGH-3: timeout 120s na waitForTxReceipt aby uniknac infinite hang przy nonce/RPC issues.
+  const TX_RECEIPT_TIMEOUT_MS = 120_000;
+
+  // Critic HIGH-2: idempotency - skip agentow ktorzy juz maja ai.last_active record (mintowany).
+  // Pozwala wznowic broadcast po failure bez marnowania gazu na re-mint.
+  const force = process.argv.includes("--force-remint");
+
+  const failures: Array<{ fqdn: string; error: string }> = [];
+
   for (const agent of agents) {
     const fqdn = `${agent.label}.${PARENT_DOMAIN}`;
     const node = namehash(fqdn);
@@ -472,53 +485,96 @@ async function main() {
     console.log(`    node:  ${node}`);
     console.log(`    label: ${label}`);
 
-    // Sprawdz collision (czy subnode juz istnieje z innym ownerem).
-    const existingOwner = await publicClient.readContract({
-      address: ENS_REGISTRY,
-      abi: ENS_REGISTRY_ABI,
-      functionName: "owner",
-      args: [node],
-    });
-    if (
-      existingOwner !== "0x0000000000000000000000000000000000000000" &&
-      existingOwner.toLowerCase() !== account.address.toLowerCase()
-    ) {
-      console.warn(
-        `    OSTRZEZENIE: subnode istnieje z ownerem ${existingOwner}. Nadpisze przez setSubnodeRecord (parent owner ma prawo).`,
+    try {
+      // Sprawdz collision (czy subnode juz istnieje z innym ownerem).
+      const existingOwner = await publicClient.readContract({
+        address: ENS_REGISTRY,
+        abi: ENS_REGISTRY_ABI,
+        functionName: "owner",
+        args: [node],
+      });
+      if (
+        existingOwner !== "0x0000000000000000000000000000000000000000" &&
+        existingOwner.toLowerCase() !== account.address.toLowerCase()
+      ) {
+        console.warn(
+          `    OSTRZEZENIE: subnode istnieje z ownerem ${existingOwner}. Nadpisze przez setSubnodeRecord (parent owner ma prawo).`,
+        );
+      }
+
+      // Idempotency check: jesli ai.last_active juz ustawione i NIE force-remint - skip.
+      if (!force) {
+        const lastActive = await publicClient.readContract({
+          address: PUBLIC_RESOLVER,
+          abi: PUBLIC_RESOLVER_ABI,
+          functionName: "text",
+          args: [node, "ai.last_active"],
+        });
+        if (lastActive && lastActive.length > 0) {
+          console.log(
+            `    SKIP: agent juz zmintowany (ai.last_active=${lastActive}). Uzyj --force-remint aby nadpisac.`,
+          );
+          continue;
+        }
+      }
+
+      // Owner subnode = parent (Dan), aby zachowac prawo do setText/multicall na text records.
+      const subnodeTx = await walletClient.writeContract({
+        address: ENS_REGISTRY,
+        abi: ENS_REGISTRY_ABI,
+        functionName: "setSubnodeRecord",
+        args: [parentNode, label, account.address, PUBLIC_RESOLVER, TTL],
+      });
+      console.log(`    setSubnodeRecord tx: https://sepolia.etherscan.io/tx/${subnodeTx}`);
+      await publicClient.waitForTransactionReceipt({
+        hash: subnodeTx,
+        timeout: TX_RECEIPT_TIMEOUT_MS,
+        confirmations: 1,
+      });
+
+      // Multicall: jedno wywolanie ustawia wszystkie text records atomicznie.
+      const multicallPayload = buildMulticallPayload(node, agent.texts);
+      // Mateusz MEDIUM-2: guard pusty payload (silent success bez efektu).
+      if (multicallPayload.length === 0) {
+        throw new Error(`Empty multicall payload dla ${fqdn} - aborting`);
+      }
+      const multicallTx = await walletClient.writeContract({
+        address: PUBLIC_RESOLVER,
+        abi: PUBLIC_RESOLVER_ABI,
+        functionName: "multicall",
+        args: [multicallPayload],
+      });
+      console.log(
+        `    multicall(${multicallPayload.length} setText) tx: https://sepolia.etherscan.io/tx/${multicallTx}`,
       );
+      await publicClient.waitForTransactionReceipt({
+        hash: multicallTx,
+        timeout: TX_RECEIPT_TIMEOUT_MS,
+        confirmations: 1,
+      });
+
+      results.push({
+        fqdn,
+        subnodeTx,
+        multicallTx,
+        recordsCount: multicallPayload.length,
+      });
+    } catch (e) {
+      const msg = (e as Error).message;
+      console.error(`    BLAD dla ${fqdn}: ${msg}`);
+      failures.push({ fqdn, error: msg });
+      // Kontynuuj z kolejnym agentem - rerun --broadcast skipnie zmintowanych dzieki idempotency check.
     }
+  }
 
-    // Owner subnode = parent (Dan), aby zachowac prawo do setText/multicall na text records.
-    // Placeholder agent address jest mintowany jako `ai.address` text record (nizej),
-    // nie jako ENS subnode owner.
-    const subnodeTx = await walletClient.writeContract({
-      address: ENS_REGISTRY,
-      abi: ENS_REGISTRY_ABI,
-      functionName: "setSubnodeRecord",
-      args: [parentNode, label, account.address, PUBLIC_RESOLVER, TTL],
-    });
-    console.log(`    setSubnodeRecord tx: https://sepolia.etherscan.io/tx/${subnodeTx}`);
-    await publicClient.waitForTransactionReceipt({ hash: subnodeTx });
-
-    // Multicall: jedno wywolanie ustawia wszystkie 26 text records atomicznie.
-    const multicallPayload = buildMulticallPayload(node, agent.texts);
-    const multicallTx = await walletClient.writeContract({
-      address: PUBLIC_RESOLVER,
-      abi: PUBLIC_RESOLVER_ABI,
-      functionName: "multicall",
-      args: [multicallPayload],
-    });
-    console.log(
-      `    multicall(${multicallPayload.length} setText) tx: https://sepolia.etherscan.io/tx/${multicallTx}`,
-    );
-    await publicClient.waitForTransactionReceipt({ hash: multicallTx });
-
-    results.push({
-      fqdn,
-      subnodeTx,
-      multicallTx,
-      recordsCount: multicallPayload.length,
-    });
+  if (failures.length > 0) {
+    console.log("\n" + "=".repeat(70));
+    console.log(`PARTIAL FAILURE: ${failures.length}/${agents.length} agentow nie zmintowano:`);
+    for (const f of failures) {
+      console.log(`  - ${f.fqdn}: ${f.error}`);
+    }
+    console.log("Rerun: tsx scripts/mint-ens-subnames.ts --broadcast (skipnie juz zmintowanych).");
+    console.log("=".repeat(70));
   }
 
   console.log("\n" + "=".repeat(70));

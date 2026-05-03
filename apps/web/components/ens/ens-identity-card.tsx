@@ -90,6 +90,27 @@ function basescanLink(value: string): string | undefined {
   return `https://sepolia.basescan.org/address/${match[1]}`;
 }
 
+/**
+ * MED-3 (Mateusz Sesja 25) + HIGH-1 (Mateusz Sesja 35): walidacja schematu URL.
+ * ENS text records sa ustawiane przez ownera subname - jesli kiedykolwiek subname
+ * przejdzie do agentow lub DAO, kazdy moze ustawic javascript: / data: w avatar/url.
+ * UI MUSI walidowac, NIE polegac na hooku (ktory waliduje tylko 'avatar').
+ *
+ * Tylko https: i ipfs:// (http blokowany - mixed content w produkcji HTTPS).
+ */
+function safeHref(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  if (!/^(https:|ipfs:)\/\//i.test(value)) return undefined;
+  return value;
+}
+
+function safeGithubHref(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  // Format owner/repo lub owner - tylko alphanumeric, -, _, ., /
+  if (!/^[a-zA-Z0-9._-]+(\/[a-zA-Z0-9._-]+)?$/.test(value)) return undefined;
+  return `https://github.com/${value}`;
+}
+
 function AgentENSCard({ persona }: { persona: AgentPersona }) {
   const ens = useAgentENS(persona);
   const agent = AGENTS.find((a) => a.persona === persona);
@@ -126,8 +147,8 @@ function AgentENSCard({ persona }: { persona: AgentPersona }) {
         <Section title="Identity" count={5}>
           <Row label="role" value={r["ai.role"]} />
           <Row label="description" value={r.description} />
-          <Row label="avatar" value={r.avatar} href={r.avatar} />
-          <Row label="url" value={r.url} href={r.url} />
+          <Row label="avatar" value={r.avatar} href={safeHref(r.avatar)} />
+          <Row label="url" value={r.url} href={safeHref(r.url)} />
           <Row label="email" value={r.email} mono />
         </Section>
 
@@ -140,7 +161,7 @@ function AgentENSCard({ persona }: { persona: AgentPersona }) {
             label="prompt_hash"
             value={r["ai.system_prompt_hash"]}
             mono
-            tooltip="keccak256 first 16 chars - proof of consistency between debates"
+            tooltip="keccak256 first 16 chars - placeholder hash, real prompt hash post freeze"
           />
         </Section>
 
@@ -157,7 +178,7 @@ function AgentENSCard({ persona }: { persona: AgentPersona }) {
           <Row
             label="reputation_contract"
             value={r["ai.contract"]}
-            href={contractHref}
+            href={safeHref(contractHref)}
             mono
             tooltip="AgentReputation contract na Base Sepolia (live read)"
           />
@@ -172,15 +193,15 @@ function AgentENSCard({ persona }: { persona: AgentPersona }) {
 
         {/* Audit Trail */}
         <Section title="Audit Trail" count={3}>
-          <Row label="proof_of_work" value={r["ai.proof_of_work"]} href={r["ai.proof_of_work"]} />
-          <Row label="audit_log" value={r["ai.audit_log"]} href={r["ai.audit_log"]} />
+          <Row label="proof_of_work" value={r["ai.proof_of_work"]} href={safeHref(r["ai.proof_of_work"])} />
+          <Row label="audit_log" value={r["ai.audit_log"]} href={safeHref(r["ai.audit_log"])} />
           <Row label="transparency" value={r["ai.transparency_score"]} mono />
         </Section>
 
         {/* Social */}
         <Section title="Social" count={3}>
           <Row label="twitter" value={r["com.twitter"]} />
-          <Row label="github" value={r["com.github"]} href={r["com.github"] ? `https://github.com/${r["com.github"]}` : undefined} />
+          <Row label="github" value={r["com.github"]} href={safeGithubHref(r["com.github"])} />
           <Row label="discord" value={r["com.discord"]} />
         </Section>
 
@@ -256,12 +277,9 @@ export function ENSIdentityCard() {
   const parentENS = useAgentENS("parent");
   const agents: AgentPersona[] = ["bull", "bear", "risk", "tech", "sentiment"];
 
-  const avgLatency = Math.round(
-    agents.reduce((sum, a) => {
-      const ens = AGENTS.find((ag) => ag.persona === a);
-      return sum + (ens ? 80 : 0);
-    }, 0) / agents.length
-  );
+  // Critic MEDIUM-7: poprzednia avgLatency to byl placeholder (zawsze 80ms) - wprowadzal w blad jurorow.
+  // Pokazujemy parent ENS latency jako sygnal stanu RPC (jedna prawdziwa liczba zamiast falszywej sredniej).
+  const avgLatency = parentENS.latencyMs;
 
   return (
     <div className="space-y-4">
