@@ -1,0 +1,26 @@
+{
+  "id": "test-id-123",
+  "model": "sonar-pro",
+  "object": "chat.completion",
+  "created": 1735689600,
+  "choices": [
+    {
+      "index": 0,
+      "finish_reason": "stop",
+      "message": {
+        "role": "assistant",
+        "content": "Aave protocol has been audited 12+ times since 2020 by firms including Trail of Bits, OpenZeppelin, Certora, and PeckShield. The most recent audit was completed in October 2025 covering V4 architecture. No major exploits have been reported on the core protocol; a $1.6M loss in 2022 was via a third-party integration (Beanstalk Farms), not Aave itself."
+      }
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 42,
+    "completion_tokens": 88,
+    "total_tokens": 130
+  },
+  "citations": [
+    "https://github.com/aave/aave-v3-core/tree/master/audits",
+    "https://www.trailofbits.com/reports/aave-v3.pdf",
+    "https://blog.openzeppelin.com/aave-v3-audit/"
+  ]
+}

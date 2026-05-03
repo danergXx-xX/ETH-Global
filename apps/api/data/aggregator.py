@@ -19,8 +19,10 @@ import structlog
 
 from data.coingecko import CoinGeckoSource
 from data.defillama import DefiLlamaSource
+from data.perplexity import PerplexitySource
 from data.rss import RSSSource
 from data.sources import DataSource
+from data.web_search import WebSearchSource
 from schemas import Source
 from services.cache import cache_get, cache_set
 
@@ -40,6 +42,8 @@ def create_default_registry() -> dict[str, DataSource]:
         "rss": RSSSource(),
         "coingecko": CoinGeckoSource(),
         "defillama": DefiLlamaSource(),
+        "perplexity": PerplexitySource(),
+        "web_search": WebSearchSource(),
     }
 
 
@@ -115,6 +119,38 @@ class DataAggregator:
                 log.warning("source_fetch_failed", source=src_name, query=query, error=str(exc))
 
         return all_sources
+
+    async def fetch_perplexity(self, question: str, limit: int = 3) -> list[Source]:
+        """
+        Convenience: fetch tylko z Perplexity (Tech audit history, Sentiment news).
+        Empty list gdy degraded (no API key, network error). Caller fallbackuje.
+        """
+        return await self.fetch_for_query(question, ["perplexity"], limit_per_source=limit)
+
+    async def fetch_ddg(self, query: str, limit: int = 3) -> list[Source]:
+        """Convenience: DDG-only fetch (drugi krok fallback chain po Perplexity)."""
+        return await self.fetch_for_query(query, ["web_search"], limit_per_source=limit)
+
+    async def fetch_with_fallback(
+        self,
+        query: str,
+        chain: list[str] | None = None,
+        limit_per_source: int = 3,
+    ) -> list[Source]:
+        """
+        Fallback chain: probuj zrodlo po zrodle, zatrzymaj sie na pierwszym non-empty.
+
+        Default chain: Perplexity -> DDG -> RSS (graceful degrade gdy API down/key brak).
+        Per-source cache + per-source error handling juz w fetch_for_query.
+        """
+        order = chain if chain is not None else ["perplexity", "web_search", "rss"]
+        for src in order:
+            results = await self.fetch_for_query(query, [src], limit_per_source=limit_per_source)
+            if results:
+                log.info("fallback_chain_resolved", source=src, n=len(results))
+                return results
+        log.warning("fallback_chain_exhausted", chain=order, query=query)
+        return []
 
     async def close(self) -> None:
         """Close all adapter HTTP clients. Call on app shutdown."""

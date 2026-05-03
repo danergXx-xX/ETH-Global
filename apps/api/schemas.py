@@ -25,7 +25,9 @@ class Source(BaseModel):
     title: str
     snippet: str = Field(..., max_length=500)
     weight: float = Field(..., ge=0.0, le=1.0, description="0=irrelevant, 1=primary source")
-    source_type: Literal["rss", "coingecko", "defillama", "aixbt", "perplexity"] | None = None
+    source_type: (
+        Literal["rss", "coingecko", "defillama", "aixbt", "perplexity", "web_search"] | None
+    ) = None
 
 
 class AgentClaim(BaseModel):
