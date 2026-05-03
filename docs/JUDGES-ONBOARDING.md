@@ -123,4 +123,4 @@ Validation outside the hackathon room is in flight. We are not claiming signed l
 - X (Twitter): @aitc_council (handle reserved post-hackathon)
 - Dan on Signal: see ETHGlobal submission form
 
-Thank you for evaluating. We built this for sędziów and DAO contributors first.
+Thank you for evaluating. We built this for judges and DAO contributors first.

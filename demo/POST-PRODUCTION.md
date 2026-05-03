@@ -241,7 +241,7 @@ git add demo/final/ && git commit -m "feat(demo): final video master 3:00 EN cap
    AI Treasury Council demo (3 min) - ETHGlobal Open Agents 2026 submission.
    
    Multi-agent AI Council debates DAO treasury decisions on-chain.
-   - 4 contracts deployed Base Sepolia
+   - 5 contracts deployed Base Sepolia
    - 0G Storage audit trail
    - ENS subnames per agent
    - 5 trust mechanisms (Mayer-Davis-Schoorman ABI model)

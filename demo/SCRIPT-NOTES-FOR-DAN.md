@@ -123,7 +123,7 @@ linked: SCRIPT.md, SCRIPT-TEASER-60s.md, RECORDING-CHECKLIST.md
   - "hookach Uniswap v4 / Uniswap v4 hooks" (Hayden)
   - "subnames ENS przez NameStone / ENS subnames via NameStone" (Nick)
   - "automatyzacji KeeperHub / KeeperHub automation" (Luca)
-- "Cztery kontrakty zywe / Four contracts live" - CLAIM, czytaj pewnie (sedziowie sprawdza)
+- "Piec kontraktow zywych / Five contracts live" - CLAIM, czytaj pewnie (sedziowie sprawdza)
 - "Open source. Gotowe do pilotu / Pilot ready" - finalising punch
 
 **Ton:** salesman ale uczciwy. Nie pitch, raport.
@@ -142,7 +142,7 @@ linked: SCRIPT.md, SCRIPT-TEASER-60s.md, RECORDING-CHECKLIST.md
 **Tempo:** 50-60 wpm (sponsor logos band + final card mowia za siebie).
 
 **Emfaza:**
-- "Cztery kontrakty na Base Sepolia" - claim
+- "Piec kontraktow na Base Sepolia" - claim
 - "Open source" - PUNCH (kazdy sedzia szuka tego)
 - "Forkuj, deployuj, pilotuj / Fork it, deploy it, pilot it" - rytm staccato, kazde slowo czysto
 

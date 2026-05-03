@@ -195,7 +195,7 @@ linked: SCRIPT.md, STORYBOARD.md
 
 ### Voice-over emfazy dla Synthesis
 - "Akademicki research Mayer-Davis-Schoorman" (1:50-2:30) - Synthesis love peer-reviewed grounding
-- "Cztery kontrakty zywe na Base Sepolia" (2:30-3:00) - real, not theater
+- "Piec kontraktow zywych na Base Sepolia" (2:30-3:00) - real, not theater
 - "Open source. Gotowe do pilotu z DAO." - production stance
 
 ### Hidden details Synthesis zauwazy
@@ -209,7 +209,7 @@ linked: SCRIPT.md, STORYBOARD.md
 
 ### Synthesis konkretne kryteria (per panel jurors session 2026-05-02)
 - **Originality 9/10** - typewriter + on-chain audit + ENS reputation = combination not seen
-- **Technical depth 8/10** - 4 contracts deployed + verified, 0G Storage real, source attribution per claim
+- **Technical depth 8/10** - 5 contracts deployed + verified, 0G Storage real, source attribution per claim
 - **Demo polish 8/10** (target po Eva script + recording) - 3 min hard limit, no fillers, no music
 - **Documentation 9/10** - README + FEEDBACK + 4 ADR + glossary
 - **Pilot readiness 7/10** - LOI hunting (Aria-DAO) + open source + branch protection
